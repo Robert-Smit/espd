@@ -28,44 +28,37 @@
   --%>
 
 <script>
-//$(function() {
-//	var country = $("select[name='authority.country']");
-//
-//    $('input.radiotab').click(function () {
-//        $(this).tab('show');
-//    });
-//    var nextBtn = $('#nextBtn');
-//    $("*[name='agent']").click(function () {
-//        nextBtn.prop('disabled', true);
-//    	$('#tab-country-selection').removeClass('active');
-//    	$('#tab-single-upload').removeClass('active');
-//    	$('#tab-multiple-upload').removeClass('active');
-//    	$('.radioCa').removeAttr('checked');
-//    	$('[value="empty"]').prop('selected', true);
-//    	$("input:file").val('');
-//    });
-//	$("input:file").change(function (){
-//		if($(this).val() != '') {
-//			$('#tab-country-selection').addClass('active');
-//			nextBtn.prop('disabled', country.val() === '');
-//		}
-//	});
-//	country.change(function() {
-//    	nextBtn.prop('disabled', $(this).val() === '');
-//    });
-//    $("[name=action]").click(function () {
-//    	nextBtn.prop('disabled', country.val() === '');
-//    });
-//    nextBtn.prop('disabled', true);
-//});
-    $(function() {
-        var whoAreYou = request.getParameter('whoareyou');
-        if (whoAreYou.equals('ca')) {
-            whoAreYou = 'ca';
-        } else if (whoAreYou.equals('ce')) {
-            whoAreYou = 'ce';
-        }
-    })
+$(function() {
+	var country = $("select[name='authority.country']");
+
+    $('input.radiotab').click(function () {
+        $(this).tab('show');
+    });
+    var nextBtn = $('#nextBtn');
+    $("*[name='agent']").click(function () {
+        nextBtn.prop('disabled', true);
+    	$('#tab-country-selection').removeClass('active');
+    	$('#tab-single-upload').removeClass('active');
+    	$('#tab-multiple-upload').removeClass('active');
+    	$('.radioCa').removeAttr('checked');
+    	$('[value="empty"]').prop('selected', true);
+    	$("input:file").val('');
+    });
+	$("input:file").change(function (){
+		if($(this).val() != '') {
+			$('#tab-country-selection').addClass('active');
+			nextBtn.prop('disabled', country.val() === '');
+		}
+	});
+	country.change(function() {
+    	nextBtn.prop('disabled', $(this).val() === '');
+    });
+    $("[name=action]").click(function () {
+    	nextBtn.prop('disabled', country.val() === '');
+    });
+    nextBtn.prop('disabled', true);
+});
+
 </script>
 <form:form id="espdform" role="form" class="form-horizontal" action="filter" method="post" commandName="espd" data-toggle="validator" enctype="multipart/form-data">
 	<div class="panel-default">

@@ -26,7 +26,7 @@
 
 <tiles-definitions>
 
-    <definition name="espdTemplate" template="/WEB-INF/tenderNed/views/espdTemplate.jsp">
+    <definition name="espdTemplate" template="/WEB-INF/tenderned/views/espdTemplate.jsp">
         <put-attribute name="header" value="/WEB-INF/tenderned/views/header.jsp" />
 		<put-attribute name="breadcrumb" value="/WEB-INF/tenderned/views/breadcrumb.jsp" />
         <put-attribute name="body" value="" />
@@ -82,9 +82,9 @@
     <definition name="response_ca_print" extends="response_eo"><put-attribute name="body" value="/WEB-INF/tenderned/views/print.jsp" /></definition>
     <definition name="response_eo_print" extends="response_eo"><put-attribute name="body" value="/WEB-INF/tenderned/views/print.jsp" /></definition>
     
-	<definition name="viewChangeRole" template="/WEB-INF/tenderNed/views/wizard/viewChangeRole.jsp"><!-- page, agent --></definition>
+	<definition name="viewChangeRole" template="/WEB-INF/tenderned/views/wizard/viewChangeRole.jsp"><!-- page, agent --></definition>
 
-    <definition name="progress" template="/WEB-INF/tenderNed/views/wizard/progress.jsp">
+    <definition name="progress" template="/WEB-INF/tenderned/views/wizard/progress.jsp">
         <put-attribute name="start" value="false"/>
         <put-attribute name="procedure" value="false"/>
         <put-attribute name="exclusion" value="false"/>
@@ -92,7 +92,7 @@
         <put-attribute name="finish" value="false"/>
     </definition>
 
-    <definition name="partyInfo" template="/WEB-INF/tenderNed/views/wizard/partyInfo.jsp">
+    <definition name="partyInfo" template="/WEB-INF/tenderned/views/wizard/partyInfo.jsp">
         <!-- field -->
         <put-attribute name="address" value="false"/>
         <put-attribute name="vatNumber" value="false"/>
@@ -103,19 +103,19 @@
     
     <!-- criteria structure -->
     
-    <definition name="topLevelCriteriaTemplate" template="/WEB-INF/tenderNed/views/criteriaTemplates/topLevelCriteriaTemplate.jsp">
+    <definition name="topLevelCriteriaTemplate" template="/WEB-INF/tenderned/views/criteriaTemplates/topLevelCriteriaTemplate.jsp">
     	<put-attribute name="disableTooltips" value="false"/>
     	<!-- topLevelCriteriaList -->
     </definition>
     
-    <definition name="euCriteriaListTemplate" template="/WEB-INF/tenderNed/views/criteriaTemplates/euCriteriaListTemplate.jsp">
+    <definition name="euCriteriaListTemplate" template="/WEB-INF/tenderned/views/criteriaTemplates/euCriteriaListTemplate.jsp">
     	<put-attribute name="disableTooltips" value="false"/>
     	<put-attribute name="tooltip_code" value=""/>
     </definition>
     
     <!-- exclusion -->
 
-    <definition name="checkTemplate" template="/WEB-INF/tenderNed/views/criteriaTemplates/checkTemplate.jsp">
+    <definition name="checkTemplate" template="/WEB-INF/tenderned/views/criteriaTemplates/checkTemplate.jsp">
         <put-attribute name="field" value=""/>
         <put-attribute name="title_code" value=""/>
         <put-attribute name="description_code" value=""/>
@@ -124,7 +124,7 @@
         <put-attribute name="is_disabled" value="false"/>
     </definition>
 
-    <definition name="formTemplate" template="/WEB-INF/tenderNed/views/criteriaTemplates/formTemplate.jsp">
+    <definition name="formTemplate" template="/WEB-INF/tenderned/views/criteriaTemplates/formTemplate.jsp">
 		<put-attribute name="field" value=""/>
 		<put-attribute name="checkExistanse" value="false"/>
 		<put-attribute name="has_your_answer" value="true"/>
@@ -160,10 +160,10 @@
     	<put-attribute name="breachOfObligations" value="true"/>
     </definition>
     
-    <definition name="selfCleaning" template="/WEB-INF/tenderNed/views/criteriaTemplates/exclusion/selfCleaning.jsp">
+    <definition name="selfCleaning" template="/WEB-INF/tenderned/views/criteriaTemplates/exclusion/selfCleaning.jsp">
     </definition>
 
-    <definition name="breachOfObligations" template="/WEB-INF/tenderNed/views/criteriaTemplates/exclusion/breachOfObligations.jsp">
+    <definition name="breachOfObligations" template="/WEB-INF/tenderned/views/criteriaTemplates/exclusion/breachOfObligations.jsp">
     </definition>
     
     <!-- ~ exclusion -->
@@ -201,10 +201,10 @@
         <put-attribute name="has_please_specify" value="false"/>
     </definition>
 
-    <definition name="multipleYearAmount" template="/WEB-INF/tenderNed/views/criteriaTemplates/selection/multipleYearAmount.jsp"><!-- field, lastYears --></definition>
-    <definition name="multipleYearNumber" template="/WEB-INF/tenderNed/views/criteriaTemplates/selection/multipleYearNumber.jsp"><!-- field, lastYears --></definition>
-    <definition name="multipleDescriptionRatio" template="/WEB-INF/tenderNed/views/criteriaTemplates/selection/multipleDescriptionRatio.jsp"><!-- field --></definition>
-    <definition name="multipleDescriptionAmountDateRecipients" template="/WEB-INF/tenderNed/views/criteriaTemplates/selection/multipleDescriptionAmountDateRecipients.jsp"><!-- field --></definition>
+    <definition name="multipleYearAmount" template="/WEB-INF/tenderned/views/criteriaTemplates/selection/multipleYearAmount.jsp"><!-- field, lastYears --></definition>
+    <definition name="multipleYearNumber" template="/WEB-INF/tenderned/views/criteriaTemplates/selection/multipleYearNumber.jsp"><!-- field, lastYears --></definition>
+    <definition name="multipleDescriptionRatio" template="/WEB-INF/tenderned/views/criteriaTemplates/selection/multipleDescriptionRatio.jsp"><!-- field --></definition>
+    <definition name="multipleDescriptionAmountDateRecipients" template="/WEB-INF/tenderned/views/criteriaTemplates/selection/multipleDescriptionAmountDateRecipients.jsp"><!-- field --></definition>
 
     <!-- ~ selection -->
     
@@ -229,21 +229,21 @@
     
     <!-- common -->
     
-    <definition name="currencies" template="/WEB-INF/tenderNed/views/criteriaTemplates/common/currencies.jsp">
+    <definition name="currencies" template="/WEB-INF/tenderned/views/criteriaTemplates/common/currencies.jsp">
     	<!-- currencyField -->
     	<put-attribute name="style" value=""/>
     </definition>
     
-    <definition name="availableElectronically" template="/WEB-INF/tenderNed/views/criteriaTemplates/common/availableElectronically.jsp">
+    <definition name="availableElectronically" template="/WEB-INF/tenderned/views/criteriaTemplates/common/availableElectronically.jsp">
     	<put-attribute name="field" value=""/>
     </definition>
 
-    <definition name="countries" template="/WEB-INF/tenderNed/views/criteriaTemplates/common/countries.jsp">
+    <definition name="countries" template="/WEB-INF/tenderned/views/criteriaTemplates/common/countries.jsp">
         <put-attribute name="field" value=""/>
         <put-attribute name="cssClass" value="form-control"/>
     </definition>
 
-    <definition name="footerButtons" template="/WEB-INF/tenderNed/views/criteriaTemplates/common/footerButtons.jsp">
+    <definition name="footerButtons" template="/WEB-INF/tenderned/views/criteriaTemplates/common/footerButtons.jsp">
         <put-attribute name="prevCode" value="previous"/>
         <put-attribute name="nextCode" value="next"/>
         <put-attribute name="prev" value=""/>

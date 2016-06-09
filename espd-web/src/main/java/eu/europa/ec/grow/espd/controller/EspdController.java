@@ -27,6 +27,7 @@ package eu.europa.ec.grow.espd.controller;
 import com.google.common.base.Optional;
 import eu.europa.ec.grow.espd.domain.EconomicOperatorImpl;
 import eu.europa.ec.grow.espd.domain.EspdDocument;
+import eu.europa.ec.grow.espd.domain.TenderNedData;
 import eu.europa.ec.grow.espd.domain.enums.other.Country;
 import eu.europa.ec.grow.espd.ted.TedRequest;
 import eu.europa.ec.grow.espd.ted.TedResponse;
@@ -82,6 +83,11 @@ class EspdController {
         return new EspdDocument();
     }
 
+    @ModelAttribute("tenderned")
+    public TenderNedData tenderNedData() {
+        return new TenderNedData();
+    }
+
     @RequestMapping("/")
     public String index() {
         return WELCOME_PAGE;
@@ -122,6 +128,42 @@ class EspdController {
         }
         return "filter";
     }
+
+    @RequestMapping(value = "/rest", method = POST)
+    public String tenderNedData(
+            @RequestParam("callbackURL") String callbackURL,
+            @RequestParam("accessToken") String accessToken,
+            @RequestParam("lang") String languageCode,
+            @RequestParam("agent") String agent,
+            @RequestParam("tedReceptionId") String receptionId,
+            @RequestParam("ojsNumber") String ojsNumber,
+            @RequestParam("authority.country") Country country,
+            @RequestParam("authority.name") String name,
+            @RequestParam("procedureTitle") String procedureTitle,
+            @RequestParam("procedureShortDesc") String procedureShortDescr,
+            @RequestParam("fileRefByCA") String fileRefByCa,
+            @RequestParam("noUpload") String noUpload,
+            @RequestParam("noMergeESPDs") String noMergeESPDs,
+            @ModelAttribute("espd") EspdDocument espd,
+            @ModelAttribute("tenderned") TenderNedData tenderNedData,
+            Model model,
+            BindingResult result) throws IOException {
+        //TODO if ca redirect to ca options
+//        if (agent.equals("ca")) {
+//        }
+        espd.getAuthority().setCountry(country);
+        espd.setTedReceptionId(receptionId);
+        espd.getAuthority().setName(name);
+        espd.setOjsNumber(ojsNumber);
+        espd.setProcedureTitle(procedureTitle);
+        espd.setProcedureShortDesc(procedureShortDescr);
+        tenderNedData.setAgent(agent);
+        tenderNedData.setTedReceptionId(receptionId);
+        model.addAttribute("tenderNedData", tenderNedData);
+        model.addAttribute("espd", espd);
+        return redirectToPage("filter");
+    }
+
 
     private String createNewRequestAsCA(Country country, EspdDocument document) {
         document.getAuthority().setCountry(country);

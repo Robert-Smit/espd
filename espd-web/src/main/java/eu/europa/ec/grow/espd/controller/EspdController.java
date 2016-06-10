@@ -59,7 +59,7 @@ import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @Controller
-@SessionAttributes("espd")
+@SessionAttributes(value = {"espd", "tenderned"})
 @Slf4j
 class EspdController {
 
@@ -157,9 +157,10 @@ class EspdController {
         espd.setOjsNumber(ojsNumber);
         espd.setProcedureTitle(procedureTitle);
         espd.setProcedureShortDesc(procedureShortDescr);
-        tenderNedData.setAgent(agent);
         tenderNedData.setTedReceptionId(receptionId);
-        model.addAttribute("tenderNedData", tenderNedData);
+        tenderNedData.setAgent(agent);
+        tenderNedData.setCountry(country.getI18nCode());
+        model.addAttribute("tenderned", tenderNedData);
         model.addAttribute("espd", espd);
         return redirectToPage("filter");
     }

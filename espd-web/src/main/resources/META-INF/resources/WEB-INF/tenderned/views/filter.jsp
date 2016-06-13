@@ -35,55 +35,49 @@
         var agent = "${tenderned.agent}";
         var country = "${tenderned.country}";
 
+        $('input.radiotab').click(function () {
+            $(this).tab('show');
+            document.getElementById($(this)).checked;
+        });
+
         if (agent == 'ca') {
             ca.checked = true;
             eo.style.color = '#C0C0C0';
             eo.disabled = true;
             $(ca).tab('show');
 
-            if ("${tenderned.noUpload}" == 'true') {
+
+            if ('${tenderned.noUpload}' == 'true') {
                 var caCreateRequest = document.getElementById('ca_create_espd_request');
                 caCreateRequest.checked = true;
                 $(caCreateRequest).tab('show');
                 document.getElementById('ca_reuse_espd_request').disabled = true;
                 document.getElementById('ca_review_espd_response').disabled = true;
             }
+            else {
+                var caReuseRequest = document.getElementById('ca_reuse_espd_request');
+                caReuseRequest.checked = true;
+                $(caReuseRequest).tab('show');
+                document.getElementById('ca_create_espd_request');
 
-        }
-//
-//
-//    var nextBtn = $('#nextBtn');
-//    $("*[name='agent']").click(function () {
-//        nextBtn.prop('disabled', true);
-//    	$('#tab-country-selection').removeClass('active');
-//    	$('#tab-single-upload').removeClass('active');
-//    	$('#tab-multiple-upload').removeClass('active');
-//    	$('.radioCa').removeAttr('checked');
-//    	$('[value="empty"]').prop('selected', true);
-//    	$("input:file").val('');
-//    });
-//	$("input:file").change(function (){
-//		if($(this).val() != '') {
-//			$('#tab-country-selection').addClass('active');
-//			nextBtn.prop('disabled', country.val() === '');
-//		}
-//	});
-//	country.change(function() {
-//    	nextBtn.prop('disabled', $(this).val() === '');
-//    });
-//    $("[name=action]").click(function () {
-//    	nextBtn.prop('disabled', country.val() === '');
-//    });
-//    nextBtn.prop('disabled', true);
+                var nextBtn = $('#nextBtn');
+                $("*[name='action']").click(function () {
+                    nextBtn.prop('disabled', true);
+                    $('#tab-country-selection').removeClass('active');
+                    $('#tab-single-upload').removeClass('active');
+                    $('#tab-multiple-upload').removeClass('active');
+                    $('[value="empty"]').prop('selected', true);
+                    $("input:file").val('');
+                });
+                $("input:file").change(function (){
+                    if($(this).val() != '') {
+                        $('#tab-country-selection').addClass('active');
+                        nextBtn.prop('disabled', country.val() === '');
+                    }
+            });
+        }}
     });
-
 </script>
-<%--<style>--%>
-<%--p {--%>
-<%--color: #949494--%>
-<%--}--%>
-<%--</style>--%>
-<%--<tiles:importAttribute name="agent"/>--%>
 <form:form id="espdform" role="form" class="form-horizontal" action="filter" method="post" commandName="espd" data-toggle="validator" enctype="multipart/form-data">
     <div class="panel-default">
     <tiles:insertDefinition name="progress">
@@ -109,10 +103,6 @@
         </ul>
     </div>
     <form:errors path="attachments" cssClass="errorContainer alert alert-danger"/>
-    <%--<input name="agent" value="${tenderned.agent}"/>--%>
-    <%--<tiles:insertDefinition name="whoAreYou">--%>
-    <%--<tiles:putAttribute name="agent" value="${tenderned.agent}"/>--%>
-    <%--</tiles:insertDefinition>--%>
     <div class="paragraph">
     <h3>
         <span data-i18n="filter_who_are_you"><s:message code='filter_who_are_you'/></span>
@@ -128,33 +118,45 @@
     </div>
     <div class="tab-content" >
     <div class="tab-pane" id="tab_ca">
-        <h3>${span18n['filter_what_you_do']}</h3>
-        <div class="row">
-            <div class="radio col-md-3">
-                <label><input id="ca_create_espd_request" name="action" value="ca_create_espd_request" class="radiotab radioCa" type="radio" data-target="#tab-country-selection"/>${span18n['filter_create_espd']}</label>
-                <span data-i18n="tooltip_ca_can_create_espd" data-toggle="tooltip" title="${i18n['tooltip_ca_can_create_espd']}"></span>
-            </div>
-            <div class="col-md-5">
-                <form:input path="tedReceptionId" id="tedReceptionId" cssClass="form-control small" data-i18n="filter_ted_reception_id_placeholder" placeholder="${i18n['filter_ted_reception_id_placeholder']}"/>
-            </div>
-            <div class="col-md-4" style="padding-left: 0px;padding-right: 5px">
-                <span data-i18n="tooltip_ted_reception_id" data-toggle="tooltip" title="${i18n['tooltip_ted_reception_id']}"></span>
-            </div>
-                <%--<div class="col-md-offset-3">&nbsp;</div>--%>
+    <h3>${span18n['filter_what_you_do']}</h3>
+    <div class="row">
+        <div class="radio col-md-3">
+            <label><input id="ca_create_espd_request" name="action" value="ca_create_espd_request" class="radiotab radioCa" type="radio" data-target="#tab-country-selection"/>${span18n['filter_create_espd']}</label>
+            <span data-i18n="tooltip_ca_can_create_espd" data-toggle="tooltip" title="${i18n['tooltip_ca_can_create_espd']}"></span>
         </div>
-        <div class="row">
-            <div class="radio col-md-3">
-                <label><input id="ca_reuse_espd_request" name="action" value="ca_reuse_espd_request" class="radiotab radioCa" type="radio" data-target="#tab-single-upload"/>${span18n['filter_reuse_espd']}</label>
-                <span data-i18n="tooltip_ca_can_import_espd" data-toggle="tooltip" title="${i18n['tooltip_ca_can_import_espd']}"></span>
-            </div>
-            <div class="col-md-offset-9"></div>
+        <div class="col-md-5">
+            <form:input path="tedReceptionId" id="tedReceptionId" cssClass="form-control small" data-i18n="filter_ted_reception_id_placeholder" placeholder="${i18n['filter_ted_reception_id_placeholder']}"/>
         </div>
-        <div class="row">
-            <div class="radio col-md-3">
-                <label><input id="ca_review_espd_response" name="action" value="ca_review_espd_response" class="radiotab radioCa" type="radio" data-target="#tab-single-upload"/>${span18n['filter_review_espd']}</label>
-                <span data-i18n="tooltip_review_espd" data-toggle="tooltip" title="${i18n['tooltip_review_espd']}"></span>
-            </div>
-            <div class="col-md-offset-9"></div>
+        <div class="col-md-4" style="padding-left: 0px;padding-right: 5px">
+            <span data-i18n="tooltip_ted_reception_id" data-toggle="tooltip" title="${i18n['tooltip_ted_reception_id']}"></span>
+        </div>
+            <%--<div class="col-md-offset-3">&nbsp;</div>--%>
+    </div>
+    <div class="row">
+        <div class="radio col-md-3">
+            <label><input id="ca_reuse_espd_request" name="action" value="ca_reuse_espd_request" class="radiotab radioCa" type="radio" data-target="#tab-single-upload"/>${span18n['filter_reuse_espd']}</label>
+            <span data-i18n="tooltip_ca_can_import_espd" data-toggle="tooltip" title="${i18n['tooltip_ca_can_import_espd']}"></span>
+        </div>
+        <div class="col-md-offset-9"></div>
+    </div>
+    <div class="row">
+    <div class="radio col-md-3">
+        <label><input id="ca_review_espd_response" name="action" value="ca_review_espd_response" class="radiotab radioCa" type="radio" data-target="#tab-single-upload"/>${span18n['filter_review_espd']}</label>
+        <span data-i18n="tooltip_review_espd" data-toggle="tooltip" title="${i18n['tooltip_review_espd']}"></span>
+    </div>
+    </div>
+    <div class="tab-content" >
+        <div class="tab-pane" id="tab-single-upload">
+            <h3 data-i18n="filter_upload_document"><s:message code='filter_upload_document'/></h3>
+            <s:message code="filter_upload_request_response"/>
+            <form:input type="file" path="attachments"/>
+        </div>
+        <div class="tab-pane" id="tab-multiple-upload">
+            <h3 data-i18n="filter_upload_documents"><s:message code='filter_upload_documents'/></h3>
+            <s:message code="filter_upload_request"/>
+            <form:input type="file" path="attachments"/>
+            <s:message code="filter_upload_response"/>
+            <form:input type="file" path="attachments"/>
         </div>
         <div class="tab-pane" id="tab-country-selection">
             <h3>${span18n['filter_where_are_you_from']}</h3>
@@ -172,44 +174,4 @@
         <tiles:putAttribute name="prev" value="/welcome"/>
         <tiles:putAttribute name="next" value="procedure"/>
     </tiles:insertDefinition>
-    <%--<div class="tab-pane" id="tab_eo">--%>
-    <%--<h3 data-i18n="filter_what_you_do"><s:message code='filter_what_you_do'/></h3>--%>
-    <%--<div class="radio">--%>
-    <%--<span class="k-button fa fa-upload hoverable"></span>--%>
-    <%--<label><input name="action" value="eo_import_espd" class="radiotab radioCa" type="radio" data-target="#tab-single-upload"/>${span18n['filter_import_espd']}</label>--%>
-    <%--<span data-i18n="tooltip_filter_eo_can_import_espd" data-toggle="tooltip" title="${i18n['tooltip_filter_eo_can_import_espd']}"></span>--%>
-    <%--</div>--%>
-    <%--<div class="radio">--%>
-    <%--<span class="k-button fa fa-upload hoverable"></span>--%>
-    <%--<label><input name="action" value="eo_merge_espds" class="radiotab radioCa" type="radio" data-target="#tab-multiple-upload"/>${span18n['filter_merge_espds']}</label>--%>
-    <%--<span data-i18n="tooltip_filter_eo_merge_espds" data-toggle="tooltip" title="${i18n['tooltip_filter_eo_merge_espds']}"></span>--%>
-    <%--</div>--%>
-    <%--</div>--%>
-    <%--</div>--%>
-    <%--<div class="tab-content" >--%>
-    <%--<div class="tab-pane" id="tab-single-upload">--%>
-    <%--<h3 data-i18n="filter_upload_document"><s:message code='filter_upload_document'/></h3>--%>
-    <%--<s:message code="filter_upload_request_response"/>--%>
-    <%--<form:input type="file" path="attachments"/>--%>
-    <%--</div>--%>
-    <%--<div class="tab-pane" id="tab-multiple-upload">--%>
-    <%--<h3 data-i18n="filter_upload_documents"><s:message code='filter_upload_documents'/></h3>--%>
-    <%--<s:message code="filter_upload_request"/>--%>
-    <%--<form:input type="file" path="attachments"/>--%>
-    <%--<s:message code="filter_upload_response"/>--%>
-    <%--<form:input type="file" path="attachments"/>--%>
-    <%--</div>--%>
-    <%--<div class="tab-pane" id="tab-country-selection">--%>
-    <%--<h3>${span18n['filter_where_are_you_from']}</h3>--%>
-    <%--<span data-i18n="filter_select_country"><s:message code='filter_select_country'/></span>--%>
-    <%--<tiles:insertDefinition name="countries">--%>
-    <%--<tiles:putAttribute name="field" value="${tenderned.country}"/>--%>
-    <%--<tiles:putAttribute name="cssClass" value=""/>--%>
-    <%--</tiles:insertDefinition>--%>
-    <%--</div>--%>
-    <%--</div>--%>
-    <%--</div>--%>
-    <%--</div>--%>
-    <%--<div class="form-group">--%>
-    <%--</div>--%>
 </form:form>

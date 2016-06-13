@@ -25,6 +25,8 @@ public class TenderNedData {
 
     private String agent;
 
+    private String nameUEArequest;
+
     private String tedReceptionId;
 
     @Setter(AccessLevel.NONE)
@@ -49,5 +51,10 @@ public class TenderNedData {
     public void setCountry(String countryIso) {
         this.country = Country.findByIsoCode(countryIso);
     }
+
+
+
+
+
 
 }

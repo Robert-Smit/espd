@@ -145,6 +145,8 @@ class EspdController {
             @RequestParam("fileRefByCA") String fileRefByCa,
             @RequestParam("noUpload") String noUpload,
             @RequestParam("noMergeESPDs") String noMergeESPDs,
+            @RequestPart MultipartFile attachment,
+            @ModelAttribute("espd") EspdDocument espd,
             @ModelAttribute("tenderned") TenderNedData tenderNedData,
             Model model) throws IOException {
 
@@ -159,6 +161,12 @@ class EspdController {
         party.setName(name);
         espd.setAuthority(party);
 
+        tenderNedData.setTedReceptionId(receptionId);
+        tenderNedData.setAgent(agent);
+        tenderNedData.setNameUEArequest(attachment.getOriginalFilename());
+
+
+        tenderNedData.setCountry(country.getI18nCode());
         model.addAttribute("tenderned", tenderNedData);
         model.addAttribute("espd", espd);
         return redirectToPage("filter?lang=" + languageCode);

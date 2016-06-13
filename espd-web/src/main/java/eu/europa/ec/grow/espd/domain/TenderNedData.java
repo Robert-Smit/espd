@@ -21,18 +21,33 @@ public class TenderNedData {
 
     private String accessToken;
 
-    private String languageCode;
+//    private Language language;
 
     private String agent;
+
+    private String tedReceptionId;
 
     @Setter(AccessLevel.NONE)
     private Country country;
 
-    private String tedReceptionId;
+    @Setter(AccessLevel.NONE)
+    private boolean noUpload;
 
-    private Boolean containsXml;
+    @Setter(AccessLevel.NONE)
+    private boolean noMergeESPDs;
 
-    public void setCountry(String countryCode) {
-        Country.findByIsoCode(countryCode);
+    private String name;
+
+    public void setNoUpload(String noUpload) {
+        this.noUpload = Boolean.parseBoolean(noUpload);
     }
+
+    public void setNoMergeESPDs(String noMergeESPDs) {
+        this.noMergeESPDs = Boolean.parseBoolean(noMergeESPDs);
+    }
+
+    public void setCountry(String countryIso) {
+        this.country = Country.findByIsoCode(countryIso);
+    }
+
 }

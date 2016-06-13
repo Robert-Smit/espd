@@ -26,7 +26,9 @@ package eu.europa.ec.grow.espd.domain;
 
 import eu.europa.ec.grow.espd.domain.enums.other.Country;
 import eu.europa.ec.grow.espd.domain.ubl.CacParty;
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Setter;
 
 /**
  * Created by vigi on 11/19/15:2:27 PM.
@@ -48,6 +50,7 @@ public class PartyImpl implements CacParty {
 
     private String city;
 
+    @Setter(AccessLevel.NONE)
     private Country country;
 
     private String contactName;
@@ -56,4 +59,11 @@ public class PartyImpl implements CacParty {
 
     private String contactPhone;
 
+    public void setCountry(String countryIso) {
+        this.country = Country.findByIsoCode(countryIso);
+    }
+
+    public void setCountry(Country country) {
+        this.country = country;
+    }
 }

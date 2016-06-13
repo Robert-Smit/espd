@@ -31,11 +31,12 @@
 
 <tiles:importAttribute name="field"/>
 <tiles:importAttribute name="cssClass"/>
+<tiles:importAttribute name="tendernedCountry"/>
 
 <form:select path="${field}" cssClass="${cssClass} optsorted">
     <optgroup label="EU">
         <c:forEach items="<%=Country.EU_COUNTRIES%>" var="cty">
-            <option data-i18n="${cty.i18nCode}" value="${cty}" ${(cty eq 'NETHERLANDS')? "selected='selected'":''}>
+            <option data-i18n="${cty.i18nCode}" value="${cty}" 4>
                 <s:message code="${cty.i18nCode}"/>
             </option>
         </c:forEach>

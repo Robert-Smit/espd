@@ -28,15 +28,19 @@
   ~ permissions and limitations under the Licence.
   ~
   --%>
+<script>
+    console.log(${field})
+</script>
 
 <tiles:importAttribute name="field"/>
 <tiles:importAttribute name="cssClass"/>
 <tiles:importAttribute name="tendernedCountry"/>
 
-<form:select path="${field}" cssClass="${cssClass} optsorted">
+<form:select name='country' path="${field}" cssClass="${cssClass} optsorted">
+    <form:option value="${null}" label="---"/>
     <optgroup label="EU">
         <c:forEach items="<%=Country.EU_COUNTRIES%>" var="cty">
-            <option data-i18n="${cty.i18nCode}" value="${cty}" 4>
+            <option  data-i18n="${cty.i18nCode}" value="${cty}">
                 <s:message code="${cty.i18nCode}"/>
             </option>
         </c:forEach>

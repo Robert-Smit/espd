@@ -119,14 +119,15 @@ class EspdController {
         if ("ca_create_espd_request".equals(action)) {
             return createNewRequestAsCA(country, document);
         } else if ("ca_reuse_espd_request".equals(action)) {
-            return reuseRequestAsCA(attachments.get(0), model, result);
+            return reuseRequestAsCa(document);
         } else if ("ca_review_espd_response".equals(action)) {
-            return reviewResponseAsCA(attachments.get(0), model, result);
-        } else if ("eo_import_espd".equals(action)) {
-            return importEspdAsEo(country, attachments.get(0), model, result);
-        } else if ("eo_merge_espds".equals(action)) {
-            return mergeTwoEspds(attachments, model, result);
+            return reuseRequestAsCa(document);
         }
+//        } else if ("eo_import_espd".equals(action)) {
+//            return importEspdAsEo(country, attachments.get(0), model, result);
+//        } else if ("eo_merge_espds".equals(action)) {
+//            return mergeTwoEspds(attachments, model, result);
+//        }
         return "filter";
     }
 
@@ -145,36 +146,38 @@ class EspdController {
             @RequestParam("fileRefByCA") String fileRefByCa,
             @RequestParam("noUpload") String noUpload,
             @RequestParam("noMergeESPDs") String noMergeESPDs,
-            @RequestPart MultipartFile attachment,
+            @RequestPart (required = false) MultipartFile attachment,
             @ModelAttribute("tenderned") TenderNedData tenderNedData,
-            Model model) throws IOException {
-
-        EspdDocument espd = new EspdDocument();
-        espd.setTedReceptionId(receptionId);
+            Model model,
+            BindingResult result) throws IOException {
         Country country = Country.findByIsoCode(countryIso);
-        espd.setOjsNumber(ojsNumber);
-        espd.setProcedureTitle(procedureTitle);
-        espd.setProcedureShortDesc(procedureShortDescr);
-        PartyImpl party = new PartyImpl();
-        party.setCountry(country);
-        party.setName(name);
-        espd.setAuthority(party);
-
-        tenderNedData.setTedReceptionId(receptionId);
-        tenderNedData.setAgent(agent);
-        tenderNedData.setNameUEArequest(attachment.getOriginalFilename());
-
-
-        tenderNedData.setCountry(country.getI18nCode());
-        model.addAttribute("tenderned", tenderNedData);
-        model.addAttribute("espd", espd);
+        EspdDocument espd = new EspdDocument();
+        if(!tenderNedData.isNoUpload()) {
+            reuseRequestAsCA(attachment, model, tenderNedData, result);
+        } else {
+            espd.setTedReceptionId(receptionId);
+            espd.setOjsNumber(ojsNumber);
+            espd.setProcedureTitle(procedureTitle);
+            espd.setProcedureShortDesc(procedureShortDescr);
+            PartyImpl party = new PartyImpl();
+            party.setCountry(country);
+            party.setName(name);
+            espd.setAuthority(party);
+            model.addAttribute("tenderned", tenderNedData);
+            model.addAttribute("espd", espd);
+        }
         return redirectToPage("filter?lang=" + languageCode);
     }
 
 
     private String createNewRequestAsCA(Country country, EspdDocument document) {
         document.getAuthority().setCountry(country);
+        //TODO change the information
         //copyTedInformation(document);
+        return redirectToPage(REQUEST_CA_PROCEDURE_PAGE);
+    }
+
+    private String reuseRequestAsCa(EspdDocument document) {
         return redirectToPage(REQUEST_CA_PROCEDURE_PAGE);
     }
 
@@ -200,6 +203,21 @@ class EspdController {
             }
         }
 
+        result.rejectValue("attachments", "espd_upload_request_error");
+        return "filter";
+    }
+
+    private String reuseRequestAsCA(MultipartFile attachment, Model model, TenderNedData tenderNedData,
+            BindingResult result) throws IOException {
+        try (InputStream is = attachment.getInputStream()) {
+            Optional<EspdDocument> espd = exchangeMarshaller.importEspdRequest(is);
+            if (espd.isPresent()) {
+                tenderNedData.setNameUEArequest(attachment.getOriginalFilename());
+                model.addAttribute("tenderned", tenderNedData);
+                model.addAttribute("espd", espd.get());
+                return redirectToPage("filter?lang=" + tenderNedData.getLang());
+            }
+        }
         result.rejectValue("attachments", "espd_upload_request_error");
         return "filter";
     }

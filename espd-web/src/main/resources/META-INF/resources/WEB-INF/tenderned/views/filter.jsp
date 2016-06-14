@@ -37,52 +37,48 @@
 
         $('input.radiotab').click(function () {
             $(this).tab('show');
-            document.getElementById($(this)).checked;
+            $(this).checked;
         });
 
         if (agent == 'ca') {
             ca.checked = true;
-            eo.style.color = '#C0C0C0';
             eo.disabled = true;
             $(ca).tab('show');
-
 
             if ('${tenderned.noUpload}' == 'true') {
                 var caCreateRequest = document.getElementById('ca_create_espd_request');
                 caCreateRequest.checked = true;
                 $(caCreateRequest).tab('show');
-                document.getElementById('ca_reuse_espd_request').disabled = true;
-                document.getElementById('ca_review_espd_response').disabled = true;
             }
             else {
                 var caReuseRequest = document.getElementById('ca_reuse_espd_request');
                 caReuseRequest.checked = true;
                 $(caReuseRequest).tab('show');
-                document.getElementById('ca_create_espd_request');
-        }}
-        else {
-                eo.checked = true;
-                ca.style.color = '#C0C0C0';
-                ca.disabled = true;
-                $(eo).tab('show');
-        }
-
-        var nextBtn = $('#nextBtn');
-        $("*[name='action']").click(function () {
-            nextBtn.prop('disabled', true);
-            $('#tab-country-selection').removeClass('active');
-            $('#tab-single-upload').removeClass('active');
-            $('#tab-multiple-upload').removeClass('active');
-            $('[value="empty"]').prop('selected', true);
-            $("input:file").val('');
-        });
-        $("input:file").change(function (){
-            if($(this).val() != '') {
-                $('#tab-country-selection').addClass('active');
-                nextBtn.prop('disabled', country.val() === '');
             }
-        });
-    });
+            var nextBtn = $('#nextBtn');
+            $(function () {
+                nextBtn.prop('disabled', true);
+                $('#tab-country-selection').removeClass('active');
+                $('#tab-single-upload').removeClass('active');
+                $('#tab-multiple-upload').removeClass('active');
+                $('.radioCa').removeAttr('checked');
+                $('[value="empty"]').prop('selected', true);
+                $("input:file").val('');
+            });
+            $("input:file").change(function (){
+                if($(this).val() != '') {
+                    $('#tab-country-selection').addClass('active');
+                    nextBtn.prop('disabled', country.val() === '');
+                }
+            });
+            country.change(function() {
+                nextBtn.prop('disabled', $(this).val() === '');
+            });
+            $("[name=action]").click(function () {
+                nextBtn.prop('disabled', country.val() === '');
+            });
+            nextBtn.prop('disabled', true);
+        }});
 </script>
 <form:form id="espdform" role="form" class="form-horizontal" action="filter" method="post" commandName="espd" data-toggle="validator" enctype="multipart/form-data">
     <div class="panel-default">
@@ -146,32 +142,34 @@
         <div class="col-md-offset-9"></div>
     </div>
     <div class="row">
-    <div class="radio col-md-3">
-        <label><input id="ca_review_espd_response" name="action" value="ca_review_espd_response" class="radiotab radioCa" type="radio" data-target="#tab-single-upload"/>${span18n['filter_review_espd']}</label>
-        <span data-i18n="tooltip_review_espd" data-toggle="tooltip" title="${i18n['tooltip_review_espd']}"></span>
-    </div>
+        <div class="radio col-md-3">
+            <label><input id="ca_review_espd_response" name="action" value="ca_review_espd_response" class="radiotab radioCa" type="radio" data-target="#tab-single-upload"/>${span18n['filter_review_espd']}</label>
+            <span data-i18n="tooltip_review_espd" data-toggle="tooltip" title="${i18n['tooltip_review_espd']}"></span>
+        </div>
     </div>
     <div class="tab-content" >
+        <%--<div class="tab-pane" id="tab-single-upload">--%>
+            <%--<h3 data-i18n="filter_upload_document"><s:message code='filter_upload_document'/></h3>--%>
+            <%--<s:message code="filter_upload_request_response"/>--%>
+            <%--<form:input type="file" path="attachments"/>--%>
+        <%--</div>--%>
         <div class="tab-pane" id="tab-single-upload">
             <h3 data-i18n="filter_upload_document"><s:message code='filter_upload_document'/></h3>
-            <s:message code="filter_upload_request_response"/>
-            <form:input type="file" path="attachments"/>
             <c:out value="Naam UEA aanvraag:"/>
             <c:out value="${tenderned.nameUEArequest}"/>
         </div>
-        <div class="tab-pane" id="tab-multiple-upload">
-            <h3 data-i18n="filter_upload_documents"><s:message code='filter_upload_documents'/></h3>
-            <s:message code="filter_upload_request"/>
-            <form:input type="file" path="attachments"/>
-            <s:message code="filter_upload_response"/>
-            <form:input type="file" path="attachments"/>
-        </div>
+        <%--<div class="tab-pane" id="tab-multiple-upload">--%>
+            <%--<h3 data-i18n="filter_upload_documents"><s:message code='filter_upload_documents'/></h3>--%>
+            <%--<s:message code="filter_upload_request"/>--%>
+            <%--<form:input type="file" path="attachments"/>--%>
+            <%--<s:message code="filter_upload_response"/>--%>
+            <%--<form:input type="file" path="attachments"/>--%>
+        <%--</div>--%>
         <div class="tab-pane" id="tab-country-selection">
             <h3>${span18n['filter_where_are_you_from']}</h3>
             <span data-i18n="filter_select_country"><s:message code='filter_select_country'/></span>
             <tiles:insertDefinition name="countries">
                 <tiles:putAttribute name="field" value="authority.country"/>
-                <tiles:putAttribute name="tendernedCountry" value="${tenderned.country}"/>
                 <tiles:putAttribute name="cssClass" value=""/>
             </tiles:insertDefinition>
         </div>

@@ -36,11 +36,11 @@
     </definition>
 
     <definition name="contact" extends="espdTemplate"><put-attribute name="body" value="/WEB-INF/tenderned/views/contact.jsp"/></definition>
-    <definition name="welcome" extends="espdTemplate"><put-attribute name="body" value="/WEB-INF/tenderned/views/filter.jsp"/></definition>
+    <definition name="welcome" extends="espdTemplate"><put-attribute name="body" value="/WEB-INF/tenderned/views/receiveTenderNedData.jsp"/></definition>
 	<definition name="filter" extends="espdTemplate"><put-attribute name="body" value="/WEB-INF/tenderned/views/filter.jsp"/></definition>
     <definition name="about" extends="espdTemplate"><put-attribute name="body" value="/WEB-INF/tenderned/views/about.jsp"/></definition>
     <definition name="error" extends="espdTemplate"><put-attribute name="body" value="/WEB-INF/tenderned/views/error.jsp"/></definition>
-    
+
     <!-- wizard -->
 
     <definition name="request_ca" extends="espdTemplate">
@@ -241,6 +241,7 @@
     <definition name="countries" template="/WEB-INF/tenderned/views/criteriaTemplates/common/countries.jsp">
         <put-attribute name="field" value=""/>
         <put-attribute name="cssClass" value="form-control"/>
+        <put-attribute name="tendernedCountry" value=""/>
     </definition>
 
     <definition name="footerButtons" template="/WEB-INF/tenderned/views/criteriaTemplates/common/footerButtons.jsp">
@@ -250,7 +251,5 @@
         <put-attribute name="next" value=""/>
         <put-attribute name="print" value="false"/>
     </definition>
-
-    <!-- ~ common-->
 
 </tiles-definitions>

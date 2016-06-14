@@ -4,9 +4,11 @@
 package eu.europa.ec.grow.espd.domain;
 
 import eu.europa.ec.grow.espd.domain.enums.other.Country;
+import eu.europa.ec.grow.espd.domain.enums.other.Language;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * espd - Description.
@@ -21,11 +23,14 @@ public class TenderNedData {
 
     private String accessToken;
 
-//    private Language language;
-
     private String agent;
 
+    @Setter(AccessLevel.NONE)
+    private Language lang;
+
     private String nameUEArequest;
+
+    private MultipartFile attachment;
 
     private String tedReceptionId;
 
@@ -52,9 +57,8 @@ public class TenderNedData {
         this.country = Country.findByIsoCode(countryIso);
     }
 
-
-
-
-
+    public void setLang(String lang) {
+        this.lang = Language.getByLanguageCode(lang);
+    }
 
 }

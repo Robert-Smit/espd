@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="s" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="tiles" uri="http://tiles.apache.org/tags-tiles" %>
@@ -29,7 +29,7 @@
   ~
   --%>
 <script>
-    $(function () {
+    $(function() {
         var ca = document.getElementById("whoareyou_ca");
         var eo = document.getElementById("whoareyou_eo");
         var agent = "${tenderned.agent}";
@@ -59,28 +59,32 @@
                 caReuseRequest.checked = true;
                 $(caReuseRequest).tab('show');
                 document.getElementById('ca_create_espd_request');
-
-                var nextBtn = $('#nextBtn');
-                $("*[name='action']").click(function () {
-                    nextBtn.prop('disabled', true);
-                    $('#tab-country-selection').removeClass('active');
-                    $('#tab-single-upload').removeClass('active');
-                    $('#tab-multiple-upload').removeClass('active');
-                    $('[value="empty"]').prop('selected', true);
-                    $("input:file").val('');
-                });
-                $("input:file").change(function () {
-                    if ($(this).val() != '') {
-                        $('#tab-country-selection').addClass('active');
-                        nextBtn.prop('disabled', country.val() === '');
-                    }
-                });
-            }
+        }}
+        else {
+                eo.checked = true;
+                ca.style.color = '#C0C0C0';
+                ca.disabled = true;
+                $(eo).tab('show');
         }
+
+        var nextBtn = $('#nextBtn');
+        $("*[name='action']").click(function () {
+            nextBtn.prop('disabled', true);
+            $('#tab-country-selection').removeClass('active');
+            $('#tab-single-upload').removeClass('active');
+            $('#tab-multiple-upload').removeClass('active');
+            $('[value="empty"]').prop('selected', true);
+            $("input:file").val('');
+        });
+        $("input:file").change(function (){
+            if($(this).val() != '') {
+                $('#tab-country-selection').addClass('active');
+                nextBtn.prop('disabled', country.val() === '');
+            }
+        });
     });
 </script>
-<form:form id="espdform" role="form" class="form-horizontal" action="filter" method="post" commandName="espd" data-toggle="validator"
-           enctype="multipart/form-data">
+<form:form id="espdform" role="form" class="form-horizontal" action="filter" method="post" commandName="espd" data-toggle="validator" enctype="multipart/form-data">
     <div class="panel-default">
     <tiles:insertDefinition name="progress">
         <tiles:putAttribute name="start" value="true"/>
@@ -95,10 +99,8 @@
                 <div id="filter_text">${span18n['filter_alert']}</div>
                 <div id="filter_faq">
                     <s:message var="click_here" code="click_here"/>
-                    <c:set var="hereLink"
-                           value="<a id='here_link' href='http://ec.europa.eu/growth/single-market/public-procurement/e-procurement/espd/index_en.htm'>${click_here}</a>"/>
-                    <c:set var="faqLinkHref"
-                           value="http://ec.europa.eu/DocsRoom/documents/16002/attachments/1/translations/${pageContext.response.locale}/renditions/native"/>
+                    <c:set var="hereLink" value="<a id='here_link' href='http://ec.europa.eu/growth/single-market/public-procurement/e-procurement/espd/index_en.htm'>${click_here}</a>"/>
+                    <c:set var="faqLinkHref" value="http://ec.europa.eu/DocsRoom/documents/16002/attachments/1/translations/${pageContext.response.locale}/renditions/native"/>
                     <s:message var="faqLeaflet" code="faq_leaflet"/>
                     <c:set var="faqLink" value="<a id='faq_link' href='${faqLinkHref}'>${faqLeaflet}</a>"/>
                     <s:message code="faq_text" arguments="${hereLink},${faqLink}"/>
@@ -125,13 +127,11 @@
     <h3>${span18n['filter_what_you_do']}</h3>
     <div class="row">
         <div class="radio col-md-3">
-            <label><input id="ca_create_espd_request" name="action" value="ca_create_espd_request" class="radiotab radioCa" type="radio"
-                          data-target="#tab-country-selection"/>${span18n['filter_create_espd']}</label>
+            <label><input id="ca_create_espd_request" name="action" value="ca_create_espd_request" class="radiotab radioCa" type="radio" data-target="#tab-country-selection"/>${span18n['filter_create_espd']}</label>
             <span data-i18n="tooltip_ca_can_create_espd" data-toggle="tooltip" title="${i18n['tooltip_ca_can_create_espd']}"></span>
         </div>
         <div class="col-md-5">
-            <form:input path="tedReceptionId" id="tedReceptionId" cssClass="form-control small" data-i18n="filter_ted_reception_id_placeholder"
-                        placeholder="${i18n['filter_ted_reception_id_placeholder']}"/>
+            <form:input path="tedReceptionId" id="tedReceptionId" cssClass="form-control small" data-i18n="filter_ted_reception_id_placeholder" placeholder="${i18n['filter_ted_reception_id_placeholder']}"/>
         </div>
         <div class="col-md-4" style="padding-left: 0px;padding-right: 5px">
             <span data-i18n="tooltip_ted_reception_id" data-toggle="tooltip" title="${i18n['tooltip_ted_reception_id']}"></span>
@@ -140,20 +140,18 @@
     </div>
     <div class="row">
         <div class="radio col-md-3">
-            <label><input id="ca_reuse_espd_request" name="action" value="ca_reuse_espd_request" class="radiotab radioCa" type="radio"
-                          data-target="#tab-single-upload"/>${span18n['filter_reuse_espd']}</label>
+            <label><input id="ca_reuse_espd_request" name="action" value="ca_reuse_espd_request" class="radiotab radioCa" type="radio" data-target="#tab-single-upload"/>${span18n['filter_reuse_espd']}</label>
             <span data-i18n="tooltip_ca_can_import_espd" data-toggle="tooltip" title="${i18n['tooltip_ca_can_import_espd']}"></span>
         </div>
         <div class="col-md-offset-9"></div>
     </div>
     <div class="row">
-        <div class="radio col-md-3">
-            <label><input id="ca_review_espd_response" name="action" value="ca_review_espd_response" class="radiotab radioCa" type="radio"
-                          data-target="#tab-single-upload"/>${span18n['filter_review_espd']}</label>
-            <span data-i18n="tooltip_review_espd" data-toggle="tooltip" title="${i18n['tooltip_review_espd']}"></span>
-        </div>
+    <div class="radio col-md-3">
+        <label><input id="ca_review_espd_response" name="action" value="ca_review_espd_response" class="radiotab radioCa" type="radio" data-target="#tab-single-upload"/>${span18n['filter_review_espd']}</label>
+        <span data-i18n="tooltip_review_espd" data-toggle="tooltip" title="${i18n['tooltip_review_espd']}"></span>
     </div>
-    <div class="tab-content">
+    </div>
+    <div class="tab-content" >
         <div class="tab-pane" id="tab-single-upload">
             <h3 data-i18n="filter_upload_document"><s:message code='filter_upload_document'/></h3>
             <s:message code="filter_upload_request_response"/>

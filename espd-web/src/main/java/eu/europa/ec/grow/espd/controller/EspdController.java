@@ -146,7 +146,6 @@ class EspdController {
             @RequestParam("noUpload") String noUpload,
             @RequestParam("noMergeESPDs") String noMergeESPDs,
             @RequestPart MultipartFile attachment,
-            @ModelAttribute("espd") EspdDocument espd,
             @ModelAttribute("tenderned") TenderNedData tenderNedData,
             Model model) throws IOException {
 

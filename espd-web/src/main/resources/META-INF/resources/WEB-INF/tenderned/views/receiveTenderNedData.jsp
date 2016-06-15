@@ -41,7 +41,7 @@
         <input type="text" name="fileRefByCA" value="referenceca">
         <input type="text" name="noUpload" value="true">
         <input type="text" name="noMergeESPDs" value="true">
-        <input type="file" name="attachment" path="attachment"/>
+        <%--<input type="file" name="attachment" path="attachment"/>--%>
         <input type="submit" name="submit">
         <div class="form-group">
         </div>

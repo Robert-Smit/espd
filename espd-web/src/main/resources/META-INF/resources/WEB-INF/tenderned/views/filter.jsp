@@ -1,3 +1,4 @@
+<%@ page import="eu.europa.ec.grow.espd.domain.enums.other.Country" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="s" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
@@ -33,7 +34,7 @@
         var ca = document.getElementById("whoareyou_ca");
         var eo = document.getElementById("whoareyou_eo");
         var agent = "${tenderned.agent}";
-        var country = "${tenderned.country}";
+        var country = "authority.country";
 
         $('input.radiotab').click(function () {
             $(this).tab('show');
@@ -45,15 +46,19 @@
             eo.disabled = true;
             $(ca).tab('show');
 
-            if ('${tenderned.noUpload}' == 'true') {
+            //Activate this code when XML is send to ESPD via TenderNed.
+            <%--if ('${tenderned.noUpload}' == 'true') {--%>
                 var caCreateRequest = document.getElementById('ca_create_espd_request');
                 caCreateRequest.checked = true;
                 $(caCreateRequest).tab('show');
-            }
-            else {
-                var caReuseRequest = document.getElementById('ca_reuse_espd_request');
-                caReuseRequest.checked = true;
-                $(caReuseRequest).tab('show');
+            <%--}--%>
+            <%--else {--%>
+
+//                var caReuseRequest = document.getElementById('ca_reuse_espd_request');
+//                caReuseRequest.checked = true;
+//                $(caReuseRequest).tab('show');
+                document.getElementById('ca_reuse_espd_request').disabled = true;
+                document.getElementById('ca_review_espd_response').disabled = true;
             }
             var nextBtn = $('#nextBtn');
             $(function () {
@@ -78,7 +83,7 @@
                 nextBtn.prop('disabled', country.val() === '');
             });
             nextBtn.prop('disabled', true);
-        }});
+        });
 </script>
 <form:form id="espdform" role="form" class="form-horizontal" action="filter" method="post" commandName="espd" data-toggle="validator" enctype="multipart/form-data">
     <div class="panel-default">
@@ -168,10 +173,22 @@
         <div class="tab-pane" id="tab-country-selection">
             <h3>${span18n['filter_where_are_you_from']}</h3>
             <span data-i18n="filter_select_country"><s:message code='filter_select_country'/></span>
-            <tiles:insertDefinition name="countries">
-                <tiles:putAttribute name="field" value="authority.country"/>
-                <tiles:putAttribute name="cssClass" value=""/>
-            </tiles:insertDefinition>
+
+            <form:select name='${tenderned.country}' path="authority.country" cssClass="${cssClass} optsorted">
+            <optgroup label="EU">
+                <c:forEach items="<%=Country.EU_COUNTRIES%>" var="cty">
+                    <option  data-i18n="${cty.i18nCode}" value="${cty}" ${tenderned.country == cty ? "selected = 'selected'" : ''}>
+                        <s:message code="${cty.i18nCode}"/>
+                    </option>
+                </c:forEach>
+            </optgroup>
+            <optgroup label="EFTA">
+                <c:forEach items="<%=Country.EFTA_COUNTRIES%>" var="cty">
+                    <option data-i18n="${cty.i18nCode}" value="${cty}" ${tenderned.country == cty ? "selected = 'selected'" : ''}>
+                    <s:message code="${cty.i18nCode}"/></option>
+                </c:forEach>
+            </optgroup>
+            </form:select>
         </div>
     </div>
     <div class="form-group">

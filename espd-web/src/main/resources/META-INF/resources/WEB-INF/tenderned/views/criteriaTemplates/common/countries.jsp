@@ -34,7 +34,6 @@
 
 <tiles:importAttribute name="field"/>
 <tiles:importAttribute name="cssClass"/>
-<tiles:importAttribute name="tendernedCountry"/>
 
 <form:select name='country' path="${field}" cssClass="${cssClass} optsorted">
     <form:option value="${null}" label="---"/>

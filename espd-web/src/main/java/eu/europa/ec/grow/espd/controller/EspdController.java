@@ -133,26 +133,26 @@ class EspdController {
 
     @RequestMapping(value = "/rest", method = POST)
     public String tenderNedData(
-            @RequestParam("callbackURL") String callbackURL,
-            @RequestParam("accessToken") String accessToken,
-            @RequestParam("lang") String languageCode,
-            @RequestParam("agent") String agent,
-            @RequestParam("tedReceptionId") String receptionId,
-            @RequestParam("ojsNumber") String ojsNumber,
-            @RequestParam("country") String countryIso,
-            @RequestParam("name") String name,
-            @RequestParam("procedureTitle") String procedureTitle,
-            @RequestParam("procedureShortDesc") String procedureShortDescr,
-            @RequestParam("fileRefByCA") String fileRefByCa,
-            @RequestParam("noUpload") String noUpload,
-            @RequestParam("noMergeESPDs") String noMergeESPDs,
+            @RequestParam(value = "callbackURL", required = false) String callbackURL,
+            @RequestParam(value = "accessToken", required = false) String accessToken,
+            @RequestParam(value = "lang") String languageCode,
+            @RequestParam(value = "agent", required = true) String agent,
+            @RequestParam(value = "tedReceptionId") String receptionId,
+            @RequestParam(value = "ojsNumber", required = false) String ojsNumber,
+            @RequestParam(value = "country", required = false) String countryIso,
+            @RequestParam(value = "name", required = false) String name,
+            @RequestParam(value = "procedureTitle", required = false) String procedureTitle,
+            @RequestParam(value = "procedureShortDesc", required = false) String procedureShortDescr,
+            @RequestParam(value = "fileRefByCA", required = false) String fileRefByCa,
+            @RequestParam(value = "noUpload", required = false) String noUpload,
+            @RequestParam(value = "noMergeESPDs", required = false) String noMergeESPDs,
             @RequestPart (required = false) MultipartFile attachment,
             @ModelAttribute("tenderned") TenderNedData tenderNedData,
             Model model,
             BindingResult result) throws IOException {
         Country country = Country.findByIsoCode(countryIso);
         EspdDocument espd = new EspdDocument();
-        if(!tenderNedData.isNoUpload()) {
+        if(attachment != null) {
             reuseRequestAsCA(attachment, model, tenderNedData, result);
         } else {
             espd.setTedReceptionId(receptionId);

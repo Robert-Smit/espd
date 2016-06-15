@@ -165,6 +165,7 @@ class EspdController {
             espd.setAuthority(party);
             model.addAttribute("tenderned", tenderNedData);
             model.addAttribute("espd", espd);
+            model.addAttribute("authority.country", country);
         }
         return redirectToPage("filter?lang=" + languageCode);
     }

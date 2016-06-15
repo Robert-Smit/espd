@@ -170,25 +170,14 @@
             <%--<s:message code="filter_upload_response"/>--%>
             <%--<form:input type="file" path="attachments"/>--%>
         <%--</div>--%>
-        <div class="tab-pane" id="tab-country-selection">
-            <h3>${span18n['filter_where_are_you_from']}</h3>
-            <span data-i18n="filter_select_country"><s:message code='filter_select_country'/></span>
-
-            <form:select name="country" path="authority.country" cssClass="${cssClass} optsorted">
-            <optgroup label="EU">
-                <c:forEach items="<%=Country.EU_COUNTRIES%>" var="cty">
-                    <option  data-i18n="${cty.i18nCode}" value="${cty}" ${tenderned.country == cty ? "selected = 'selected'" : ''}>
-                        <s:message code="${cty.i18nCode}"/>
-                    </option>
-                </c:forEach>
-            </optgroup>
-            <optgroup label="EFTA">
-                <c:forEach items="<%=Country.EFTA_COUNTRIES%>" var="cty">
-                    <option data-i18n="${cty.i18nCode}" value="${cty}" ${tenderned.country == cty ? "selected = 'selected'" : ''}>
-                    <s:message code="${cty.i18nCode}"/></option>
-                </c:forEach>
-            </optgroup>
-            </form:select>
+            <div class="tab-pane" id="tab-country-selection">
+                <h3>${span18n['filter_where_are_you_from']}</h3>
+                <span data-i18n="filter_select_country"><s:message code='filter_select_country'/></span>
+                <tiles:insertDefinition name="countries">
+                    <tiles:putAttribute name="field" value="authority.country"/>
+                    <tiles:putAttribute name="cssClass" value=""/>
+                </tiles:insertDefinition>
+            </div>
         </div>
     </div>
     <div class="form-group">

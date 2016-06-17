@@ -48,7 +48,7 @@
             <c:if test="${prevUrl}">
                 <div class="btn-group" role="group">
                     <a id="prevAnchor" class="btn btn-default btn-lg" href="${pageContext.request.contextPath}${prev}" role="button">
-                        <i class="fa fa-arrow-circle-o-left"></i> <span data-i18n="${prevCode}"><s:message code="${prevCode}"/></span>
+                        <i class="fa fa-arrow-circle-o-left"></i><span data-i18n="${prevCode}"><s:message code="${prevCode}"/></span>
                     </a>
                 </div>
             </c:if>
@@ -61,21 +61,21 @@
             <c:if test="${print}">
                 <div class="btn-group" role="group">
                     <button id="printBtn" type="submit" class="btn btn-default btn-lg" name="print" value="true">
-                        <i class="fa fa-print"></i><span data-i18n="print"><s:message code="print"/></span>
+                        <i class="fa fa-file-text-o"></i> <span data-i18n="print"><s:message code="print"/></span>
                     </button>
                 </div>
             </c:if>
             <c:if test="${!nextUrl}">
                 <div class="btn-group" role="group">
                     <button id="nextBtn" type="submit" class="btn btn-default btn-lg" name="next" value="${next}">
-                        <i class="fa fa-arrow-circle-o-right"></i> <span data-i18n="${nextCode}"><s:message code="${nextCode}"/></span>
+                        <i class="${next != 'generate' ? 'fa fa-arrow-circle-o-right' : 'fa fa-floppy-o'}"></i> <span data-i18n="${nextCode}"><s:message code="${nextCode}"/></span>
                     </button>
                 </div>
             </c:if>
             <c:if test="${nextUrl}">
                 <div class="btn-group" role="group">
                     <a id="nextAnchor" class="btn btn-default btn-lg" href="${pageContext.request.contextPath}${next}" role="button">
-                        <i class="fa fa-arrow-circle-o-right"></i> <span data-i18n="${nextCode}"><s:message code="${nextCode}"/></span>
+                        <i class="${next != 'generate' ? 'fa fa-arrow-circle-o-right' : 'fa fa-floppy-o'}"></i> <span data-i18n="${nextCode}"><s:message code="${nextCode}"/></span>
                     </a>
                 </div>
             </c:if>

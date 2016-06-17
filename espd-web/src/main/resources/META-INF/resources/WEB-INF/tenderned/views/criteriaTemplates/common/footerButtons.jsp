@@ -48,7 +48,7 @@
             <c:if test="${prevUrl}">
                 <div class="btn-group" role="group">
                     <a id="prevAnchor" class="btn btn-default btn-lg" href="${pageContext.request.contextPath}${prev}" role="button">
-                        <i class="fa fa-arrow-circle-o-left"></i><span data-i18n="${prevCode}"><s:message code="${prevCode}"/></span>
+                        <i class="fa fa-arrow-circle-o-left"></i> <span data-i18n="${prevCode}"><s:message code="${prevCode}"/></span>
                     </a>
                 </div>
             </c:if>

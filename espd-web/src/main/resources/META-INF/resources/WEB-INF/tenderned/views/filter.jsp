@@ -146,12 +146,12 @@
         </div>
         <div class="col-md-offset-9"></div>
     </div>
-    <div class="row">
-        <div class="radio col-md-3">
-            <label><input id="ca_review_espd_response" name="action" value="ca_review_espd_response" class="radiotab radioCa" type="radio" data-target="#tab-single-upload"/>${span18n['filter_review_espd']}</label>
-            <span data-i18n="tooltip_review_espd" data-toggle="tooltip" title="${i18n['tooltip_review_espd']}"></span>
-        </div>
-    </div>
+<%--    <div class="row">--%>
+<%--        <div class="radio col-md-3">--%>
+<%--            <label><input id="ca_review_espd_response" name="action" value="ca_review_espd_response" class="radiotab radioCa" type="radio" data-target="#tab-single-upload"/>${span18n['filter_review_espd']}</label>--%>
+<%--            <span data-i18n="tooltip_review_espd" data-toggle="tooltip" title="${i18n['tooltip_review_espd']}"></span>--%>
+<%--        </div>--%>
+<%--    </div>--%>
     <div class="tab-content" >
         <%--<div class="tab-pane" id="tab-single-upload">--%>
             <%--<h3 data-i18n="filter_upload_document"><s:message code='filter_upload_document'/></h3>--%>

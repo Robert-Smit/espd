@@ -3,7 +3,6 @@
  */
 package eu.europa.ec.grow.espd.domain;
 
-import eu.europa.ec.grow.espd.domain.enums.other.Country;
 import eu.europa.ec.grow.espd.domain.enums.other.Language;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -19,6 +18,8 @@ import org.springframework.web.multipart.MultipartFile;
 @Data
 public class TenderNedData {
 
+    private String uploadURL;
+
     private String callbackURL;
 
     private String accessToken;
@@ -30,12 +31,7 @@ public class TenderNedData {
 
     private String nameUEArequest;
 
-    private MultipartFile attachment;
-
-    private String tedReceptionId;
-
-    @Setter(AccessLevel.NONE)
-    private Country country;
+    private MultipartFile xml;
 
     @Setter(AccessLevel.NONE)
     private boolean noUpload;
@@ -51,10 +47,6 @@ public class TenderNedData {
 
     public void setNoMergeESPDs(String noMergeESPDs) {
         this.noMergeESPDs = Boolean.parseBoolean(noMergeESPDs);
-    }
-
-    public void setCountry(String countryIso) {
-        this.country = Country.findByIsoCode(countryIso);
     }
 
     public void setLang(String lang) {

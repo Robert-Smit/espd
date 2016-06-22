@@ -28,9 +28,6 @@
   ~ permissions and limitations under the Licence.
   ~
   --%>
-<script>
-    console.log(${field})
-</script>
 
 <tiles:importAttribute name="field"/>
 <tiles:importAttribute name="cssClass"/>

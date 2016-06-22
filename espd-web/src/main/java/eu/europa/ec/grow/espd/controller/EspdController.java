@@ -48,6 +48,7 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
@@ -114,6 +115,7 @@ class EspdController {
             @RequestParam String action,
             @RequestPart List<MultipartFile> attachments,
             @ModelAttribute("espd") EspdDocument document,
+            @ModelAttribute("tenderned") TenderNedData tenderNedData,
             Model model,
             BindingResult result) throws IOException {
         if ("ca_create_espd_request".equals(action)) {
@@ -133,11 +135,12 @@ class EspdController {
 
     @RequestMapping(value = "/rest", method = POST)
     public String tenderNedData(
+            @RequestParam(value = "uploadURL", required = false) String uploadURL,
             @RequestParam(value = "callbackURL", required = false) String callbackURL,
             @RequestParam(value = "accessToken", required = false) String accessToken,
-            @RequestParam(value = "lang") String languageCode,
+            @RequestParam(value = "lang") String lang,
             @RequestParam(value = "agent", required = true) String agent,
-            @RequestParam(value = "tedReceptionId") String receptionId,
+            @RequestParam(value = "tedReceptionId", required = false) String receptionId,
             @RequestParam(value = "ojsNumber", required = false) String ojsNumber,
             @RequestParam(value = "country", required = false) String countryIso,
             @RequestParam(value = "name", required = false) String name,
@@ -150,7 +153,7 @@ class EspdController {
             @ModelAttribute("tenderned") TenderNedData tenderNedData,
             Model model,
             BindingResult result) throws IOException {
-        Country country = Country.findByIsoCode(countryIso);
+
         EspdDocument espd = new EspdDocument();
         if(attachment != null) {
             reuseRequestAsCA(attachment, model, tenderNedData, result);
@@ -159,15 +162,17 @@ class EspdController {
             espd.setOjsNumber(ojsNumber);
             espd.setProcedureTitle(procedureTitle);
             espd.setProcedureShortDesc(procedureShortDescr);
+
+            Country country = Country.findByIsoCode(countryIso);
             PartyImpl party = new PartyImpl();
-            party.setCountry(country);
             party.setName(name);
+            party.setCountry(country);
             espd.setAuthority(party);
             model.addAttribute("tenderned", tenderNedData);
             model.addAttribute("espd", espd);
             model.addAttribute("authority.country", country);
         }
-        return redirectToPage("filter?lang=" + languageCode);
+        return redirectToPage("filter?" + "lang=" + lang);
     }
 
 
@@ -286,7 +291,9 @@ class EspdController {
             @PathVariable String flow,
             @PathVariable String agent,
             @PathVariable String step,
-            @ModelAttribute("espd") EspdDocument espd) {
+            @ModelAttribute("espd") EspdDocument espd,
+            @ModelAttribute("tenderned") TenderNedData tenderNedData
+    ) {
         return flow + "_" + agent + "_" + step;
     }
 
@@ -297,38 +304,49 @@ class EspdController {
             @PathVariable String step,
             @RequestParam String prev,
             @ModelAttribute("espd") EspdDocument espd,
+            @ModelAttribute("tenderned") TenderNedData tenderNedData,
             BindingResult bindingResult) {
         return bindingResult.hasErrors() ?
                 flow + "_" + agent + "_" + step : redirectToPage(flow + "/" + agent + "/" + prev);
     }
 
 
-    @RequestMapping(value = "/{flow:request|response}/{agent:ca|eo}/{step:procedure|exclusion|selection|finish}", method = POST, params = "print")
+    @RequestMapping(value = "/{flow:request|response}/{agent:ca|eo}/{step:procedure|exclusion|selection|finish|print}", method = POST, params = "print")
     public String print(
             @PathVariable String flow,
             @PathVariable String agent,
             @PathVariable String step,
             @RequestParam String print,
             @ModelAttribute("espd") EspdDocument espd,
+            @ModelAttribute("tenderned") TenderNedData tenderNedData,
             BindingResult bindingResult) {
         return bindingResult.hasErrors() ?
                 flow + "_" + agent + "_" + step : redirectToPage(flow + "/" + agent + "/print");
     }
     
-    @RequestMapping(value = "/{flow:request|response}/{agent:ca|eo}/{step:procedure|exclusion|selection|finish|generate|print}", method = POST, params = "next")
+    @RequestMapping(value = "/{flow:request|response}/{agent:ca|eo}/{step:procedure|exclusion|selection|finish|generate|print|sendtotenderned}", method = POST, params = "next")
     public String next(
             @PathVariable String flow,
             @PathVariable String agent,
             @PathVariable String step,
             @RequestParam String next,
             @ModelAttribute("espd") EspdDocument espd,
+            @ModelAttribute("tenderned") TenderNedData tenderNedData,
             HttpServletResponse response,
             BindingResult bindingResult) throws IOException {
         if (bindingResult.hasErrors()) {
             return flow + "_" + agent + "_" + step;
         }
-
-        if (!"generate".equals(next)) {
+        if ("sendtotenderned".equals(next)) {
+            try {
+                sendTenderNedData(agent, espd, tenderNedData, response);
+                return redirectToPage(flow + "/" + agent + "/" + "finish");
+            } catch (IOException e) {
+                throw new RuntimeException("Error", e);
+            } catch (Exception e) {
+                throw new RuntimeException("Error", e);
+            }
+        } else if (!"generate".equals(next)) {
             return redirectToPage(flow + "/" + agent + "/" + next);
         }
 
@@ -354,6 +372,15 @@ class EspdController {
             }
             response.setHeader(HttpHeaders.CONTENT_LENGTH, String.valueOf(out.getByteCount()));
             out.flush();
+        }
+    }
+
+
+    public void sendTenderNedData(String agent, EspdDocument espd, TenderNedData tnData, HttpServletResponse response) throws Exception {
+        File file = new File("testXML.xml");
+        if ("ca".equals(agent)) {
+            exchangeMarshaller.generateEspdRequestCa(espd, file);
+            ClientMultipartFormPost.sendPostToTN(file, tnData);
         }
     }
 

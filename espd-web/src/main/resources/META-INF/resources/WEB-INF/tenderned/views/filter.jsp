@@ -58,7 +58,6 @@
 //                caReuseRequest.checked = true;
 //                $(caReuseRequest).tab('show');
                 document.getElementById('ca_reuse_espd_request').disabled = true;
-                document.getElementById('ca_review_espd_response').disabled = true;
             }
             var nextBtn = $('#nextBtn');
             $(function () {
@@ -183,7 +182,6 @@
     <div class="form-group">
     </div>
     <tiles:insertDefinition name="footerButtons">
-        <tiles:putAttribute name="prev" value="/welcome"/>
         <tiles:putAttribute name="next" value="procedure"/>
     </tiles:insertDefinition>
 </form:form>

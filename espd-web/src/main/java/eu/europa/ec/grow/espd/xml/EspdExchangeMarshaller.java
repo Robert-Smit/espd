@@ -105,13 +105,27 @@ public class EspdExchangeMarshaller {
         jaxb2Marshaller.marshal(espdRequestObjectFactory.createESPDRequest(espdRequestType), result);
     }
 
-    /**
-     * Create a {@link ESPDResponseType} from the provided {@link EspdDocument} and marshals it
-     * to the output stream.
-     *
-     * @param espdDocument The ESPD document that will be written out
-     * @param out          The place where the XML representation will be written out
-     */
+    public File generateEspdRequestCa(EspdDocument espdDocument, File file) throws IOException {
+        ESPDRequestType espdRequestType = toEspdRequestTransformer.buildRequestType(espdDocument);
+        StreamResult result = new StreamResult(file);
+        jaxb2Marshaller.marshal(espdRequestObjectFactory.createESPDRequest(espdRequestType), result);
+        FileOutputStream fop = new FileOutputStream(file);
+        byte[] contentInBytes = result.toString().getBytes();
+
+        fop.write(contentInBytes);
+        fop.flush();
+        fop.close();
+
+        return file;
+    }
+
+        /**
+         * Create a {@link ESPDResponseType} from the provided {@link EspdDocument} and marshals it
+         * to the output stream.
+         *
+         * @param espdDocument The ESPD document that will be written out
+         * @param out          The place where the XML representation will be written out
+         */
     public void generateEspdResponse(EspdDocument espdDocument, OutputStream out) {
         ESPDResponseType espdResponseType = toEspdResponseTransformer.buildResponseType(espdDocument);
         StreamResult result = new StreamResult(out);

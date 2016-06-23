@@ -5,17 +5,13 @@ package eu.europa.ec.grow.espd.controller;
 
 import eu.europa.ec.grow.espd.domain.TenderNedData;
 import org.apache.http.HttpEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
-import org.apache.http.entity.mime.content.FileBody;
-import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
+import org.joda.time.DateTime;
 
-import java.io.File;
 import java.io.IOException;
 
 /**
@@ -49,53 +45,20 @@ import java.io.IOException;
  */
 public class ClientMultipartFormPost {
 
+    public void sendPosttoTN(byte[] xml, TenderNedData tnData) throws IOException {
 
-//    public void sendData(File file) throws Exception {
+        CloseableHttpClient httpClient = HttpClients.createDefault();
+        HttpPost uploadFile = new HttpPost("http://localhost:8080/espd-mock/upload");
 
-    public static void sendPostToTN(File xml, TenderNedData tnData) throws IOException {
-        CloseableHttpClient httpclient = HttpClients.createDefault();
+        HttpEntity entity = MultipartEntityBuilder.create()
+                .addBinaryBody("xml", xml)
+//                .addBinaryBody("pdf", pdf)
+                .addTextBody("accessToken", tnData.getAccessToken())
+                .addTextBody("time", DateTime.now().toString("yyyyMMddHHmmss"))
+                .build();
 
-        try {
-            HttpPost httppost = new HttpPost(
-                    "http://localhost:9191/httpmock/upload");
-            httppost.addHeader("Content-type", "multipart/form-data;boundary=---------------------------sdjkahdj294919323195");
-            httppost.addHeader("Content-type", "multipart/form-data");
-            FileBody fileBodyXML = new FileBody(xml, ContentType.MULTIPART_FORM_DATA);
-//            FileBody fileBodyPDF = new FileBody(pdf, ContentType.APPLICATION_ATOM_XML);
-//            StringBody accessToken = new StringBody(tnData.getAccessToken(), ContentType.TEXT_PLAIN);
-            StringBody accessToken = new StringBody("Lalala", ContentType.TEXT_PLAIN);
-
-
-            HttpEntity reqEntity = MultipartEntityBuilder.create()
-                    .addPart("xml", fileBodyXML)
-//                    .addPart("pdf", fileBodyPDF)
-                    .addPart("accessToken", accessToken)
-                    //TODO time
-                    .addPart("time", new StringBody("time"))
-//                    .addPart("security", new StringBody("security"))
-                    .build();
-            System.out.println(reqEntity);
-
-            httppost.addHeader("Location", "http://localhost:9191/httpmock/upload");
-            httppost.setEntity(reqEntity);
-            System.out.println("executing request " + httppost.getRequestLine());
-            CloseableHttpResponse response = httpclient.execute(httppost);
-            try {
-                System.out.println("----------------------------------------");
-                System.out.println(response.getStatusLine());
-                HttpEntity resEntity = response.getEntity();
-                if (resEntity != null) {
-                    System.out.println("Response content length: " + resEntity.getContentLength());
-                } else {
-                    throw new IOException("Request is not OK");
-                }
-                EntityUtils.consume(resEntity);
-            } finally
-            {
-                response.close();
-            }
-        } finally {
-            httpclient.close();
-        }
+        uploadFile.setEntity(entity);
+        HttpResponse response = httpClient.execute(uploadFile);
     }
+
 }

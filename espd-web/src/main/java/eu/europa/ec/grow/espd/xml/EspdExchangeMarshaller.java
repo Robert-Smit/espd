@@ -39,6 +39,7 @@ import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.stereotype.Component;
 
 import javax.xml.bind.JAXBElement;
+import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import java.io.*;
@@ -105,18 +106,21 @@ public class EspdExchangeMarshaller {
         jaxb2Marshaller.marshal(espdRequestObjectFactory.createESPDRequest(espdRequestType), result);
     }
 
-    public File generateEspdRequestCa(EspdDocument espdDocument, File file) throws IOException {
+    /**
+     * //TODO add javadoc
+     * @param espdDocument
+     * @return
+     * @throws IOException
+     * @throws TransformerConfigurationException
+     */
+    public byte[] generateEspdRequestCa(EspdDocument espdDocument) throws IOException, TransformerConfigurationException {
         ESPDRequestType espdRequestType = toEspdRequestTransformer.buildRequestType(espdDocument);
-        StreamResult result = new StreamResult(file);
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        StreamResult result = new StreamResult(os);
         jaxb2Marshaller.marshal(espdRequestObjectFactory.createESPDRequest(espdRequestType), result);
-        FileOutputStream fop = new FileOutputStream(file);
-        byte[] contentInBytes = result.toString().getBytes();
+        String xmlReq = result.getOutputStream().toString();
 
-        fop.write(contentInBytes);
-        fop.flush();
-        fop.close();
-
-        return file;
+        return xmlReq.getBytes();
     }
 
         /**

@@ -48,9 +48,7 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -149,19 +147,20 @@ class EspdController {
             @RequestParam(value = "fileRefByCA", required = false) String fileRefByCa,
             @RequestParam(value = "noUpload", required = false) String noUpload,
             @RequestParam(value = "noMergeESPDs", required = false) String noMergeESPDs,
-            @RequestPart (required = false) MultipartFile attachment,
+//            @RequestPart (value="xml", required = false) MultipartFile attachment,
             @ModelAttribute("tenderned") TenderNedData tenderNedData,
             Model model,
             BindingResult result) throws IOException {
 
         EspdDocument espd = new EspdDocument();
-        if(attachment != null) {
-            reuseRequestAsCA(attachment, model, tenderNedData, result);
-        } else {
+//        if ("true".equals(noUpload)) {
+//            reuseRequestAsCA(attachment, model, tenderNedData, result);
+//        } else {
             espd.setTedReceptionId(receptionId);
             espd.setOjsNumber(ojsNumber);
             espd.setProcedureTitle(procedureTitle);
             espd.setProcedureShortDesc(procedureShortDescr);
+            espd.setFileRefByCA(fileRefByCa);
 
             Country country = Country.findByIsoCode(countryIso);
             PartyImpl party = new PartyImpl();
@@ -171,8 +170,7 @@ class EspdController {
             model.addAttribute("tenderned", tenderNedData);
             model.addAttribute("espd", espd);
             model.addAttribute("authority.country", country);
-        }
-        return redirectToPage("filter?" + "lang=" + lang);
+        return redirectToPage("filter");
     }
 
 
@@ -377,10 +375,10 @@ class EspdController {
 
 
     public void sendTenderNedData(String agent, EspdDocument espd, TenderNedData tnData, HttpServletResponse response) throws Exception {
-        File file = new File("testXML.xml");
         if ("ca".equals(agent)) {
-            exchangeMarshaller.generateEspdRequestCa(espd, file);
-            ClientMultipartFormPost.sendPostToTN(file, tnData);
+            byte[] xmlString = exchangeMarshaller.generateEspdRequestCa(espd);
+            ClientMultipartFormPost formPost = new ClientMultipartFormPost();
+            formPost.sendPosttoTN(xmlString, tnData);
         }
     }
 

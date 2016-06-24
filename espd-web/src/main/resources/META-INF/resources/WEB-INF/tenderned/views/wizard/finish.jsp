@@ -111,7 +111,7 @@
         <tiles:insertDefinition name="footerButtons">
             <tiles:putAttribute name="nextCode" value="export"/>
             <tiles:putAttribute name="prev" value="selection"/>
-            <tiles:putAttribute name="next" value="generate"/>
+            <tiles:putAttribute name="next" value="sendtotenderned"/>
             <tiles:putAttribute name="print" value="${true}"/>
         </tiles:insertDefinition>
 	</div>

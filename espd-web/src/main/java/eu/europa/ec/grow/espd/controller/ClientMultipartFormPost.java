@@ -45,7 +45,9 @@ import java.io.IOException;
  */
 public class ClientMultipartFormPost {
 
-    public void sendPosttoTN(byte[] xml, TenderNedData tnData) throws IOException {
+    String isError = "0";
+
+    public void sendPosttoTN(byte[] xml, TenderNedData tnData) {
 
         CloseableHttpClient httpClient = HttpClients.createDefault();
         HttpPost uploadFile = new HttpPost("http://localhost:8080/espd-mock/upload");
@@ -58,7 +60,13 @@ public class ClientMultipartFormPost {
                 .build();
 
         uploadFile.setEntity(entity);
-        HttpResponse response = httpClient.execute(uploadFile);
+
+        try {
+            HttpResponse response = httpClient.execute(uploadFile);
+            System.out.println(response.getStatusLine());
+        } catch (IOException e){
+            isError = "2";
+        }
     }
 
 }

@@ -36,7 +36,7 @@
     </definition>
 
     <definition name="contact" extends="espdTemplate"><put-attribute name="body" value="/WEB-INF/tenderned/views/contact.jsp"/></definition>
-    <definition name="welcome" extends="espdTemplate"><put-attribute name="body" value="/WEB-INF/tenderned/views/filter.jsp"/></definition>
+    <!--<definition name="welcome" extends="espdTemplate"><put-attribute name="body" value="/WEB-INF/tenderned/views/filter.jsp"/></definition>-->
 	<definition name="filter" extends="espdTemplate"><put-attribute name="body" value="/WEB-INF/tenderned/views/filter.jsp"/></definition>
     <definition name="about" extends="espdTemplate"><put-attribute name="body" value="/WEB-INF/tenderned/views/about.jsp"/></definition>
     <definition name="error" extends="espdTemplate"><put-attribute name="body" value="/WEB-INF/tenderned/views/error.jsp"/></definition>

@@ -33,6 +33,7 @@ import eu.europa.ec.grow.espd.domain.enums.other.Country;
 import eu.europa.ec.grow.espd.ted.TedRequest;
 import eu.europa.ec.grow.espd.ted.TedResponse;
 import eu.europa.ec.grow.espd.ted.TedService;
+import eu.europa.ec.grow.espd.util.TenderNedUtils;
 import eu.europa.ec.grow.espd.xml.EspdExchangeMarshaller;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.output.CountingOutputStream;
@@ -107,7 +108,7 @@ class EspdController {
         }
     }
 
-    @RequestMapping(value = "/filter", params = "action", method = POST)
+    @RequestMapping(value = "/filterESPD", params = "action", method = POST)
     public String whoAreYouScreen(
             @RequestParam("authority.country") Country country,
             @RequestParam String action,
@@ -118,11 +119,12 @@ class EspdController {
             BindingResult result) throws IOException {
         if ("ca_create_espd_request".equals(action)) {
             return createNewRequestAsCA(country, document);
-        } else if ("ca_reuse_espd_request".equals(action)) {
-            return reuseRequestAsCa(document);
-        } else if ("ca_review_espd_response".equals(action)) {
-            return reuseRequestAsCa(document);
         }
+//        else if ("ca_reuse_espd_request".equals(action)) {
+//            return reuseRequestAsCa(document);
+//        } else if ("ca_review_espd_response".equals(action)) {
+//            return reuseRequestAsCa(document);
+//        }
 //        } else if ("eo_import_espd".equals(action)) {
 //            return importEspdAsEo(country, attachments.get(0), model, result);
 //        } else if ("eo_merge_espds".equals(action)) {
@@ -171,13 +173,13 @@ class EspdController {
             model.addAttribute("espd", espd);
             model.addAttribute("authority.country", country);
         return redirectToPage("filter");
+
+//        return redirectToPage("filter?lang=" + lang);
     }
 
 
     private String createNewRequestAsCA(Country country, EspdDocument document) {
         document.getAuthority().setCountry(country);
-        //TODO change the information
-        //copyTedInformation(document);
         return redirectToPage(REQUEST_CA_PROCEDURE_PAGE);
     }
 
@@ -219,7 +221,7 @@ class EspdController {
                 tenderNedData.setNameUEArequest(attachment.getOriginalFilename());
                 model.addAttribute("tenderned", tenderNedData);
                 model.addAttribute("espd", espd.get());
-                return redirectToPage("filter?lang=" + tenderNedData.getLang());
+                return redirectToPage("filter");
             }
         }
         result.rejectValue("attachments", "espd_upload_request_error");
@@ -338,7 +340,10 @@ class EspdController {
         if ("sendtotenderned".equals(next)) {
             try {
                 sendTenderNedData(agent, espd, tenderNedData, response);
-                return redirectToPage(flow + "/" + agent + "/" + "finish");
+                //TODO add errorcode
+                String parameters = TenderNedUtils
+                        .createGetString(tenderNedData.getAccessToken(), "0");
+                return redirectToTN(tenderNedData.getCallbackURL(), parameters);
             } catch (IOException e) {
                 throw new RuntimeException("Error", e);
             } catch (Exception e) {
@@ -355,6 +360,10 @@ class EspdController {
 
     private static String redirectToPage(String pageName) {
         return "redirect:/" + pageName;
+    }
+
+    private static String redirectToTN(String callbackUrl, String parameters) {
+        return "redirect:" + callbackUrl + parameters;
     }
 
     private void downloadEspdFile(@PathVariable String agent, @ModelAttribute("espd") EspdDocument espd,

@@ -34,7 +34,7 @@ public class TenderNedData {
     @Setter(AccessLevel.NONE)
     private boolean noMergeESPDs;
 
-    private String name;
+    private String errorCode;
 
     public void setNoUpload(String noUpload) {
         this.noUpload = Boolean.parseBoolean(noUpload);

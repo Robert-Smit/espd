@@ -38,6 +38,7 @@
 <div class="hidden-print">
     <div class="col-md-offset-3 col-md-6 hidden-print">
         <div class="btn-group btn-group-justified" role="group">
+            <c:if test="${!prev == 'hidden'}">
             <c:if test="${!prevUrl}">
                 <div class="btn-group" role="group">
                     <button id="prevBtn" type="submit" class="btn btn-default btn-lg" name="prev" value="${prev}">
@@ -51,7 +52,7 @@
                         <i class="fa fa-arrow-circle-o-left"></i> <span data-i18n="${prevCode}"><s:message code="${prevCode}"/></span>
                     </a>
                 </div>
-            </c:if>
+            </c:if></c:if>
             <div class="btn-group" role="group">
                 <a class="btn btn-default btn-lg" href="${pageContext.request.contextPath}/welcome" role="button">
                     <i class="fa fa-times-circle"></i>

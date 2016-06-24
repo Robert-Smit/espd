@@ -6,6 +6,7 @@ package eu.europa.ec.grow.espd.controller;
 import eu.europa.ec.grow.espd.domain.TenderNedData;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -45,9 +46,9 @@ import java.io.IOException;
  */
 public class ClientMultipartFormPost {
 
-    String isError = "0";
+    String errorCode = "1";
 
-    public void sendPosttoTN(byte[] xml, TenderNedData tnData) {
+    public String sendPosttoTN(byte[] xml, TenderNedData tnData) throws IOException {
 
         CloseableHttpClient httpClient = HttpClients.createDefault();
         HttpPost uploadFile = new HttpPost("http://localhost:8080/espd-mock/upload");
@@ -61,12 +62,14 @@ public class ClientMultipartFormPost {
 
         uploadFile.setEntity(entity);
 
-        try {
-            HttpResponse response = httpClient.execute(uploadFile);
-            System.out.println(response.getStatusLine());
-        } catch (IOException e){
-            isError = "2";
+
+        HttpResponse response = httpClient.execute(uploadFile);
+        final int statusCode = response.getStatusLine().getStatusCode();
+        if(statusCode == HttpStatus.SC_OK) {
+            errorCode = "0";
         }
+        System.out.println(response.getStatusLine());
+        return errorCode;
     }
 
 }

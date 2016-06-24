@@ -340,9 +340,8 @@ class EspdController {
         if ("sendtotenderned".equals(next)) {
             try {
                 sendTenderNedData(agent, espd, tenderNedData, response);
-                //TODO add errorcode
                 String parameters = TenderNedUtils
-                        .createGetString(tenderNedData.getAccessToken(), "0");
+                        .createGetString(tenderNedData.getAccessToken(), tenderNedData.getErrorCode());
                 return redirectToTN(tenderNedData.getCallbackURL(), parameters);
             } catch (IOException e) {
                 throw new RuntimeException("Error", e);
@@ -387,7 +386,7 @@ class EspdController {
         if ("ca".equals(agent)) {
             byte[] xmlString = exchangeMarshaller.generateEspdRequestCa(espd);
             ClientMultipartFormPost formPost = new ClientMultipartFormPost();
-            formPost.sendPosttoTN(xmlString, tnData);
+            tnData.setErrorCode(formPost.sendPosttoTN(xmlString, tnData));
         }
     }
 

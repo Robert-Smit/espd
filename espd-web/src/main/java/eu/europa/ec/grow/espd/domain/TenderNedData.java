@@ -6,6 +6,7 @@ package eu.europa.ec.grow.espd.domain;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * espd - Description.
@@ -26,7 +27,7 @@ public class TenderNedData {
 
     private String nameUEArequest;
 
-//    private MultipartFile xml;
+    private MultipartFile xml;
 
     @Setter(AccessLevel.NONE)
     private boolean noUpload;

@@ -35,10 +35,14 @@
 
 <c:set var="prevUrl" value="${fn:startsWith(prev,'/')}"/>
 <c:set var="nextUrl" value="${fn:startsWith(next,'/')}"/>
+
+<script>var prev = "${prev}";
+    console.log(prev == 'hidden');
+</script>
 <div class="hidden-print">
 <div class="col-md-offset-3 col-md-6 hidden-print">
 <div class="btn-group btn-group-justified" role="group">
-<c:if test="${!prev == 'hidden'}">
+    <c:if test="${prev != 'hidden'}">
     <c:if test="${!prevUrl}">
         <div class="btn-group" role="group">
             <button id="prevBtn" type="submit" class="btn btn-default btn-lg" name="prev" value="${prev}">

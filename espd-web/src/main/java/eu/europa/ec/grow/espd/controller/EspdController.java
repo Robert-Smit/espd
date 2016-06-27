@@ -149,15 +149,15 @@ class EspdController {
             @RequestParam(value = "fileRefByCA", required = false) String fileRefByCa,
             @RequestParam(value = "noUpload", required = false) String noUpload,
             @RequestParam(value = "noMergeESPDs", required = false) String noMergeESPDs,
-//            @RequestPart (value="xml", required = false) MultipartFile attachment,
+            @RequestPart (value="xml", required = false) MultipartFile attachment,
             @ModelAttribute("tenderned") TenderNedData tenderNedData,
             Model model,
             BindingResult result) throws IOException {
 
         EspdDocument espd = new EspdDocument();
-//        if ("true".equals(noUpload)) {
-//            reuseRequestAsCA(attachment, model, tenderNedData, result);
-//        } else {
+        if ("true".equals(noUpload)) {
+            reuseRequestAsCA(attachment, model, tenderNedData, result);
+        } else {
             espd.setTedReceptionId(receptionId);
             espd.setOjsNumber(ojsNumber);
             espd.setProcedureTitle(procedureTitle);
@@ -172,9 +172,9 @@ class EspdController {
             model.addAttribute("tenderned", tenderNedData);
             model.addAttribute("espd", espd);
             model.addAttribute("authority.country", country);
+            return redirectToPage("filter");
+        }
         return redirectToPage("filter");
-
-//        return redirectToPage("filter?lang=" + lang);
     }
 
 

@@ -150,15 +150,15 @@ class EspdController {
             @RequestParam(value = "fileRefByCA", required = false) String fileRefByCa,
             @RequestParam(value = "noUpload", required = false) String noUpload,
             @RequestParam(value = "noMergeESPDs", required = false) String noMergeESPDs,
-            @RequestPart (value="xml", required = false) MultipartFile attachment,
+            @RequestPart (value="xml", required = false) String attachment,
             @ModelAttribute("tenderned") TenderNedData tenderNedData,
             Model model,
             BindingResult result) throws IOException {
 
         EspdDocument espd = new EspdDocument();
-        if ("true".equals(noUpload)) {
-            reuseRequestAsCA(attachment, model, tenderNedData, result);
-        } else {
+//        if ("true".equals(noUpload)) {
+//            reuseRequestAsCA(attachment, model, tenderNedData, result);
+//        } else {
             espd.setTedReceptionId(receptionId);
             espd.setOjsNumber(ojsNumber);
             espd.setProcedureTitle(procedureTitle);
@@ -174,8 +174,8 @@ class EspdController {
             model.addAttribute("espd", espd);
             model.addAttribute("authority.country", country);
             return redirectToPage("filter");
-        }
-        return redirectToPage("filter");
+//        }
+//        return redirectToPage("filter");
     }
 
 
@@ -214,20 +214,20 @@ class EspdController {
         return "filter";
     }
 
-    private String reuseRequestAsCA(MultipartFile attachment, Model model, TenderNedData tenderNedData,
-            BindingResult result) throws IOException {
-        try (InputStream is = attachment.getInputStream()) {
-            Optional<EspdDocument> espd = exchangeMarshaller.importEspdRequest(is);
-            if (espd.isPresent()) {
-                tenderNedData.setNameUEArequest(attachment.getOriginalFilename());
-                model.addAttribute("tenderned", tenderNedData);
-                model.addAttribute("espd", espd.get());
-                return redirectToPage("filter");
-            }
-        }
-        result.rejectValue("attachments", "espd_upload_request_error");
-        return "filter";
-    }
+//    private String reuseRequestAsCA(String attachment, Model model, TenderNedData tenderNedData,
+//            BindingResult result) throws IOException {
+//        try (InputStream is = attachment.getInputStream()) {
+//            Optional<EspdDocument> espd = exchangeMarshaller.importEspdRequest(is);
+//            if (espd.isPresent()) {
+//                tenderNedData.setNameUEArequest(attachment.getOriginalFilename());
+//                model.addAttribute("tenderned", tenderNedData);
+//                model.addAttribute("espd", espd.get());
+//                return redirectToPage("filter");
+//            }
+//        }
+//        result.rejectValue("attachments", "espd_upload_request_error");
+//        return "filter";
+//    }
 
     private String reviewResponseAsCA(MultipartFile attachment, Model model,
             BindingResult result) throws IOException {

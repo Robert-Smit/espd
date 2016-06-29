@@ -42,7 +42,12 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.StringWriter;
 
 /**
  * Class that can perform XML marshalling and unmarshalling from {@link ESPDRequestType} and {@link ESPDResponseType}
@@ -107,13 +112,13 @@ public class EspdExchangeMarshaller {
     }
 
     /**
-     * //TODO add javadoc
-     * @param espdDocument
-     * @return
+     * Method used for creating a xml file of the ESPD document
+     * @param espdDocument is a {@link EspdDocument} object
+     * @return a byte[]
      * @throws IOException
      * @throws TransformerConfigurationException
      */
-    public byte[] generateEspdRequestCa(EspdDocument espdDocument) throws IOException, TransformerConfigurationException {
+    public byte[] generateEspdRequestCa(EspdDocument espdDocument) throws TransformerConfigurationException {
         ESPDRequestType espdRequestType = toEspdRequestTransformer.buildRequestType(espdDocument);
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         StreamResult result = new StreamResult(os);

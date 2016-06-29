@@ -49,7 +49,8 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -341,7 +342,7 @@ class EspdController {
             try {
                 sendTenderNedData(agent, espd, tenderNedData, response);
                 String parameters = TenderNedUtils
-                        .createGetString(tenderNedData.getAccessToken(), tenderNedData.getErrorCode());
+                        .createGetUrl(tenderNedData.getAccessToken(), tenderNedData.getErrorCode());
                 return redirectToTN(tenderNedData.getCallbackURL(), parameters);
             } catch (IOException e) {
                 throw new RuntimeException("Error", e);
@@ -380,7 +381,6 @@ class EspdController {
             out.flush();
         }
     }
-
 
     public void sendTenderNedData(String agent, EspdDocument espd, TenderNedData tnData, HttpServletResponse response) throws Exception {
         if ("ca".equals(agent)) {

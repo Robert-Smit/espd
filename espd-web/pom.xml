@@ -326,11 +326,6 @@
                     <artifactId>tomcat-embed-el</artifactId>
                     <scope>provided</scope>
                 </dependency>
-                <dependency>
-                    <groupId>org.mock-server</groupId>
-                    <artifactId>mockserver-netty</artifactId>
-                    <version>RELEASE</version>
-                </dependency>
             </dependencies>
         </profile>
     </profiles>

@@ -24,8 +24,7 @@ public class TenderNedData {
 
     private String agent;
 
-    private String nameUEArequest;
-
+    @Setter(AccessLevel.NONE)
     private String xml;
 
     @Setter(AccessLevel.NONE)
@@ -42,6 +41,14 @@ public class TenderNedData {
 
     public void setNoMergeESPDs(String noMergeESPDs) {
         this.noMergeESPDs = Boolean.parseBoolean(noMergeESPDs);
+    }
+
+    public void setXml(String xml) {
+        if("".equals(xml)) {
+            this.xml = null;
+        } else {
+            this.xml = xml;
+        }
     }
 
 }

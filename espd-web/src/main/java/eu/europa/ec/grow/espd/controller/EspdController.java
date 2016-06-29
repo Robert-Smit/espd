@@ -36,6 +36,7 @@ import eu.europa.ec.grow.espd.ted.TedService;
 import eu.europa.ec.grow.espd.util.TenderNedUtils;
 import eu.europa.ec.grow.espd.xml.EspdExchangeMarshaller;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.output.CountingOutputStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -49,6 +50,7 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
@@ -150,15 +152,16 @@ class EspdController {
             @RequestParam(value = "fileRefByCA", required = false) String fileRefByCa,
             @RequestParam(value = "noUpload", required = false) String noUpload,
             @RequestParam(value = "noMergeESPDs", required = false) String noMergeESPDs,
-            @RequestPart (value="xml", required = false) String attachment,
+            @RequestPart (value="xml", required = false) String xml,
             @ModelAttribute("tenderned") TenderNedData tenderNedData,
             Model model,
             BindingResult result) throws IOException {
 
         EspdDocument espd = new EspdDocument();
-//        if ("true".equals(noUpload)) {
-//            reuseRequestAsCA(attachment, model, tenderNedData, result);
-//        } else {
+        System.out.println((tenderNedData.getXml() != null));
+        if (tenderNedData.getXml() != null) {
+            reuseRequestAsCA(xml, model, result);
+        } else {
             espd.setTedReceptionId(receptionId);
             espd.setOjsNumber(ojsNumber);
             espd.setProcedureTitle(procedureTitle);
@@ -174,8 +177,8 @@ class EspdController {
             model.addAttribute("espd", espd);
             model.addAttribute("authority.country", country);
             return redirectToPage("filter");
-//        }
-//        return redirectToPage("filter");
+        }
+        return redirectToPage("filter");
     }
 
 
@@ -200,9 +203,10 @@ class EspdController {
         document.setTedUrl(notice.getTedUrl());
     }
 
-    private String reuseRequestAsCA(MultipartFile attachment, Model model,
+    private String reuseRequestAsCA(String attachment, Model model,
             BindingResult result) throws IOException {
-        try (InputStream is = attachment.getInputStream()) {
+        byte[] xmlBytes = Base64.decodeBase64(attachment);
+        try (InputStream is = new ByteArrayInputStream(xmlBytes)) {
             Optional<EspdDocument> espd = exchangeMarshaller.importEspdRequest(is);
             if (espd.isPresent()) {
                 model.addAttribute("espd", espd.get());

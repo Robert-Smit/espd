@@ -13,8 +13,8 @@ import org.joda.time.DateTime;
  */
 public class TenderNedUtils {
 
-    public static String createGetString(String accessToken, String errorCode) {
-        String time = DateTime.now().toString("yyyyMddHHmmss");
+    public static String createGetUrl(String accessToken, String errorCode) {
+        String time = DateTime.now().toString("yyyyMMddHHmmss");
         String getParameters = "";
 
         return getParameters.concat("?a=")

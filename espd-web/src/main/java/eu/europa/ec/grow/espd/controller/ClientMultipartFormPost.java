@@ -14,6 +14,9 @@ import org.apache.http.impl.client.HttpClients;
 import org.joda.time.DateTime;
 
 import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Date;
 
 /**
  * espd - Description.
@@ -47,17 +50,20 @@ import java.io.IOException;
 public class ClientMultipartFormPost {
 
     String errorCode = "1";
+    private static String SHARED_ESPD_PASSWORD = "password";
 
     public String sendPosttoTN(byte[] xml, TenderNedData tnData) throws IOException {
 
         CloseableHttpClient httpClient = HttpClients.createDefault();
         HttpPost uploadFile = new HttpPost("http://localhost:8080/espd-mock/upload");
 
+        String time =DateTime.now().toString("yyyyMMddHHmmss");
         HttpEntity entity = MultipartEntityBuilder.create()
                 .addBinaryBody("xml", xml)
 //                .addBinaryBody("pdf", pdf)
                 .addTextBody("accessToken", tnData.getAccessToken())
-                .addTextBody("time", DateTime.now().toString("yyyyMMddHHmmss"))
+                .addTextBody("time", time)
+                .addTextBody("securityHash", createSecurityHash(tnData.getAccessToken(), time, SHARED_ESPD_PASSWORD))
                 .build();
 
         uploadFile.setEntity(entity);
@@ -71,5 +77,28 @@ public class ClientMultipartFormPost {
         System.out.println(response.getStatusLine());
         return errorCode;
     }
+
+    public static String createSecurityHash(String accessToken, String timestamp, String sharedEspdPassword) {
+        StringBuffer hexString = new StringBuffer();
+
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-512");
+            md.update(accessToken.getBytes());
+            md.update(timestamp.getBytes());
+            md.update(sharedEspdPassword.getBytes());
+
+            byte[] mdbytes = md.digest();
+
+            for (int i = 0; i < mdbytes.length; i++) {
+                hexString.append(Integer.toHexString(0xFF & mdbytes[i]));
+            }
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return hexString.toString();
+    }
+
+
+
 
 }

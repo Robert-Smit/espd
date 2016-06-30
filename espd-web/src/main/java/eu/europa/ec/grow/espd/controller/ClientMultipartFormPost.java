@@ -49,9 +49,17 @@ import java.util.Date;
  */
 public class ClientMultipartFormPost {
 
-    String errorCode = "1";
+    private String errorCode = "1";
     private static String SHARED_ESPD_PASSWORD = "password";
 
+
+    /**
+     *  used to send a POST request to TenderNed
+     * @param xml is a byte[]
+     * @param tnData is a {@link TenderNedData} object
+     * @return a {@link #errorCode} String.
+     * @throws IOException
+     */
     public String sendPosttoTN(byte[] xml, TenderNedData tnData) throws IOException {
 
         CloseableHttpClient httpClient = HttpClients.createDefault();
@@ -71,10 +79,11 @@ public class ClientMultipartFormPost {
 
         HttpResponse response = httpClient.execute(uploadFile);
         final int statusCode = response.getStatusLine().getStatusCode();
-        if(statusCode == HttpStatus.SC_OK) {
+        httpClient.close();
+
+        if (statusCode == HttpStatus.SC_OK) {
             errorCode = "0";
         }
-        System.out.println(response.getStatusLine());
         return errorCode;
     }
 

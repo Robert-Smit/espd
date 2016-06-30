@@ -157,11 +157,11 @@
             <%--<s:message code="filter_upload_request_response"/>--%>
             <%--<form:input type="file" path="attachments"/>--%>
         <%--</div>--%>
-        <div class="tab-pane" id="tab-single-upload">
-            <h3 data-i18n="filter_upload_document"><s:message code='filter_upload_document'/></h3>
-            <c:out value="Naam UEA aanvraag:"/>
-            <c:out value="${tenderned.nameUEArequest}"/>
-        </div>
+        <%--<div class="tab-pane" id="tab-single-upload">--%>
+            <%--<h3 data-i18n="filter_upload_document"><s:message code='filter_upload_document'/></h3>--%>
+            <%--<c:out value="Naam UEA aanvraag:"/>--%>
+            <%--<c:out value="${tenderned.nameUEArequest}"/>--%>
+        <%--</div>--%>
         <%--<div class="tab-pane" id="tab-multiple-upload">--%>
             <%--<h3 data-i18n="filter_upload_documents"><s:message code='filter_upload_documents'/></h3>--%>
             <%--<s:message code="filter_upload_request"/>--%>

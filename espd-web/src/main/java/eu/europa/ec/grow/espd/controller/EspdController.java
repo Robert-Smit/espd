@@ -49,7 +49,11 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
+import javax.xml.transform.TransformerConfigurationException;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -149,14 +153,14 @@ class EspdController {
             @RequestParam(value = "fileRefByCA", required = false) String fileRefByCa,
             @RequestParam(value = "noUpload", required = false) String noUpload,
             @RequestParam(value = "noMergeESPDs", required = false) String noMergeESPDs,
-            @RequestPart (value="xml", required = false) MultipartFile attachment,
+            @RequestParam (value = "xml", required = false) String xml,
             @ModelAttribute("tenderned") TenderNedData tenderNedData,
             Model model,
             BindingResult result) throws IOException {
 
         EspdDocument espd = new EspdDocument();
-        if ("true".equals(noUpload)) {
-            reuseRequestAsCA(attachment, model, tenderNedData, result);
+        if (tenderNedData.getXml() != null) {
+            reuseRequestAsCA(xml, model, result);
         } else {
             espd.setTedReceptionId(receptionId);
             espd.setOjsNumber(ojsNumber);
@@ -199,9 +203,9 @@ class EspdController {
         document.setTedUrl(notice.getTedUrl());
     }
 
-    private String reuseRequestAsCA(MultipartFile attachment, Model model,
-            BindingResult result) throws IOException {
-        try (InputStream is = attachment.getInputStream()) {
+    private String reuseRequestAsCA(String attachment, Model model,
+                                    BindingResult result) throws IOException {
+        try (InputStream is = new ByteArrayInputStream(attachment.getBytes(StandardCharsets.UTF_8))) {
             Optional<EspdDocument> espd = exchangeMarshaller.importEspdRequest(is);
             if (espd.isPresent()) {
                 model.addAttribute("espd", espd.get());
@@ -213,23 +217,8 @@ class EspdController {
         return "filter";
     }
 
-    private String reuseRequestAsCA(MultipartFile attachment, Model model, TenderNedData tenderNedData,
-            BindingResult result) throws IOException {
-        try (InputStream is = attachment.getInputStream()) {
-            Optional<EspdDocument> espd = exchangeMarshaller.importEspdRequest(is);
-            if (espd.isPresent()) {
-                tenderNedData.setNameUEArequest(attachment.getOriginalFilename());
-                model.addAttribute("tenderned", tenderNedData);
-                model.addAttribute("espd", espd.get());
-                return redirectToPage("filter");
-            }
-        }
-        result.rejectValue("attachments", "espd_upload_request_error");
-        return "filter";
-    }
-
     private String reviewResponseAsCA(MultipartFile attachment, Model model,
-            BindingResult result) throws IOException {
+                                      BindingResult result) throws IOException {
         try (InputStream is = attachment.getInputStream()) {
             Optional<EspdDocument> espd = exchangeMarshaller.importEspdResponse(is);
             if (espd.isPresent()) {
@@ -270,7 +259,7 @@ class EspdController {
     private String mergeTwoEspds(List<MultipartFile> attachments, Model model, BindingResult result)
             throws IOException {
         try (InputStream reqIs = attachments.get(1).getInputStream();
-                InputStream respIs = attachments.get(2).getInputStream()) {
+             InputStream respIs = attachments.get(2).getInputStream()) {
             Optional<EspdDocument> wrappedEspd = exchangeMarshaller.mergeEspdRequestAndResponse(reqIs, respIs);
             if (wrappedEspd.isPresent()) {
                 model.addAttribute("espd", wrappedEspd.get());
@@ -306,8 +295,8 @@ class EspdController {
             @ModelAttribute("espd") EspdDocument espd,
             @ModelAttribute("tenderned") TenderNedData tenderNedData,
             BindingResult bindingResult) {
-        return bindingResult.hasErrors() ?
-                flow + "_" + agent + "_" + step : redirectToPage(flow + "/" + agent + "/" + prev);
+        return bindingResult.hasErrors()
+                ? flow + "_" + agent + "_" + step : redirectToPage(flow + "/" + agent + "/" + prev);
     }
 
 
@@ -323,8 +312,9 @@ class EspdController {
         return bindingResult.hasErrors() ?
                 flow + "_" + agent + "_" + step : redirectToPage(flow + "/" + agent + "/print");
     }
-    
-    @RequestMapping(value = "/{flow:request|response}/{agent:ca|eo}/{step:procedure|exclusion|selection|finish|generate|print|sendtotenderned}", method = POST, params = "next")
+
+    @RequestMapping(value = "/{flow:request|response}/{agent:ca|eo}/{step:procedure|exclusion|selection|finish|generate|print|sendtotenderned}",
+            method = POST, params = "next")
     public String next(
             @PathVariable String flow,
             @PathVariable String agent,
@@ -338,16 +328,10 @@ class EspdController {
             return flow + "_" + agent + "_" + step;
         }
         if ("sendtotenderned".equals(next)) {
-            try {
-                sendTenderNedData(agent, espd, tenderNedData, response);
-                String parameters = TenderNedUtils
-                        .createGetString(tenderNedData.getAccessToken(), tenderNedData.getErrorCode());
-                return redirectToTN(tenderNedData.getCallbackURL(), parameters);
-            } catch (IOException e) {
-                throw new RuntimeException("Error", e);
-            } catch (Exception e) {
-                throw new RuntimeException("Error", e);
-            }
+            sendTenderNedData(agent, espd, tenderNedData);
+            String parameters = TenderNedUtils
+                    .createGetUrl(tenderNedData.getAccessToken(), tenderNedData.getErrorCode());
+            return redirectToTN(tenderNedData.getCallbackURL(), parameters);
         } else if (!"generate".equals(next)) {
             return redirectToPage(flow + "/" + agent + "/" + next);
         }
@@ -366,7 +350,7 @@ class EspdController {
     }
 
     private void downloadEspdFile(@PathVariable String agent, @ModelAttribute("espd") EspdDocument espd,
-            HttpServletResponse response) throws IOException {
+                                  HttpServletResponse response) throws IOException {
         try (CountingOutputStream out = new CountingOutputStream(response.getOutputStream())) {
             response.setContentType(APPLICATION_XML_VALUE);
             if ("eo".equals(agent)) {
@@ -381,10 +365,14 @@ class EspdController {
         }
     }
 
-
-    public void sendTenderNedData(String agent, EspdDocument espd, TenderNedData tnData, HttpServletResponse response) throws Exception {
+    public void sendTenderNedData(String agent, EspdDocument espd, TenderNedData tnData) throws IOException {
         if ("ca".equals(agent)) {
-            byte[] xmlString = exchangeMarshaller.generateEspdRequestCa(espd);
+            byte[] xmlString = new byte[0];
+            try {
+                xmlString = exchangeMarshaller.generateEspdRequestCa(espd);
+            } catch (TransformerConfigurationException e) {
+                throw new RuntimeException("XML could not be generated", e);
+            }
             ClientMultipartFormPost formPost = new ClientMultipartFormPost();
             tnData.setErrorCode(formPost.sendPosttoTN(xmlString, tnData));
         }

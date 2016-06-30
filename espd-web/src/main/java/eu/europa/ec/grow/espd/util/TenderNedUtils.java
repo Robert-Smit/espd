@@ -27,7 +27,7 @@ public class TenderNedUtils {
         String time = DateTime.now().toString("yyyyMMddHHmmss");
         String getParameters = "";
 
-        return getParameters.concat("?a=")
+        return getParameters.concat("&a=")
                 .concat(accessToken)
                 .concat("&t=")
                 .concat(time)

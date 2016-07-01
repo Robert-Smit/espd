@@ -70,14 +70,14 @@
     <c:if test="${!nextUrl}">
         <div class="btn-group" role="group">
             <button id="nextBtn" type="submit" class="btn btn-default btn-lg" name="next" value="${next}">
-                <i class="${next != 'generate' ? 'fa fa-arrow-circle-o-right' : 'fa fa-floppy-o'}"></i> <span data-i18n="${nextCode}"><s:message code="${nextCode}"/></span>
+                <i class="${next != 'sendtotenderned' ? 'fa fa-arrow-circle-o-right' : 'fa fa-floppy-o'}"></i> <span data-i18n="${nextCode}"><s:message code="${nextCode}"/></span>
             </button>
         </div>
     </c:if>
     <c:if test="${nextUrl}">
         <div class="btn-group" role="group">
             <a id="nextAnchor" class="btn btn-default btn-lg" href="${pageContext.request.contextPath}${next}" role="button">
-                <i class="${next != 'generate' ? 'fa fa-arrow-circle-o-right' : 'fa fa-floppy-o'}"></i> <span data-i18n="${nextCode}"><s:message code="${nextCode}"/></span>
+                <i class="${next != 'sendtotenderned' ? 'fa fa-arrow-circle-o-right' : 'fa fa-floppy-o'}"></i> <span data-i18n="${nextCode}"><s:message code="${nextCode}"/></span>
             </a>
         </div>
     </c:if>

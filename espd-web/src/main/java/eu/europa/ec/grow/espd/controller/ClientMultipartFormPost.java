@@ -63,7 +63,7 @@ public class ClientMultipartFormPost {
     public String sendPosttoTN(byte[] xml, TenderNedData tnData) throws IOException {
 
         CloseableHttpClient httpClient = HttpClients.createDefault();
-        HttpPost uploadFile = new HttpPost("http://localhost:8080/espd-mock/upload");
+        HttpPost uploadFile = new HttpPost(tnData.getUploadURL());
 
         String time =DateTime.now().toString("yyyyMMddHHmmss");
         HttpEntity entity = MultipartEntityBuilder.create()

@@ -328,6 +328,7 @@ class EspdController {
             return flow + "_" + agent + "_" + step;
         }
         if ("sendtotenderned".equals(next)) {
+//            URLContent.printUrlContent("http://localhost:8080/espd-web/" + flow + "/" + agent + "/" + "print");
             sendTenderNedData(agent, espd, tenderNedData);
             String parameters = TenderNedUtils
                     .createGetUrl(tenderNedData.getAccessToken(), tenderNedData.getErrorCode());

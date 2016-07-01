@@ -28,12 +28,12 @@ import com.google.common.base.Optional;
 import eu.europa.ec.grow.espd.domain.EconomicOperatorImpl;
 import eu.europa.ec.grow.espd.domain.EspdDocument;
 import eu.europa.ec.grow.espd.domain.PartyImpl;
-import eu.europa.ec.grow.espd.domain.TenderNedData;
+import eu.europa.ec.grow.espd.domain.tenderned.TenderNedData;
 import eu.europa.ec.grow.espd.domain.enums.other.Country;
 import eu.europa.ec.grow.espd.ted.TedRequest;
 import eu.europa.ec.grow.espd.ted.TedResponse;
 import eu.europa.ec.grow.espd.ted.TedService;
-import eu.europa.ec.grow.espd.util.TenderNedUtils;
+import eu.europa.ec.grow.espd.domain.tenderned.TenderNedUtils;
 import eu.europa.ec.grow.espd.xml.EspdExchangeMarshaller;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.output.CountingOutputStream;
@@ -330,9 +330,7 @@ class EspdController {
         if ("sendtotenderned".equals(next)) {
 //            URLContent.printUrlContent("http://localhost:8080/espd-web/" + flow + "/" + agent + "/" + "print");
             sendTenderNedData(agent, espd, tenderNedData);
-            String parameters = TenderNedUtils
-                    .createGetUrl(tenderNedData.getAccessToken(), tenderNedData.getErrorCode());
-            return redirectToTN(tenderNedData.getCallbackURL(), parameters);
+            return redirectToTN(TenderNedUtils.createGetUrl(tenderNedData));
         } else if (!"generate".equals(next)) {
             return redirectToPage(flow + "/" + agent + "/" + next);
         }
@@ -346,8 +344,8 @@ class EspdController {
         return "redirect:/" + pageName;
     }
 
-    private static String redirectToTN(String callbackUrl, String parameters) {
-        return "redirect:" + callbackUrl + parameters;
+    private static String redirectToTN(String callbackUrl) {
+        return "redirect:" + callbackUrl;
     }
 
     private void downloadEspdFile(@PathVariable String agent, @ModelAttribute("espd") EspdDocument espd,

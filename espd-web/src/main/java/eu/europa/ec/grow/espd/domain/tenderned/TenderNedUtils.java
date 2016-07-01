@@ -1,7 +1,7 @@
 /*
  * Copyright 2009-2016 PIANOo; TenderNed programma.
  */
-package eu.europa.ec.grow.espd.util;
+package eu.europa.ec.grow.espd.domain.tenderned;
 
 import org.joda.time.DateTime;
 
@@ -17,23 +17,25 @@ public class TenderNedUtils {
         //private constructor to hide the public one.
     }
 
+
+
     /**
      * This method is used to create the Get Parameters for the redirect to TenderNed
-     * @param accessToken is a String from {@link eu.europa.ec.grow.espd.domain.TenderNedData#accessToken}
-     * @param errorCode is a String, if HTTP 200, errorCode is 0, otherwise it's 1.
+     * @param tenderNedData is a {@link TenderNedData} object
      * @return a String
      */
-    public static String createGetUrl(String accessToken, String errorCode) {
+    public static String createGetUrl(TenderNedData tenderNedData) {
         String time = DateTime.now().toString("yyyyMMddHHmmss");
-        String getParameters = "";
+        String callbackUrl = tenderNedData.getCallbackURL();
 
-        return getParameters.concat("&a=")
-                .concat(accessToken)
+        return callbackUrl
+                .concat("?&a=")
+                .concat(tenderNedData.getAccessToken())
                 .concat("&t=")
                 .concat(time)
                 .concat("&s=")
                 .concat("hashcode")
                 .concat("&UEU_ERROR_CODE=")
-                .concat(errorCode);
+                .concat(tenderNedData.getErrorCode());
     }
 }

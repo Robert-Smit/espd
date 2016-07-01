@@ -3,7 +3,7 @@
  */
 package eu.europa.ec.grow.espd.controller;
 
-import eu.europa.ec.grow.espd.domain.TenderNedData;
+import eu.europa.ec.grow.espd.domain.tenderned.TenderNedData;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -16,7 +16,6 @@ import org.joda.time.DateTime;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Date;
 
 /**
  * espd - Description.

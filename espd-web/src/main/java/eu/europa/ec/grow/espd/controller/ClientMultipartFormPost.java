@@ -4,6 +4,7 @@
 package eu.europa.ec.grow.espd.controller;
 
 import eu.europa.ec.grow.espd.domain.tenderned.TenderNedData;
+import eu.europa.ec.grow.espd.domain.tenderned.TenderNedUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -14,8 +15,6 @@ import org.apache.http.impl.client.HttpClients;
 import org.joda.time.DateTime;
 
 import java.io.IOException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 /**
  * espd - Description.
@@ -49,8 +48,6 @@ import java.security.NoSuchAlgorithmException;
 public class ClientMultipartFormPost {
 
     private String errorCode = "1";
-    private static String SHARED_ESPD_PASSWORD = "password";
-
 
     /**
      *  used to send a POST request to TenderNed
@@ -70,7 +67,7 @@ public class ClientMultipartFormPost {
 //                .addBinaryBody("pdf", pdf)
                 .addTextBody("accessToken", tnData.getAccessToken())
                 .addTextBody("time", time)
-                .addTextBody("securityHash", createSecurityHash(tnData.getAccessToken(), time, SHARED_ESPD_PASSWORD))
+                .addTextBody("securityHash", TenderNedUtils.createSecurityHash(tnData.getAccessToken(), time))
                 .build();
 
         uploadFile.setEntity(entity);
@@ -85,28 +82,5 @@ public class ClientMultipartFormPost {
         }
         return errorCode;
     }
-
-    public static String createSecurityHash(String accessToken, String timestamp, String sharedEspdPassword) {
-        StringBuffer hexString = new StringBuffer();
-
-        try {
-            MessageDigest md = MessageDigest.getInstance("SHA-512");
-            md.update(accessToken.getBytes());
-            md.update(timestamp.getBytes());
-            md.update(sharedEspdPassword.getBytes());
-
-            byte[] mdbytes = md.digest();
-
-            for (int i = 0; i < mdbytes.length; i++) {
-                hexString.append(Integer.toHexString(0xFF & mdbytes[i]));
-            }
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-        return hexString.toString();
-    }
-
-
-
 
 }

@@ -32,7 +32,7 @@ public class TenderNedUtils {
         String callbackUrl = tenderNedData.getCallbackURL();
 
         return callbackUrl
-                .concat("?&a=")
+                .concat("&a=")
                 .concat(tenderNedData.getAccessToken())
                 .concat("&t=")
                 .concat(time)

@@ -53,7 +53,6 @@ public class ClientMultipartFormPost {
      *  used to send a POST request to TenderNed
      * @param xml is a byte[]
      * @param tnData is a {@link TenderNedData} object
-     * @return a {@link #errorCode} String.
      * @throws IOException
      */
     public String sendPosttoTN(byte[] xml, TenderNedData tnData) throws IOException {
@@ -61,13 +60,13 @@ public class ClientMultipartFormPost {
         CloseableHttpClient httpClient = HttpClients.createDefault();
         HttpPost uploadFile = new HttpPost(tnData.getUploadURL());
 
-        String time =DateTime.now().toString("yyyyMMddHHmmss");
+        String time = DateTime.now().toString("yyyyMMddHHmmss");
         HttpEntity entity = MultipartEntityBuilder.create()
                 .addBinaryBody("xml", xml)
 //                .addBinaryBody("pdf", pdf)
                 .addTextBody("accessToken", tnData.getAccessToken())
                 .addTextBody("time", time)
-                .addTextBody("securityHash", TenderNedUtils.createSecurityHash(tnData.getAccessToken(), time))
+                .addTextBody("security", TenderNedUtils.createSecurityHash(tnData.getAccessToken(), time))
                 .build();
 
         uploadFile.setEntity(entity);

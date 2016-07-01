@@ -32,6 +32,7 @@
 <tiles:importAttribute name="nextCode"/>
 <tiles:importAttribute name="prevCode"/>
 <tiles:importAttribute name="print"/>
+<tiles:importAttribute name="cancel"/>
 
 <c:set var="prevUrl" value="${fn:startsWith(prev,'/')}"/>
 <c:set var="nextUrl" value="${fn:startsWith(next,'/')}"/>
@@ -55,7 +56,7 @@
         </div>
     </c:if></c:if>
     <div class="btn-group" role="group">
-    <a class="btn btn-default btn-lg" href="${pageContext.request.contextPath}/welcome" role="button">
+    <a class="btn btn-default btn-lg" href="${cancel}" role="button">
     <i class="fa fa-times-circle"></i>
     <span data-i18n="cancel"><s:message code="cancel"/></span>
     </a>

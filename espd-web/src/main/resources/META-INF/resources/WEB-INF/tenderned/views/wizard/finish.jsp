@@ -112,8 +112,9 @@
             <tiles:putAttribute name="nextCode" value="export"/>
             <tiles:putAttribute name="prev" value="selection"/>
             <tiles:putAttribute name="next" value="sendtotenderned"/>
-            <tiles:putAttribute name="print" value="${true}"/>
-        </tiles:insertDefinition>
+			<tiles:putAttribute name="print" value="${true}"/>
+			<tiles:putAttribute name="cancel" value="${tenderned.callbackURL}"/>
+		</tiles:insertDefinition>
 	</div>
 
 </form:form>

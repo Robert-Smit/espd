@@ -5,15 +5,19 @@ package eu.europa.ec.grow.espd.controller;
 
 import eu.europa.ec.grow.espd.domain.tenderned.TenderNedData;
 import eu.europa.ec.grow.espd.domain.tenderned.TenderNedUtils;
+import org.apache.commons.io.FileUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.joda.time.DateTime;
 
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -59,10 +63,13 @@ public class ClientMultipartFormPost {
 
         CloseableHttpClient httpClient = HttpClients.createDefault();
         HttpPost uploadFile = new HttpPost(tnData.getUploadURL());
+        File xmlFile = new File("xml.xml");
+        FileUtils.writeByteArrayToFile(xmlFile, xml);
 
+        FileBody file = new FileBody(xmlFile, ContentType.APPLICATION_XML, "xml.xml");
         String time = DateTime.now().toString("yyyyMMddHHmmss");
         HttpEntity entity = MultipartEntityBuilder.create()
-                .addBinaryBody("xml", xml)
+                .addPart("xml", file)
 //                .addBinaryBody("pdf", pdf)
                 .addTextBody("accessToken", tnData.getAccessToken())
                 .addTextBody("time", time)

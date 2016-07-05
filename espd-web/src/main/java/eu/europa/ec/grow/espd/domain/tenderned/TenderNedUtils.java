@@ -17,7 +17,8 @@ import java.security.NoSuchAlgorithmException;
 public class TenderNedUtils {
 
 
-    static final String SHARED_ESPD_PASSWORD = "espd_shared_tenderned_password";
+    static final String SHARED_ESPD_PASSWORD = "password";
+
 
 
     private TenderNedUtils() {

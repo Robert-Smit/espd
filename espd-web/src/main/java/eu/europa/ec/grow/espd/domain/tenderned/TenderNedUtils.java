@@ -38,7 +38,7 @@ public class TenderNedUtils {
                 .concat(time)
                 .concat("&s=")
                 .concat(createSecurityHash(tenderNedData.getAccessToken(), time))
-                .concat("&UEU_ERROR_CODE=")
+                .concat("&UEA_ERROR_CODE=")
                 .concat(tenderNedData.getErrorCode());
     }
 

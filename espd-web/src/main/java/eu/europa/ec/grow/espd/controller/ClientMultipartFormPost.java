@@ -51,15 +51,14 @@ import java.io.IOException;
  */
 public class ClientMultipartFormPost {
 
-    private String errorCode = "1";
-
-    /**
+     /**
      *  used to send a POST request to TenderNed
      * @param xml is a byte[]
      * @param tnData is a {@link TenderNedData} object
      * @throws IOException
      */
     public String sendPosttoTN(byte[] xml, TenderNedData tnData) throws IOException {
+        String errorCode = "1";
 
         CloseableHttpClient httpClient = HttpClients.createDefault();
         HttpPost uploadFile = new HttpPost(tnData.getUploadURL());

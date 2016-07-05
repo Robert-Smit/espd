@@ -111,7 +111,7 @@
         <tiles:insertDefinition name="footerButtons">
             <tiles:putAttribute name="nextCode" value="export"/>
             <tiles:putAttribute name="prev" value="selection"/>
-            <tiles:putAttribute name="next" value="sendtotenderned"/>
+            <tiles:putAttribute name="next" value="hidden"/>
 			<tiles:putAttribute name="print" value="${true}"/>
 			<tiles:putAttribute name="cancel" value="${tenderned.callbackURL}"/>
 		</tiles:insertDefinition>

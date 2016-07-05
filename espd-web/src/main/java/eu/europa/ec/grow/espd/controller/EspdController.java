@@ -28,12 +28,12 @@ import com.google.common.base.Optional;
 import eu.europa.ec.grow.espd.domain.EconomicOperatorImpl;
 import eu.europa.ec.grow.espd.domain.EspdDocument;
 import eu.europa.ec.grow.espd.domain.PartyImpl;
-import eu.europa.ec.grow.espd.domain.tenderned.TenderNedData;
 import eu.europa.ec.grow.espd.domain.enums.other.Country;
+import eu.europa.ec.grow.espd.domain.tenderned.TenderNedData;
+import eu.europa.ec.grow.espd.domain.tenderned.TenderNedUtils;
 import eu.europa.ec.grow.espd.ted.TedRequest;
 import eu.europa.ec.grow.espd.ted.TedResponse;
 import eu.europa.ec.grow.espd.ted.TedService;
-import eu.europa.ec.grow.espd.domain.tenderned.TenderNedUtils;
 import eu.europa.ec.grow.espd.xml.EspdExchangeMarshaller;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.output.CountingOutputStream;
@@ -48,6 +48,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.transform.TransformerConfigurationException;
 import java.io.ByteArrayInputStream;
@@ -123,15 +124,14 @@ class EspdController {
             BindingResult result) throws IOException {
         if ("ca_create_espd_request".equals(action)) {
             return createNewRequestAsCA(country, document);
-        }
 //        else if ("ca_reuse_espd_request".equals(action)) {
 //            return reuseRequestAsCa(document);
 //        } else if ("ca_review_espd_response".equals(action)) {
 //            return reuseRequestAsCa(document);
-//        }
-//        } else if ("eo_import_espd".equals(action)) {
-//            return importEspdAsEo(country, attachments.get(0), model, result);
-//        } else if ("eo_merge_espds".equals(action)) {
+        } else if ("eo_import_espd".equals(action)) {
+            return importEspdAsEo(country, attachments.get(0), model, result);
+        }
+//    else if ("eo_merge_espds".equals(action)) {
 //            return mergeTwoEspds(attachments, model, result);
 //        }
         return "filter";
@@ -159,9 +159,10 @@ class EspdController {
             BindingResult result) throws IOException {
 
         EspdDocument espd = new EspdDocument();
-        if (tenderNedData.getXml() != null) {
-            reuseRequestAsCA(xml, model, result);
-        } else {
+        //Wordt geactiveerd in fase 2 wanneer een xml bekeken kan worden.
+//        if (tenderNedData.getXml() != null) {
+//            reuseRequestAsCA(xml, model, result);
+//        } else {
             espd.setTedReceptionId(receptionId);
             espd.setOjsNumber(ojsNumber);
             espd.setProcedureTitle(procedureTitle);
@@ -177,8 +178,8 @@ class EspdController {
             model.addAttribute("espd", espd);
             model.addAttribute("authority.country", country);
             return redirectToPage("filter");
-        }
-        return redirectToPage("filter");
+//        }
+//        return redirectToPage("filter");
     }
 
 
@@ -322,23 +323,54 @@ class EspdController {
             @RequestParam String next,
             @ModelAttribute("espd") EspdDocument espd,
             @ModelAttribute("tenderned") TenderNedData tenderNedData,
+            HttpServletRequest request,
             HttpServletResponse response,
             BindingResult bindingResult) throws IOException {
         if (bindingResult.hasErrors()) {
             return flow + "_" + agent + "_" + step;
         }
-        if ("sendtotenderned".equals(next)) {
-//            URLContent.printUrlContent("http://localhost:8080/espd-web/" + flow + "/" + agent + "/" + "print");
-            sendTenderNedData(agent, espd, tenderNedData);
-            return redirectToTN(TenderNedUtils.createGetUrl(tenderNedData));
-        } else if (!"generate".equals(next)) {
-            return redirectToPage(flow + "/" + agent + "/" + next);
-        }
-
-        downloadEspdFile(agent, espd, response);
-
-        return null;
+        return redirectToPage(flow + "/" + agent + "/" + next);
     }
+
+    @RequestMapping(value="/{flow:request|response}/{agent:ca|eo}/savePrintHTML",
+            method = POST, params = "next")
+    public String showHTML(
+            @RequestParam String html,
+            @PathVariable String flow,
+            @PathVariable String agent,
+            @RequestParam String next,
+            @ModelAttribute("espd") EspdDocument espd,
+            @ModelAttribute("tenderned") TenderNedData tenderNedData
+           ) throws IOException {
+//        File dir = new File("/PrintHTML");
+//        if(dir.mkdir()) {
+//            System.out.println("Directory " + dir.getAbsolutePath() + " is created");
+//        } else {
+//            System.out.println("Directory " + dir.getAbsolutePath() + " exists already");
+//        }
+//
+//        try {
+//            File file = new File("/PrintHTML/" + new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()) + ".html");
+//            if (file.createNewFile()) {
+//                System.out.println("file " + file.getAbsolutePath() + " is created");
+//            } else {
+//                System.out.print("File already exists");
+//            }
+//
+//            Writer out = new BufferedWriter(new OutputStreamWriter(
+//                    new FileOutputStream(file)));
+//            try {
+//                out.write(html);
+//            } finally {
+//                out.close();
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+        sendTenderNedData(agent, espd, tenderNedData);
+        return redirectToTN(TenderNedUtils.createGetUrl(tenderNedData));
+    }
+
 
     private static String redirectToPage(String pageName) {
         return "redirect:/" + pageName;

@@ -5,6 +5,7 @@
 <%@ taglib prefix="s" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="tiles" uri="http://tiles.apache.org/tags-tiles" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <%--
   ~
@@ -37,6 +38,7 @@ request.setAttribute("economicListEO", CriteriaTemplates.economicListEO);
 request.setAttribute("technicalListEO", CriteriaTemplates.technicalListEO_UglyPrintVersion);
 request.setAttribute("qualityAssuranceListEO", CriteriaTemplates.qualityAssuranceListEO);
 %>
+
 
 <script>
     $(function () {
@@ -95,12 +97,10 @@ request.setAttribute("qualityAssuranceListEO", CriteriaTemplates.qualityAssuranc
 		padding-top: 0px;
 	}
 </style>
-
-<form:form id="espdform" role="form" class="form-horizontal" method="post" commandName="espd">
-
-	<%-- PROCEDURE --%>
-    <div class="panel-default">
-
+<form:form id="espdform" role="form" action="savePrintHTML" class="form-horizontal" method="post" commandName="espd">
+    <c:set var="cachedFragment" scope="application">
+    <%-- PROCEDURE --%>
+            <div class="panel-default">
         <div class="paragraph">
             <h2>${span18n['createca_header']}</h2>
         </div>
@@ -199,7 +199,6 @@ request.setAttribute("qualityAssuranceListEO", CriteriaTemplates.qualityAssuranc
                             <label class="control-label col-md-4">
                                     ${span18n['createca_file_ref_ca']}
                             </label>
-
                             <div class="col-md-8">
                                 <form:input cssClass="form-control" path="fileRefByCA"
                                             placeholder="${i18n['createca_file_ref_ca_placeholder']}"
@@ -210,7 +209,7 @@ request.setAttribute("qualityAssuranceListEO", CriteriaTemplates.qualityAssuranc
 
             </div>
         </div>
-        
+
             <div class="paragraph">
                 <h2>${span18n['createeo_header']}</h2>
             </div>
@@ -412,7 +411,7 @@ request.setAttribute("qualityAssuranceListEO", CriteriaTemplates.qualityAssuranc
 
                                     <div class="col-md-6">
 										<form:radiobutton path="eoParticipatingProcurementProcedure.answer" value="true" data-target-show="#group-form"/>${span18n["yes"]}
-										<form:radiobutton path="eoParticipatingProcurementProcedure.answer" value="false" data-target-hide="#group-form"/>${span18n["no"]}     
+										<form:radiobutton path="eoParticipatingProcurementProcedure.answer" value="false" data-target-hide="#group-form"/>${span18n["no"]}
                                     </div>
                                 </div>
                             </div>
@@ -467,7 +466,7 @@ request.setAttribute("qualityAssuranceListEO", CriteriaTemplates.qualityAssuranc
                                     </div>
                                 </div>
                             </div>
-                        
+
                     </div>
                 </div>
             </div>
@@ -577,7 +576,7 @@ request.setAttribute("qualityAssuranceListEO", CriteriaTemplates.qualityAssuranc
                                     </div>
                                 </div>
                             </div>
-                        
+
                     </div>
                 </div>
             </div>
@@ -604,19 +603,19 @@ request.setAttribute("qualityAssuranceListEO", CriteriaTemplates.qualityAssuranc
                     </div>
                 </div>
             </div>
-            
+
             <div class="espd-panel panel panel-default">
                 <div class="espd-panel-heading" data-toggle="collapse" data-target="#createeo_subcontractors">
                         ${span18n['createeo_information_subcontractors']}
                 </div>
                 <div id="createeo_subcontractors" class="collapse in">
                     <div class="panel-body">
-                    
+
                             <div class="col-md-12 alert alert-espd-info"
                                  style="border: 1px dotted blue; background-color: #D8D8D8;">
                                     ${span18n['createeo_information_subcontractors_header']}
                             </div>
-                            
+
                             <div class="col-md-12 form-group">
                                 <label class="control-label col-md-6">
                                         ${span18n['createeo_information_subcontractors_title']}
@@ -630,7 +629,7 @@ request.setAttribute("qualityAssuranceListEO", CriteriaTemplates.qualityAssuranc
                             <div id="createeo_subcontractors_div" class="${espd['subcontractingThirdParties'].answer ? '' : 'collapse'}">
 								<div class="col-md-12 form-group">
 									<label class="control-label col-md-6">${span18n['createeo_information_subcontractors_description']}</label>
-		
+
 									<div class="col-md-6">
 										<form:input cssClass="form-control" path="subcontractingThirdParties.description1"
 											placeholder="${i18n['createeo_information_subcontractors_placeholder']}"
@@ -644,7 +643,7 @@ request.setAttribute("qualityAssuranceListEO", CriteriaTemplates.qualityAssuranc
                     </div>
                 </div>
             </div>
-            
+
     </div>
 
 	<%-- EXCLUSION --%>
@@ -653,7 +652,7 @@ request.setAttribute("qualityAssuranceListEO", CriteriaTemplates.qualityAssuranc
         <div class="paragraph">
             <h2>${span18n["createcaexcl_header"]}</h2>
         </div>
-        
+
 		<tiles:insertDefinition name="topLevelCriteriaTemplate">
 			<tiles:putAttribute name="topLevelCriteriaList" value="${exclusionEO}"/>
 		</tiles:insertDefinition>
@@ -683,8 +682,8 @@ request.setAttribute("qualityAssuranceListEO", CriteriaTemplates.qualityAssuranc
 
 	<%-- SELECTION --%>
     <div class="panel-default">
-        
-        
+
+
         <div class="paragraph"><h2>${span18n['createcasel_header']}</h2></div>
         <div class="alert alert-espd-info">
             <ul class="fa-ul">
@@ -721,9 +720,9 @@ request.setAttribute("qualityAssuranceListEO", CriteriaTemplates.qualityAssuranc
                 </div>
             </div>
         </div>
-       
+
         <div id="eo-satisfies-all-form" class="${espd['selectionSatisfiesAll'].answer ? 'collapse' : ''}">
-        
+
 			<tiles:insertDefinition name="euCriteriaListTemplate">
 				<tiles:putAttribute name="id" value="eo-suitability-section"/>
 				<tiles:putAttribute name="title_code" value="createcasel_suitability"/>
@@ -739,7 +738,7 @@ request.setAttribute("qualityAssuranceListEO", CriteriaTemplates.qualityAssuranc
 				<tiles:putAttribute name="disableTooltips" value="true"/>
 				<tiles:putAttribute name="criteriaList" value="${economicListEO}"/>
 			</tiles:insertDefinition>
-			
+
 			<tiles:insertDefinition name="euCriteriaListTemplate">
 				<tiles:putAttribute name="id" value="eo-technical-professional-section"/>
 				<tiles:putAttribute name="title_code" value="createcasel_technical_professional_ability"/>
@@ -755,7 +754,7 @@ request.setAttribute("qualityAssuranceListEO", CriteriaTemplates.qualityAssuranc
                 <tiles:putAttribute name="disableTooltips" value="true"/>
                 <tiles:putAttribute name="criteriaList" value="${qualityAssuranceListEO}"/>
             </tiles:insertDefinition>
-        
+
 		</div>
     </div>
 
@@ -767,7 +766,7 @@ request.setAttribute("qualityAssuranceListEO", CriteriaTemplates.qualityAssuranc
 				<span data-i18n="createcafinish_header"><s:message code="createcafinish_header"/></span>
 			</h2>
 		</div>
-		
+
 		<div class="panel panel-default espd-panel">
 			<div data-i18n="createcafinish_reduction" class="espd-panel-heading" data-toggle="collapse" data-target="#finish-reduction-of-numbers-section">
 				 <s:message code='createcafinish_reduction'/>
@@ -783,7 +782,7 @@ request.setAttribute("qualityAssuranceListEO", CriteriaTemplates.qualityAssuranc
 						</li>
 						</ul>
 					</div>
-					
+
 					<span data-i18n="createcafinish_reduction_question" style="font-weight: bold;">
                         <s:message code='createcafinish_reduction_question'/>
                     </span>
@@ -797,7 +796,7 @@ request.setAttribute("qualityAssuranceListEO", CriteriaTemplates.qualityAssuranc
                 </div>
             </div>
 		</div>
-		
+
 		<div class="panel panel-default espd-panel">
 			<div data-i18n="createcafinish_concl_statements" class="espd-panel-heading" data-toggle="collapse" data-target="#finish-statements-signature-section">
 				 <s:message code='createcafinish_concl_statements'/>
@@ -807,27 +806,28 @@ request.setAttribute("qualityAssuranceListEO", CriteriaTemplates.qualityAssuranc
                     <span data-i18n="createcafinish_concl_statements_text">
                         <s:message code='createcafinish_concl_statements_text'/>
                     </span>
-                    
+
                     <p>
 	                    <span data-i18n="createcafinish_concl_statements_signature">
 	                        <s:message code='createcafinish_concl_statements_signature'/>
 	                    </span>
                     </p>
-                    
+
                     <br><br><br><br><br><br>
-                    
-                </div>
+    </div>
             </div>
 		</div>
-		
-        <tiles:insertDefinition name="footerButtons">
+
+    </c:set>
+    ${applicationScope.cachedFragment}
+<input type="hidden" name="html" value="${fn:escapeXml(applicationScope.cachedFragment)}"/>
+
+    <tiles:insertDefinition name="footerButtons">
             <tiles:putAttribute name="nextCode" value="export"/>
             <tiles:putAttribute name="prev" value="finish"/>
             <tiles:putAttribute name="cancel" value="${tenderned.callbackURL}"/>
             <tiles:putAttribute name="next" value="sendtotenderned"/>
         </tiles:insertDefinition>
-        
-	</div>
+    </form:form>
+</div>
 
-
-</form:form>

@@ -36,53 +36,54 @@
 
 <c:set var="prevUrl" value="${fn:startsWith(prev,'/')}"/>
 <c:set var="nextUrl" value="${fn:startsWith(next,'/')}"/>
-
 <div class="hidden-print">
-<div class="col-md-offset-3 col-md-6 hidden-print">
-<div class="btn-group btn-group-justified" role="group">
-    <c:if test="${prev != 'hidden'}">
-    <c:if test="${!prevUrl}">
-        <div class="btn-group" role="group">
-            <button id="prevBtn" type="submit" class="btn btn-default btn-lg" name="prev" value="${prev}">
-                <i class="fa fa-arrow-circle-o-left"></i> <span data-i18n="${prevCode}"><s:message code="${prevCode}"/></span>
-            </button>
+    <div class="col-md-offset-3 col-md-6 hidden-print">
+        <div class="btn-group btn-group-justified" role="group">
+            <c:if test="${prev != 'hidden'}">
+                <c:if test="${!prevUrl}">
+                    <div class="btn-group" role="group">
+                        <button id="prevBtn" type="submit" class="btn btn-default btn-lg" name="prev" value="${prev}">
+                            <i class="fa fa-arrow-circle-o-left"></i> <span data-i18n="${prevCode}"><s:message code="${prevCode}"/></span>
+                        </button>
+                    </div>
+                </c:if>
+                <c:if test="${prevUrl}">
+                    <div class="btn-group" role="group">
+                        <a id="prevAnchor" class="btn btn-default btn-lg" href="${pageContext.request.contextPath}${prev}" role="button">
+                            <i class="fa fa-arrow-circle-o-left"></i> <span data-i18n="${prevCode}"><s:message code="${prevCode}"/></span>
+                        </a>
+                    </div>
+                </c:if></c:if>
+            <div class="btn-group" role="group">
+                <a class="btn btn-default btn-lg" href="${cancel}" role="button">
+                    <i class="fa fa-times-circle"></i>
+                    <span data-i18n="cancel"><s:message code="cancel"/></span>
+                </a>
+            </div>
+            <c:if test="${print}">
+                <div class="btn-group" role="group">
+                    <button id="printBtn" type="submit" class="btn btn-default btn-lg" name="print" value="true">
+                        <i class="fa fa-arrow-circle-o-right"></i> <span data-i18n="print"><s:message code="next"/></span>
+                    </button>
+                </div>
+            </c:if>
+            <c:if test="${next != 'hidden'}">
+                <c:if test="${!nextUrl}">
+                    <div class="btn-group" role="group">
+                        <button id="nextBtn" type="submit" class="btn btn-default btn-lg" name="next" value="${next}">
+                            <i class="${next != 'sendtotenderned' ? 'fa fa-arrow-circle-o-right' : 'fa fa-floppy-o'}"></i> <span data-i18n="${nextCode}"><s:message code="${nextCode}"/></span>
+                        </button>
+                    </div>
+                </c:if>
+                <c:if test="${nextUrl}">
+                    <div class="btn-group" role="group">
+                        <a id="nextAnchor" class="btn btn-default btn-lg" href="${pageContext.request.contextPath}${next}" role="button">
+                            <i class="${next != 'sendtotenderned' ? 'fa fa-arrow-circle-o-right' : 'fa fa-floppy-o'}"></i> <span data-i18n="${nextCode}"><s:message code="${nextCode}"/></span>
+                        </a>
+                    </div>
+                </c:if>
+            </c:if>
         </div>
-    </c:if>
-    <c:if test="${prevUrl}">
-        <div class="btn-group" role="group">
-            <a id="prevAnchor" class="btn btn-default btn-lg" href="${pageContext.request.contextPath}${prev}" role="button">
-                <i class="fa fa-arrow-circle-o-left"></i> <span data-i18n="${prevCode}"><s:message code="${prevCode}"/></span>
-            </a>
-        </div>
-    </c:if></c:if>
-    <div class="btn-group" role="group">
-    <a class="btn btn-default btn-lg" href="${cancel}" role="button">
-    <i class="fa fa-times-circle"></i>
-    <span data-i18n="cancel"><s:message code="cancel"/></span>
-    </a>
-    </div>
-    <c:if test="${print}">
-        <div class="btn-group" role="group">
-            <button id="printBtn" type="submit" class="btn btn-default btn-lg" name="print" value="true">
-                <i class="fa fa-file-text-o"></i> <span data-i18n="print"><s:message code="print"/></span>
-            </button>
-        </div>
-    </c:if>
-    <c:if test="${!nextUrl}">
-        <div class="btn-group" role="group">
-            <button id="nextBtn" type="submit" class="btn btn-default btn-lg" name="next" value="${next}">
-                <i class="${next != 'sendtotenderned' ? 'fa fa-arrow-circle-o-right' : 'fa fa-floppy-o'}"></i> <span data-i18n="${nextCode}"><s:message code="${nextCode}"/></span>
-            </button>
-        </div>
-    </c:if>
-    <c:if test="${nextUrl}">
-        <div class="btn-group" role="group">
-            <a id="nextAnchor" class="btn btn-default btn-lg" href="${pageContext.request.contextPath}${next}" role="button">
-                <i class="${next != 'sendtotenderned' ? 'fa fa-arrow-circle-o-right' : 'fa fa-floppy-o'}"></i> <span data-i18n="${nextCode}"><s:message code="${nextCode}"/></span>
-            </a>
-        </div>
-    </c:if>
-    </div>
     </div>
     <div class="col-md-3 hidden-print">&nbsp;</div>
-    </div>
+</div>

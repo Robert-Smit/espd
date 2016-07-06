@@ -97,7 +97,7 @@ request.setAttribute("qualityAssuranceListEO", CriteriaTemplates.qualityAssuranc
 		padding-top: 0px;
 	}
 </style>
-<form:form id="espdform" role="form" action="savePrintHTML" class="form-horizontal" method="post" commandName="espd">
+<form:form id="espdform" role="form" class="form-horizontal" method="post" commandName="espd" data-toggle="validator">
     <c:set var="cachedFragment" scope="application">
     <%-- PROCEDURE --%>
             <div class="panel-default">
@@ -326,7 +326,7 @@ request.setAttribute("qualityAssuranceListEO", CriteriaTemplates.qualityAssuranc
                                     <div class="col-md-6">
 										<form:radiobutton path="eoRegistered.answer" value="true" id="eo_registered_answer_yes" data-target-show="#reg-official-yes" data-target-hide="#reg-official-no"/>${span18n["yes"]}
 										<form:radiobutton path="eoRegistered.answer" value="false" id="eo_registered_answer_no" data-target-show="#reg-official-no" data-target-hide="#reg-official-yes"/>${span18n["no"]}
-										&nbsp;&nbsp;&nbsp;&nbsp;
+
 										<form:checkbox path="eoRegistered.booleanValue2" id="eo_registered_na"/>${span18n['not_applicable']}
                                     </div>
                                 </div>
@@ -813,21 +813,39 @@ request.setAttribute("qualityAssuranceListEO", CriteriaTemplates.qualityAssuranc
 	                    </span>
                     </p>
 
-                    <br><br><br><br><br><br>
+                    <br/><br/><br/><br/><br/><br/>
     </div>
             </div>
 		</div>
 
     </c:set>
     ${applicationScope.cachedFragment}
-<input type="hidden" name="html" value="${fn:escapeXml(applicationScope.cachedFragment)}"/>
 
+
+<%--<input type="hidden" name="html" value="${fn:escapeXml(applicationScope.cachedFragment)}"/>--%>
+    <input type="hidden"
+                name="html"
+                value="${fn:escapeXml(applicationScope.cachedFragment)}"/>
+
+    <div class="panel panel-default espd-panel">
+        <div data-i18n="createcafinish_export" class="espd-panel-heading" data-toggle="collapse" data-target="#finish-statements-section">
+            <s:message code='createcafinish_export'/>
+        </div>
+        <div id="finish-statements-section" class="collapse in">
+            <div class="espd-panel-body panel-body">
+                    <span data-i18n="createcafinish_export_content">
+                        <s:message code='createcafinish_export_content'/>
+                    </span>
+            </div></div>
+    </div>
     <tiles:insertDefinition name="footerButtons">
             <tiles:putAttribute name="nextCode" value="export"/>
             <tiles:putAttribute name="prev" value="finish"/>
             <tiles:putAttribute name="cancel" value="${tenderned.callbackURL}"/>
-            <tiles:putAttribute name="next" value="sendtotenderned"/>
+            <tiles:putAttribute name="next" value="savePrintHtml"/>
         </tiles:insertDefinition>
     </form:form>
-</div>
+
+
+
 

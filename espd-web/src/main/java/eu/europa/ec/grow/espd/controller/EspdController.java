@@ -314,7 +314,7 @@ class EspdController {
                 flow + "_" + agent + "_" + step : redirectToPage(flow + "/" + agent + "/print");
     }
 
-    @RequestMapping(value = "/{flow:request|response}/{agent:ca|eo}/{step:procedure|exclusion|selection|finish|generate|print|sendtotenderned}",
+    @RequestMapping(value = "/{flow:request|response}/{agent:ca|eo}/{step:procedure|exclusion|selection|finish|generate|print|savePrintHtml}",
             method = POST, params = "next")
     public String next(
             @PathVariable String flow,
@@ -329,19 +329,16 @@ class EspdController {
         if (bindingResult.hasErrors()) {
             return flow + "_" + agent + "_" + step;
         }
+        if ("savePrintHtml".equals(next)) {
+//            savePrintHtml(espd.getHtml());
+            sendTenderNedData(agent, espd, tenderNedData);
+            return redirectToTN(TenderNedUtils.createGetUrl(tenderNedData));
+        }
         return redirectToPage(flow + "/" + agent + "/" + next);
     }
-
-    @RequestMapping(value="/{flow:request|response}/{agent:ca|eo}/savePrintHTML",
-            method = POST, params = "next")
-    public String showHTML(
-            @RequestParam String html,
-            @PathVariable String flow,
-            @PathVariable String agent,
-            @RequestParam String next,
-            @ModelAttribute("espd") EspdDocument espd,
-            @ModelAttribute("tenderned") TenderNedData tenderNedData
-           ) throws IOException {
+//
+//    private void savePrintHtml(String html) throws IOException {
+//        //TODO implement html to pdf rendering
 //        File dir = new File("/PrintHTML");
 //        if(dir.mkdir()) {
 //            System.out.println("Directory " + dir.getAbsolutePath() + " is created");
@@ -358,7 +355,7 @@ class EspdController {
 //            }
 //
 //            Writer out = new BufferedWriter(new OutputStreamWriter(
-//                    new FileOutputStream(file)));
+//                    new FileOutputStream(file), "UTF-8"));
 //            try {
 //                out.write(html);
 //            } finally {
@@ -367,9 +364,7 @@ class EspdController {
 //        } catch (IOException e) {
 //            e.printStackTrace();
 //        }
-        sendTenderNedData(agent, espd, tenderNedData);
-        return redirectToTN(TenderNedUtils.createGetUrl(tenderNedData));
-    }
+//    }
 
 
     private static String redirectToPage(String pageName) {

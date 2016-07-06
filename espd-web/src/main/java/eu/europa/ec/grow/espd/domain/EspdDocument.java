@@ -24,8 +24,8 @@
 
 package eu.europa.ec.grow.espd.domain;
 
-import eu.europa.ec.grow.espd.domain.ubl.CcvCriterion;
 import eu.europa.ec.grow.espd.domain.enums.criteria.SelectionCriterion;
+import eu.europa.ec.grow.espd.domain.ubl.CcvCriterion;
 import isa.names.specification.ubl.schema.xsd.ccv_commonaggregatecomponents_1.CriterionType;
 import lombok.Data;
 import org.apache.commons.beanutils.PropertyUtils;
@@ -37,6 +37,8 @@ import java.util.List;
 
 @Data
 public class EspdDocument {
+
+    private String html;
 
     private PartyImpl authority;
     private EconomicOperatorImpl economicOperator;

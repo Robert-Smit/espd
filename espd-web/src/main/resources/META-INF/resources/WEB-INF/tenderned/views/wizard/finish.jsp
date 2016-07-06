@@ -94,25 +94,11 @@
                 </div>
             </div>
 		</div>
-		
-		<div class="panel panel-default espd-panel">
-			<div data-i18n="createcafinish_export" class="espd-panel-heading" data-toggle="collapse" data-target="#finish-statements-section">
-				 <s:message code='createcafinish_export'/>
-			</div>
-            <div id="finish-statements-section" class="collapse in">
-                <div class="espd-panel-body panel-body">
-                    <span data-i18n="createcafinish_export_content">
-                        <s:message code='createcafinish_export_content'/>
-                    </span>
-                </div>
-            </div>
-		</div>
 
         <tiles:insertDefinition name="footerButtons">
-            <tiles:putAttribute name="nextCode" value="export"/>
             <tiles:putAttribute name="prev" value="selection"/>
-            <tiles:putAttribute name="next" value="hidden"/>
-			<tiles:putAttribute name="print" value="${true}"/>
+            <tiles:putAttribute name="next" value="print"/>
+			<%--<tiles:putAttribute name="print" value="${true}"/>--%>
 			<tiles:putAttribute name="cancel" value="${tenderned.callbackURL}"/>
 		</tiles:insertDefinition>
 	</div>

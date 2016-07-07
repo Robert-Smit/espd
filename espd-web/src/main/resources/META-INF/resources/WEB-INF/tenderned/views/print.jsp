@@ -833,9 +833,16 @@ request.setAttribute("qualityAssuranceListEO", CriteriaTemplates.qualityAssuranc
         </div>
         <div id="finish-statements-section" class="collapse in">
             <div class="espd-panel-body panel-body">
+                <c:if test = "${agent == 'ca'}">
                     <span data-i18n="createcafinish_export_content">
-                        <s:message code='createcafinish_export_content'/>
-                    </span>
+                         <s:message code='createcafinish_export_content'/>
+                        </span>
+                </c:if>
+                <c:if test = "${agent == 'eo'}">
+                    <span data-i18n="createeofinish_export_content">
+                         <s:message code='createeofinish_export_content'/>
+                        </span>
+                </c:if>
             </div></div>
     </div>
     <tiles:insertDefinition name="footerButtons">

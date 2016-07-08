@@ -5,6 +5,8 @@ package eu.europa.ec.grow.espd.controller;
 
 import eu.europa.ec.grow.espd.domain.tenderned.TenderNedData;
 import eu.europa.ec.grow.espd.domain.tenderned.TenderNedUtils;
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -49,43 +51,50 @@ import java.io.IOException;
  * permissions and limitations under the Licence.
  *
  */
+@Slf4j
 public class ClientMultipartFormPost {
 
-     /**
-     *  used to send a POST request to TenderNed
+    public static final String FILENAME_XML = "uea_output.xml";
+
+    public static final String FILENAME_pdf = "uea_output.pdf";
+
+    /**
+     * Used to send a POST request to TenderNed.
      * @param xml is a byte[]
      * @param tnData is a {@link TenderNedData} object
-     * @throws IOException
+     * @throws IOException Thrown if an I/O error occurs
      */
     public String sendPosttoTN(byte[] xml, TenderNedData tnData) throws IOException {
-        String errorCode = "1";
+        String errorCode = "0";
 
         CloseableHttpClient httpClient = HttpClients.createDefault();
-        HttpPost uploadFile = new HttpPost(tnData.getUploadURL());
-        File xmlFile = new File("xml.xml");
-        FileUtils.writeByteArrayToFile(xmlFile, xml);
+        HttpPost httpPost = new HttpPost(tnData.getUploadURL());
 
-        FileBody file = new FileBody(xmlFile, ContentType.APPLICATION_XML, "xml.xml");
+        File xmlFile = new File(FILENAME_XML);
+        FileUtils.writeByteArrayToFile(xmlFile, xml);
+        FileBody fileBodyXml = new FileBody(xmlFile, ContentType.APPLICATION_XML, FILENAME_XML);
+
         String time = DateTime.now().toString("yyyyMMddHHmmss");
+
         HttpEntity entity = MultipartEntityBuilder.create()
-                .addPart("xml", file)
-//                .addBinaryBody("pdf", pdf)
+                .addPart("xml", fileBodyXml)
+//                .addPart("pdf", fileBodyPdf)
                 .addTextBody("accessToken", tnData.getAccessToken())
                 .addTextBody("time", time)
                 .addTextBody("security", TenderNedUtils.createSecurityHash(tnData.getAccessToken(), time))
                 .build();
 
-        uploadFile.setEntity(entity);
+        httpPost.setEntity(entity);
 
-
-        HttpResponse response = httpClient.execute(uploadFile);
+        log.info("Sending POST");
+        HttpResponse response = httpClient.execute(httpPost);
         final int statusCode = response.getStatusLine().getStatusCode();
         httpClient.close();
 
-        if (statusCode == HttpStatus.SC_OK) {
-            errorCode = "0";
+        if (statusCode != HttpStatus.SC_OK) {
+            errorCode = "1";
+            log.error("Error returned from POST, HTTP status: " + statusCode);
         }
         return errorCode;
     }
-
 }

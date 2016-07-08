@@ -12,6 +12,8 @@ import java.security.NoSuchAlgorithmException;
 
 import javax.annotation.PostConstruct;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * espd - Description.
  *
@@ -19,6 +21,7 @@ import javax.annotation.PostConstruct;
  * @since 24-06-2016
  */
 @Service
+@Slf4j
 public class TenderNedUtils {
 
     public static String SHARED_ESPD_PASSWORD;
@@ -57,7 +60,6 @@ public class TenderNedUtils {
 
     public static String createSecurityHash(String accessToken, String timestamp) {
         StringBuffer hexString = new StringBuffer();
-        System.out.println("password = "+ SHARED_ESPD_PASSWORD);
 
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-512");
@@ -71,7 +73,7 @@ public class TenderNedUtils {
                 hexString.append(Integer.toHexString(0xFF & mdbytes[i]));
             }
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
         return hexString.toString();
     }

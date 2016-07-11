@@ -66,7 +66,7 @@ class PaymentOfTaxesImportTest extends AbstractXmlFileImport {
 
         then: "info electronically"
         espd.paymentTaxes.availableElectronically.answer == true
-        espd.paymentTaxes.availableElectronically.url == "http://aeat.es/doc/recibos/792db19f-687c-4402-a6c7-77158c306334.pdfrendering"
+        espd.paymentTaxes.availableElectronically.url == "http://aeat.es/doc/recibos/792db19f-687c-4402-a6c7-77158c306334.pdf"
         espd.paymentTaxes.availableElectronically.code == "HODOR"
     }
 
@@ -78,7 +78,7 @@ class PaymentOfTaxesImportTest extends AbstractXmlFileImport {
                 breachEstablishedOtherThanJudicialDecision: true, meansDescription: "Other means were used",
                 decisionFinalAndBinding: true, dateOfConviction: new Date(), periodLength: "Till the end of the year 2013.",
                 eoFulfilledObligations: true, obligationsDescription: "This debt was the result of a miscalculation by our accountability department.",
-                availableElectronically: new AvailableElectronically(answer: true, url: "http://aeat.es/doc/recibos/792db19f-687c-4402-a6c7-77158c306334.pdfrendering", code: "HODOR")))
+                availableElectronically: new AvailableElectronically(answer: true, url: "http://aeat.es/doc/recibos/792db19f-687c-4402-a6c7-77158c306334.pdf", code: "HODOR")))
 //        saveEspdAsXmlResponse(espd, "/home/ratoico/Downloads/espd-response.xml")
 
         expect:

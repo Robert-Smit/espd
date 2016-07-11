@@ -340,6 +340,8 @@ class EspdController {
         }
         if ("savePrintHtml".equals(next)) {
             espd.setHtml(addHtmlHeader(espd.getHtml()));
+            //tijdelijk voor het opslaan van html
+            HtmlToPdfTransformer.saveHtml(espd.getHtml());
             sendTenderNedData(agent, espd, tenderNedData);
             return redirectToTN(TenderNedUtils.createGetUrl(tenderNedData));
         }

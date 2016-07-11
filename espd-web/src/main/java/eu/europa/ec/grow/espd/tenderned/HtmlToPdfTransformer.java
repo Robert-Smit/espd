@@ -1,6 +1,7 @@
 package eu.europa.ec.grow.espd.tenderned;
 
 import eu.europa.ec.grow.espd.tenderned.exception.PdfRenderingException;
+import org.apache.commons.io.FileUtils;
 import org.apache.fop.apps.FOPException;
 import org.apache.fop.apps.Fop;
 import org.apache.fop.apps.FopFactory;
@@ -15,7 +16,6 @@ import javax.xml.transform.URIResolver;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamSource;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -29,8 +29,6 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class HtmlToPdfTransformer {
 
-    public static final String TENDERNEDRESOURCES = "resources/tenderned/pdfrendering/";
-
     /**
      * Method that will convert the given XML to PDF
      * @param html is a String of html content
@@ -43,7 +41,6 @@ public class HtmlToPdfTransformer {
         try {
             out = new FileOutputStream(pdfFile);
 
-            ByteArrayOutputStream pdfArray = new ByteArrayOutputStream();
             InputStream htmlInputStream = new ByteArrayInputStream(html.getBytes(UTF_8));
             InputStreamReader htmlInputStreamReader = new InputStreamReader(htmlInputStream, UTF_8);
             StreamSource xhtmlSource = new StreamSource(htmlInputStreamReader);
@@ -74,6 +71,14 @@ public class HtmlToPdfTransformer {
             InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("tenderned/pdfrendering/xslt/" + href);
             return new StreamSource(inputStream);
         }
+    }
+
+    //Tijdelijke code om html op te slaan
+    public static void saveHtml(String html) throws IOException {
+        File htmlFile = new File("/htmlprintpage.xhtml");
+        System.out.println("htmlFile path = " + htmlFile.getAbsolutePath());
+        byte[] htmlByteArray = html.getBytes();
+        FileUtils.writeByteArrayToFile(htmlFile, htmlByteArray);
     }
 
 }

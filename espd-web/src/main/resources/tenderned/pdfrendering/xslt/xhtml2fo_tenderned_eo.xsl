@@ -142,13 +142,31 @@
 			</xsl:when>
 			<xsl:when test="$contains-radiobutton = 'true'">
 				<fo:block/>
-				<fo:inline font-family='ZapfDingbats'>&#x274D; </fo:inline>
-				<xsl:value-of select="span"/>
+
+				<xsl:choose>
+
+					<xsl:when test="@checked = 'checked'">
+						<fo:inline font-family='ZapfDingbats'>&#x25CF;</fo:inline>
+						<xsl:value-of select="span"/>
+					</xsl:when>
+					<xsl:otherwise>
+						<fo:inline font-family='ZapfDingbats'>&#x274D;</fo:inline>
+						<xsl:value-of select="span"/>
+					</xsl:otherwise>
+				</xsl:choose>
 			</xsl:when>
 			<xsl:when test="$contains-checkbox = 'true'">
 				<fo:block/>
-				<fo:inline font-family='ZapfDingbats'>&#x274F;</fo:inline>
-				<xsl:value-of select="span"/>
+				<xsl:choose>
+					<xsl:when test="@selected ='selected'">
+						<fo:inline font-family='ZapfDingbats'>&#x25A0;</fo:inline>
+						<xsl:value-of select="span"/>
+					</xsl:when>
+					<xsl:otherwise>
+						<fo:inline font-family='ZapfDingbats'>&#x274F;</fo:inline>
+						<xsl:value-of select="span"/>
+					</xsl:otherwise>
+				</xsl:choose>
 			</xsl:when>
 		</xsl:choose>
 	</xsl:template>

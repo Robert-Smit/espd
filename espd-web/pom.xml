@@ -167,7 +167,6 @@
                                     <searchTransitive>true</searchTransitive>
                                     <excludes>
                                         <exclude>javassist:javassist</exclude>
-                                        <exclude>commons-logging</exclude>
                                         <exclude>aspectj:aspectj*</exclude>
                                         <exclude>hsqldb:hsqldb</exclude>
                                         <exclude>log4j:log4j</exclude>

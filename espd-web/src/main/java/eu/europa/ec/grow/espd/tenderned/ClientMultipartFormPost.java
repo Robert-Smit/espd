@@ -1,12 +1,9 @@
 /*
  * Copyright 2009-2016 PIANOo; TenderNed programma.
  */
-package eu.europa.ec.grow.espd.controller;
+package eu.europa.ec.grow.espd.tenderned;
 
-import eu.europa.ec.grow.espd.tenderned.TenderNedData;
-import eu.europa.ec.grow.espd.tenderned.TenderNedUtils;
 import lombok.extern.slf4j.Slf4j;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;

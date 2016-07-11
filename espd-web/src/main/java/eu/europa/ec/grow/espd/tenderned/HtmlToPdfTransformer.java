@@ -29,13 +29,22 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class HtmlToPdfTransformer {
 
+    public final static String XSL_CA = "xhtml2fo_tenderned_ca.xsl";
+    public final static String XSL_EO = "xhtml2fo_tenderned_eo.xsl";
+
     /**
      * Method that will convert the given XML to PDF
      * @param html is a String of html content
      * @throws PdfRenderingException
      */
-    public File convertToPDF(String html) throws PdfRenderingException {
-        // the XSL FO file
+    public File convertToPDF(String html, String agent) throws PdfRenderingException {
+        String xsl;
+        if ("ca".equals(agent)) {
+                xsl = XSL_CA;
+        } else {
+            xsl = XSL_EO;
+        }
+
         File pdfFile = new File("pdfFile.pdf");
         OutputStream out;
         try {
@@ -49,7 +58,7 @@ public class HtmlToPdfTransformer {
             final TransformerFactory transformerFactory = TransformerFactory.newInstance();
             transformerFactory.setURIResolver(resolver);
 
-            final Source xslSource = resolver.resolve("xhtml2fo_tenderned.xsl", null);
+            final Source xslSource = resolver.resolve(xsl, null);
             final URI fopConfigURI = this.getClass().getResource("/tenderned/pdfrendering/fop/fop-config.xml").toURI();
             final Transformer xhtml2foTransformer = transformerFactory.newTransformer(xslSource);
             final FopFactory fopFactory = FopFactory.newInstance(fopConfigURI);

@@ -29,13 +29,14 @@ import eu.europa.ec.grow.espd.domain.EconomicOperatorImpl;
 import eu.europa.ec.grow.espd.domain.EspdDocument;
 import eu.europa.ec.grow.espd.domain.PartyImpl;
 import eu.europa.ec.grow.espd.domain.enums.other.Country;
+import eu.europa.ec.grow.espd.ted.TedRequest;
+import eu.europa.ec.grow.espd.ted.TedResponse;
+import eu.europa.ec.grow.espd.ted.TedService;
+import eu.europa.ec.grow.espd.tenderned.ClientMultipartFormPost;
 import eu.europa.ec.grow.espd.tenderned.HtmlToPdfTransformer;
 import eu.europa.ec.grow.espd.tenderned.TenderNedData;
 import eu.europa.ec.grow.espd.tenderned.TenderNedUtils;
 import eu.europa.ec.grow.espd.tenderned.exception.PdfRenderingException;
-import eu.europa.ec.grow.espd.ted.TedRequest;
-import eu.europa.ec.grow.espd.ted.TedResponse;
-import eu.europa.ec.grow.espd.ted.TedService;
 import eu.europa.ec.grow.espd.xml.EspdExchangeMarshaller;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.output.CountingOutputStream;
@@ -51,7 +52,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
@@ -126,7 +126,6 @@ class EspdController {
     public String whoAreYouScreen(
             @RequestParam("authority.country") Country country,
             @RequestParam String action,
-            @RequestPart List<MultipartFile> attachments,
             @ModelAttribute("espd") EspdDocument document,
             @ModelAttribute("tenderned") TenderNedData tenderNedData,
             Model model,
@@ -138,7 +137,9 @@ class EspdController {
 //        } else if ("ca_review_espd_response".equals(action)) {
 //            return reuseRequestAsCa(document);
         } else if ("eo_import_espd".equals(action)) {
-            return importEspdAsEo(country, attachments.get(0), model, result);
+            if (tenderNedData.getXml() != null) {
+                return importEspdAsEo(country, tenderNedData.getXml(), model, result);
+            }
         }
 //    else if ("eo_merge_espds".equals(action)) {
 //            return mergeTwoEspds(attachments, model, result);
@@ -168,27 +169,21 @@ class EspdController {
             BindingResult result) throws IOException {
 
         EspdDocument espd = new EspdDocument();
-        //Wordt geactiveerd in fase 2 wanneer een xml bekeken kan worden.
-//        if (tenderNedData.getXml() != null) {
-//            reuseRequestAsCA(xml, model, result);
-//        } else {
-            espd.setTedReceptionId(receptionId);
-            espd.setOjsNumber(ojsNumber);
-            espd.setProcedureTitle(procedureTitle);
-            espd.setProcedureShortDesc(procedureShortDescr);
-            espd.setFileRefByCA(fileRefByCa);
+        espd.setTedReceptionId(receptionId);
+        espd.setOjsNumber(ojsNumber);
+        espd.setProcedureTitle(procedureTitle);
+        espd.setProcedureShortDesc(procedureShortDescr);
+        espd.setFileRefByCA(fileRefByCa);
 
-            Country country = Country.findByIsoCode(countryIso);
-            PartyImpl party = new PartyImpl();
-            party.setName(name);
-            party.setCountry(country);
-            espd.setAuthority(party);
-            model.addAttribute("tenderned", tenderNedData);
-            model.addAttribute("espd", espd);
-            model.addAttribute("authority.country", country);
-            return redirectToPage("filter");
-//        }
-//        return redirectToPage("filter");
+        Country country = Country.findByIsoCode(countryIso);
+        PartyImpl party = new PartyImpl();
+        party.setName(name);
+        party.setCountry(country);
+        espd.setAuthority(party);
+        model.addAttribute("tenderned", tenderNedData);
+        model.addAttribute("espd", espd);
+        model.addAttribute("authority.country", country);
+        return redirectToPage("filter");
     }
 
 
@@ -241,29 +236,24 @@ class EspdController {
         return "filter";
     }
 
-    private String importEspdAsEo(Country country, MultipartFile attachment, Model model, BindingResult result)
+    private String importEspdAsEo(Country country, String attachment, Model model, BindingResult result)
             throws IOException {
-        try (InputStream is = attachment.getInputStream()) {
-            Optional<EspdDocument> wrappedEspd = exchangeMarshaller.importAmbiguousEspdFile(is);
-
-            // how can wrappedEspd be null???
-            if (wrappedEspd != null && wrappedEspd.isPresent()) {
-                EspdDocument espd = wrappedEspd.get();
-                if (espd.getEconomicOperator() == null) {
-                    espd.setEconomicOperator(new EconomicOperatorImpl());
-                }
-                if (needsToLoadProcurementProcedureInformation(espd)) {
-                    // in this case we need to contact TED again to load the procurement information
-                    copyTedInformation(espd);
-                }
-                espd.getEconomicOperator().setCountry(country);
-                model.addAttribute("espd", espd);
-                return redirectToPage(RESPONSE_EO_PROCEDURE_PAGE);
+        InputStream is = new ByteArrayInputStream(attachment.getBytes(StandardCharsets.UTF_8));
+        Optional<EspdDocument> wrappedEspd = exchangeMarshaller.importAmbiguousEspdFile(is);
+        // how can wrappedEspd be null???
+        if (wrappedEspd != null && wrappedEspd.isPresent()) {
+            EspdDocument espd = wrappedEspd.get();
+            if (espd.getEconomicOperator() == null) {
+                espd.setEconomicOperator(new EconomicOperatorImpl());
             }
+            if (needsToLoadProcurementProcedureInformation(espd)) {
+                // in this case we need to contact TED again to load the procurement information
+                copyTedInformation(espd);
+            }
+            espd.getEconomicOperator().setCountry(country);
+            model.addAttribute("espd", espd);
         }
-
-        result.rejectValue("attachments", "espd_upload_error");
-        return "filter";
+        return redirectToPage(RESPONSE_EO_PROCEDURE_PAGE);
     }
 
     private String mergeTwoEspds(List<MultipartFile> attachments, Model model, BindingResult result)
@@ -349,7 +339,7 @@ class EspdController {
     }
 
     private String addHtmlHeader(String html) throws IOException {
-            return "<html><head/><body>" + html + "</div></body></html>";
+        return "<html><head/><body>" + html + "</div></body></html>";
     }
 
 
@@ -390,7 +380,7 @@ class EspdController {
 
             File pdfFile;
             try {
-                pdfFile = pdfTransformer.convertToPDF(espd.getHtml());
+                pdfFile = pdfTransformer.convertToPDF(espd.getHtml(), agent);
             } catch (PdfRenderingException e) {
                 throw new RuntimeException("Pdf could not be generated", e);
             }

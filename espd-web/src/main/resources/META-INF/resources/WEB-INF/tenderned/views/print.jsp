@@ -31,6 +31,7 @@
   ~
   --%>
 
+
 <%
 request.setAttribute("exclusionEO", eu.europa.ec.grow.espd.xml.CriteriaTemplates.exclusionEO);
 request.setAttribute("suitabilityListEO", CriteriaTemplates.suitabilityListEO);
@@ -99,15 +100,15 @@ request.setAttribute("qualityAssuranceListEO", CriteriaTemplates.qualityAssuranc
 </style>
 <form:form id="espdform" role="form" class="form-horizontal" method="post" commandName="espd" data-toggle="validator">
     <c:set var="cachedFragment" scope="application">
-    <%-- PROCEDURE --%>
+        <%-- PROCEDURE --%>
             <div class="panel-default">
         <div class="paragraph">
             <h2>${span18n['createca_header']}</h2>
         </div>
         <div class="espd-panel panel panel-default">
-            <div class="espd-panel-heading" data-toggle="collapse" data-target="#ojsdiv">
+            <span class="espd-panel-heading" data-toggle="collapse" data-target="#ojsdiv">
                     ${span18n['createca_info_pub']}
-            </div>
+            </span>
             <div id="ojsdiv" class="panel-body collapse in">
                 <div class="alert alert-espd-info" style="border: 1px dotted blue; background-color: #D8D8D8;">
                         ${div18n['createca_to_be_filled_alert']}
@@ -116,7 +117,7 @@ request.setAttribute("qualityAssuranceListEO", CriteriaTemplates.qualityAssuranc
 
                         <div class="col-md-8">
                             <form:input cssClass="form-control" path="ojsNumber"
-                                        placeholder="[ ][ ][ ][ ]/S [ ][ ][ ]–[ ][ ][ ][ ][ ][ ]"/>
+                                        placeholder="[ ][ ][ ][ ]/S [ ][ ][ ]-[ ][ ][ ][ ][ ][ ]"/>
                         </div>
                     </div>
                     <div class="form-group">
@@ -141,8 +142,7 @@ request.setAttribute("qualityAssuranceListEO", CriteriaTemplates.qualityAssuranc
 
                             <div class="col-md-8">
                                 <form:input cssClass="form-control" path="authority.name"
-                                            placeholder="${i18n['createca_name_placeholder']}"
-                                            data-i18n="createca_name_placeholder" required="true"/>
+                                            data-i18n="createca_name_placeholder" required="true" />
                                 <span class="error"></span>
                             </div>
                         </div>
@@ -637,7 +637,7 @@ request.setAttribute("qualityAssuranceListEO", CriteriaTemplates.qualityAssuranc
 									</div>
 								</div>
                             </div>
-                            <div class="col-md-12 alert alert-espd-info"style="border: 1px dotted blue; background-color: #D8D8D8;">
+                            <div class="col-md-12 alert alert-espd-info" style="border: 1px dotted blue; background-color: #D8D8D8;">
                             	${span18n['createeo_information_subcontractors_footer']}
                             </div>
                     </div>
@@ -824,8 +824,8 @@ request.setAttribute("qualityAssuranceListEO", CriteriaTemplates.qualityAssuranc
 
 <%--<input type="hidden" name="html" value="${fn:escapeXml(applicationScope.cachedFragment)}"/>--%>
     <input type="hidden"
-                name="html"
-                value="${fn:escapeXml(applicationScope.cachedFragment)}"/>
+           name="html"
+           value="${fn:escapeXml(applicationScope.cachedFragment)}" />
 
     <div class="panel panel-default espd-panel">
         <div data-i18n="createcafinish_export" class="espd-panel-heading" data-toggle="collapse" data-target="#finish-statements-section">
@@ -852,7 +852,3 @@ request.setAttribute("qualityAssuranceListEO", CriteriaTemplates.qualityAssuranc
             <tiles:putAttribute name="next" value="savePrintHtml"/>
         </tiles:insertDefinition>
     </form:form>
-
-
-
-

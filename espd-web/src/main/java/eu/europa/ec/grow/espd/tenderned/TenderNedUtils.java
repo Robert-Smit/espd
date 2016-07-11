@@ -1,7 +1,7 @@
 /*
  * Copyright 2009-2016 PIANOo; TenderNed programma.
  */
-package eu.europa.ec.grow.espd.domain.tenderned;
+package eu.europa.ec.grow.espd.tenderned;
 
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Value;

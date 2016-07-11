@@ -29,8 +29,10 @@ import eu.europa.ec.grow.espd.domain.EconomicOperatorImpl;
 import eu.europa.ec.grow.espd.domain.EspdDocument;
 import eu.europa.ec.grow.espd.domain.PartyImpl;
 import eu.europa.ec.grow.espd.domain.enums.other.Country;
-import eu.europa.ec.grow.espd.domain.tenderned.TenderNedData;
-import eu.europa.ec.grow.espd.domain.tenderned.TenderNedUtils;
+import eu.europa.ec.grow.espd.tenderned.HtmlToPdfTransformer;
+import eu.europa.ec.grow.espd.tenderned.TenderNedData;
+import eu.europa.ec.grow.espd.tenderned.TenderNedUtils;
+import eu.europa.ec.grow.espd.tenderned.exception.PdfRenderingException;
 import eu.europa.ec.grow.espd.ted.TedRequest;
 import eu.europa.ec.grow.espd.ted.TedResponse;
 import eu.europa.ec.grow.espd.ted.TedService;
@@ -44,7 +46,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -52,6 +60,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.transform.TransformerConfigurationException;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -330,41 +339,16 @@ class EspdController {
             return flow + "_" + agent + "_" + step;
         }
         if ("savePrintHtml".equals(next)) {
-//            savePrintHtml(espd.getHtml());
+            espd.setHtml(addHtmlHeader(espd.getHtml()));
             sendTenderNedData(agent, espd, tenderNedData);
             return redirectToTN(TenderNedUtils.createGetUrl(tenderNedData));
         }
         return redirectToPage(flow + "/" + agent + "/" + next);
     }
-//
-//    private void savePrintHtml(String html) throws IOException {
-//        //TODO implement html to pdf rendering
-//        File dir = new File("/PrintHTML");
-//        if(dir.mkdir()) {
-//            System.out.println("Directory " + dir.getAbsolutePath() + " is created");
-//        } else {
-//            System.out.println("Directory " + dir.getAbsolutePath() + " exists already");
-//        }
-//
-//        try {
-//            File file = new File("/PrintHTML/" + new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()) + ".html");
-//            if (file.createNewFile()) {
-//                System.out.println("file " + file.getAbsolutePath() + " is created");
-//            } else {
-//                System.out.print("File already exists");
-//            }
-//
-//            Writer out = new BufferedWriter(new OutputStreamWriter(
-//                    new FileOutputStream(file), "UTF-8"));
-//            try {
-//                out.write(html);
-//            } finally {
-//                out.close();
-//            }
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
+
+    private String addHtmlHeader(String html) throws IOException {
+            return "<html><head/><body>" + html + "</div></body></html>";
+    }
 
 
     private static String redirectToPage(String pageName) {
@@ -399,8 +383,18 @@ class EspdController {
             } catch (TransformerConfigurationException e) {
                 throw new RuntimeException("XML could not be generated", e);
             }
+
+            HtmlToPdfTransformer pdfTransformer = new HtmlToPdfTransformer();
+
+            File pdfFile;
+            try {
+                pdfFile = pdfTransformer.convertToPDF(espd.getHtml());
+            } catch (PdfRenderingException e) {
+                throw new RuntimeException("Pdf could not be generated", e);
+            }
+
             ClientMultipartFormPost formPost = new ClientMultipartFormPost();
-            tnData.setErrorCode(formPost.sendPosttoTN(xmlString, tnData));
+            tnData.setErrorCode(formPost.sendPosttoTN(xmlString, pdfFile, tnData));
         }
     }
 

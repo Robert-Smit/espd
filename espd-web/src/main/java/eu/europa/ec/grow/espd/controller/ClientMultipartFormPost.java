@@ -3,8 +3,8 @@
  */
 package eu.europa.ec.grow.espd.controller;
 
-import eu.europa.ec.grow.espd.domain.tenderned.TenderNedData;
-import eu.europa.ec.grow.espd.domain.tenderned.TenderNedUtils;
+import eu.europa.ec.grow.espd.tenderned.TenderNedData;
+import eu.europa.ec.grow.espd.tenderned.TenderNedUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.io.FileUtils;
@@ -64,7 +64,7 @@ public class ClientMultipartFormPost {
      * @param tnData is a {@link TenderNedData} object
      * @throws IOException Thrown if an I/O error occurs
      */
-    public String sendPosttoTN(byte[] xml, TenderNedData tnData) throws IOException {
+    public String sendPosttoTN(byte[] xml, File pdfFile, TenderNedData tnData) throws IOException {
         String errorCode = "0";
 
         CloseableHttpClient httpClient = HttpClients.createDefault();
@@ -73,12 +73,13 @@ public class ClientMultipartFormPost {
         File xmlFile = new File(FILENAME_XML);
         FileUtils.writeByteArrayToFile(xmlFile, xml);
         FileBody fileBodyXml = new FileBody(xmlFile, ContentType.APPLICATION_XML, FILENAME_XML);
+        FileBody fileBodyPdf = new FileBody(pdfFile, ContentType.create("application/pdf"), FILENAME_pdf);
 
         String time = DateTime.now().toString("yyyyMMddHHmmss");
 
         HttpEntity entity = MultipartEntityBuilder.create()
                 .addPart("xml", fileBodyXml)
-//                .addPart("pdf", fileBodyPdf)
+                .addPart("pdf", fileBodyPdf)
                 .addTextBody("accessToken", tnData.getAccessToken())
                 .addTextBody("time", time)
                 .addTextBody("security", TenderNedUtils.createSecurityHash(tnData.getAccessToken(), time))
@@ -97,4 +98,5 @@ public class ClientMultipartFormPost {
         }
         return errorCode;
     }
+
 }

@@ -193,7 +193,6 @@ class EspdController {
                 espd.setEconomicOperator(economicOperator);
             }
         } else {
-            espd = new EspdDocument();
             espd.setTedReceptionId(receptionId);
             espd.setOjsNumber(ojsNumber);
             espd.setProcedureTitle(procedureTitle);

@@ -24,6 +24,8 @@ public class TenderNedData {
 
     private String agent;
 
+    private String bestandsNaam;
+
     @Setter(AccessLevel.NONE)
     private String xml;
 

@@ -58,7 +58,6 @@
             $(eo).tab('show');
 
             $('#eo_show_xml_file').addClass('active');
-            document.getElementById('eo_merge_espds').disabled = 'true'
             document.getElementById('eo_import_espd').checked = 'true';
             $('#tab-country-selection').addClass('active');
         }
@@ -162,11 +161,6 @@
                 <label><input id="eo_import_espd" name="action" value="eo_import_espd" class="radiotab radioCa" type="radio" data-target="#tab-single-upload"/>${span18n['filter_import_espd']}</label>
                 <span data-i18n="tooltip_filter_eo_can_import_espd" data-toggle="tooltip" title="${i18n['tooltip_filter_eo_can_import_espd']}"></span>
             </div>
-            <div class="radio">
-                <span class="k-button fa fa-upload hoverable"></span>
-                <label><input id="eo_merge_espds" name="action" value="eo_merge_espds" class="radiotab radioCa" type="radio" data-target="#tab-multiple-upload"/>${span18n['filter_merge_espds']}</label>
-                <span data-i18n="tooltip_filter_eo_merge_espds" data-toggle="tooltip" title="${i18n['tooltip_filter_eo_merge_espds']}"></span>
-            </div>
         </div>
         <div class="tab-content" >
                 <%--<div class="tab-pane" id="tab-single-upload">--%>
@@ -176,7 +170,7 @@
                 <%--</div>--%>
             <div class="tab-pane" id="eo_show_xml_file">
                 <h3 data-i18n="filter_upload_document"><s:message code='filter_upload_document'/></h3>
-                <c:out value="Naam_van_meegestuurde_XML.xml"/>
+                <c:out value="${tenderned.bestandsNaam}"/>
             </div>
                 <%--<div class="tab-pane" id="tab-multiple-upload">--%>
                 <%--<h3 data-i18n="filter_upload_documents"><s:message code='filter_upload_documents'/></h3>--%>

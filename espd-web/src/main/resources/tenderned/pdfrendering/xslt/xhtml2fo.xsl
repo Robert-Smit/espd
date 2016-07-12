@@ -480,6 +480,9 @@ e.g.,
       </fo:static-content>
       <fo:flow flow-name="xsl-region-body">
         <fo:block xsl:use-attribute-sets="body">
+          <fo:block xsl:use-attribute-sets="h1">
+            <xsl:text>Europees Uniform Aanbestedingsdocument (UEA)</xsl:text>
+          </fo:block>
           <xsl:call-template name="process-common-attributes"/>
           <xsl:apply-templates/>
         </fo:block>

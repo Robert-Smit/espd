@@ -58,7 +58,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.transform.TransformerConfigurationException;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -137,9 +136,7 @@ class EspdController {
 //        } else if ("ca_review_espd_response".equals(action)) {
 //            return reuseRequestAsCa(document);
         } else if ("eo_import_espd".equals(action)) {
-            if (tenderNedData.getXml() != null) {
-                return importEspdAsEo(country, tenderNedData.getXml(), model, result);
-            }
+            return redirectToPage(RESPONSE_EO_PROCEDURE_PAGE);
         }
 //    else if ("eo_merge_espds".equals(action)) {
 //            return mergeTwoEspds(attachments, model, result);
@@ -161,25 +158,52 @@ class EspdController {
             @RequestParam(value = "procedureTitle", required = false) String procedureTitle,
             @RequestParam(value = "procedureShortDesc", required = false) String procedureShortDescr,
             @RequestParam(value = "fileRefByCA", required = false) String fileRefByCa,
-            @RequestParam(value = "noUpload", required = false) String noUpload,
-            @RequestParam(value = "noMergeESPDs", required = false) String noMergeESPDs,
+            @RequestParam(value = "adres", required = false) String adres,
+            @RequestParam(value = "postcode", required = false) String postcode,
+            @RequestParam(value = "plaats", required = false) String plaats,
+            @RequestParam(value = "internetadres", required = false) String internetadres,
+            @RequestParam(value = "email", required = false) String email,
+            @RequestParam(value = "telefoonnummer", required = false) String telefoonnummer,
+            @RequestParam(value = "btwNummer", required = false) String btwNummer,
+            @RequestParam(value = "kvkNummer", required = false) String kvkNummer,
+            @RequestParam(value = "isNewResponse", required = false) String isNewResponse,
+            @RequestParam(value = "bestandsNaam", required = false) String bestandsNaam,
             @RequestParam (value = "xml", required = false) String xml,
             @ModelAttribute("tenderned") TenderNedData tenderNedData,
             Model model,
             BindingResult result) throws IOException {
 
-        EspdDocument espd = new EspdDocument();
-        espd.setTedReceptionId(receptionId);
-        espd.setOjsNumber(ojsNumber);
-        espd.setProcedureTitle(procedureTitle);
-        espd.setProcedureShortDesc(procedureShortDescr);
-        espd.setFileRefByCA(fileRefByCa);
-
         Country country = Country.findByIsoCode(countryIso);
-        PartyImpl party = new PartyImpl();
-        party.setName(name);
-        party.setCountry(country);
-        espd.setAuthority(party);
+        EspdDocument espd = new EspdDocument();
+
+        if ("eo".equals(agent)) {
+            espd = importEspdAsEo(country, tenderNedData.getXml(), model, result);
+            if ("true".equals(isNewResponse)) {
+                EconomicOperatorImpl economicOperator = new EconomicOperatorImpl();
+                PartyImpl party = new PartyImpl();
+                party.setName(name);
+                party.setWebsite(internetadres);
+                party.setVatNumber(btwNummer);
+                party.setAnotherNationalId(kvkNummer);
+                party.setStreet(adres);
+                party.setPostalCode(postcode);
+                party.setCity(plaats);
+                party.setCountry(country);
+                economicOperator.copyProperties(party);
+                espd.setEconomicOperator(economicOperator);
+            }
+        } else {
+            espd = new EspdDocument();
+            espd.setTedReceptionId(receptionId);
+            espd.setOjsNumber(ojsNumber);
+            espd.setProcedureTitle(procedureTitle);
+            espd.setProcedureShortDesc(procedureShortDescr);
+            espd.setFileRefByCA(fileRefByCa);
+            PartyImpl party = new PartyImpl();
+            party.setName(name);
+            party.setCountry(country);
+            espd.setAuthority(party);
+        }
         model.addAttribute("tenderned", tenderNedData);
         model.addAttribute("espd", espd);
         model.addAttribute("authority.country", country);
@@ -236,13 +260,14 @@ class EspdController {
         return "filter";
     }
 
-    private String importEspdAsEo(Country country, String attachment, Model model, BindingResult result)
+    private EspdDocument importEspdAsEo(Country country, String attachment, Model model, BindingResult result)
             throws IOException {
+        EspdDocument espd = new EspdDocument();
         InputStream is = new ByteArrayInputStream(attachment.getBytes(StandardCharsets.UTF_8));
         Optional<EspdDocument> wrappedEspd = exchangeMarshaller.importAmbiguousEspdFile(is);
         // how can wrappedEspd be null???
         if (wrappedEspd != null && wrappedEspd.isPresent()) {
-            EspdDocument espd = wrappedEspd.get();
+            espd = wrappedEspd.get();
             if (espd.getEconomicOperator() == null) {
                 espd.setEconomicOperator(new EconomicOperatorImpl());
             }
@@ -251,9 +276,8 @@ class EspdController {
                 copyTedInformation(espd);
             }
             espd.getEconomicOperator().setCountry(country);
-            model.addAttribute("espd", espd);
         }
-        return redirectToPage(RESPONSE_EO_PROCEDURE_PAGE);
+        return espd;
     }
 
     private String mergeTwoEspds(List<MultipartFile> attachments, Model model, BindingResult result)
@@ -368,26 +392,23 @@ class EspdController {
     }
 
     public void sendTenderNedData(String agent, EspdDocument espd, TenderNedData tnData) throws IOException {
+        byte[] xmlString = new byte[0];
         if ("ca".equals(agent)) {
-            byte[] xmlString = new byte[0];
-            try {
-                xmlString = exchangeMarshaller.generateEspdRequestCa(espd);
-            } catch (TransformerConfigurationException e) {
-                throw new RuntimeException("XML could not be generated", e);
-            }
-
-            HtmlToPdfTransformer pdfTransformer = new HtmlToPdfTransformer();
-
-            File pdfFile;
-            try {
-                pdfFile = pdfTransformer.convertToPDF(espd.getHtml(), agent);
-            } catch (PdfRenderingException e) {
-                throw new RuntimeException("Pdf could not be generated", e);
-            }
-
-            ClientMultipartFormPost formPost = new ClientMultipartFormPost();
-            tnData.setErrorCode(formPost.sendPosttoTN(xmlString, pdfFile, tnData));
+            xmlString = exchangeMarshaller.generateEspdRequestCa(espd);
+        } else {
+            xmlString = exchangeMarshaller.generateEspdResponse(espd);
         }
+        HtmlToPdfTransformer pdfTransformer = new HtmlToPdfTransformer();
+
+        File pdfFile;
+        try {
+            pdfFile = pdfTransformer.convertToPDF(espd.getHtml(), agent);
+        } catch (PdfRenderingException e) {
+            throw new RuntimeException("Pdf could not be generated", e);
+        }
+
+        ClientMultipartFormPost formPost = new ClientMultipartFormPost();
+        tnData.setErrorCode(formPost.sendPosttoTN(xmlString, pdfFile, tnData));
     }
 
     @InitBinder

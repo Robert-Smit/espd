@@ -189,6 +189,8 @@ class EspdController {
                 party.setPostalCode(postcode);
                 party.setCity(plaats);
                 party.setCountry(country);
+                party.setContactEmail(email);
+                party.setContactPhone(telefoonnummer);
                 economicOperator.copyProperties(party);
                 espd.setEconomicOperator(economicOperator);
             }

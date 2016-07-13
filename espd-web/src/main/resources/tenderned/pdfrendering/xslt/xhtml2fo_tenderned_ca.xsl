@@ -24,8 +24,16 @@
 		<xsl:attribute name="font-weight">bold</xsl:attribute>
 	</xsl:attribute-set>
 
-	<xsl:template match="div[@id='separate_espd_div']"/>
+	<xsl:attribute-set name="tooltip-table">
+		<xsl:attribute name="background-color">rgb(216,216,216)</xsl:attribute>
+		<xsl:attribute name="border">1px dotted blue</xsl:attribute>
+	</xsl:attribute-set>
 
+	<xsl:template name="append-new-line">
+		<fo:block white-space="pre">
+			<xsl:text>&#xA;</xsl:text>
+		</fo:block>
+	</xsl:template>
 
 	<!-- templates used for checking values in text elements, if value is '', there will be shown a dash -->
 	<xsl:template name="check-value">
@@ -159,11 +167,45 @@
 		</fo:block>
 	</xsl:template>
 
-	<xsl:template match="div[@class='espd-panel-heading']">
+
+	<xsl:template match="div[@class='alert alert-espd-info']">
+		<fo:block xsl:use-attribute-sets="tooltip-table">
+			<xsl:choose>
+				<xsl:when test="ul">
+					<xsl:value-of select="ul/li//span"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:call-template name="process-common-attributes-and-children"/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</fo:block>
+		<xsl:call-template name="append-new-line"/>
+	</xsl:template>
+
+	<xsl:template match="div[@class='col-md-12 alert alert-espd-info']">
+		<fo:block xsl:use-attribute-sets="tooltip-table">
+			<xsl:value-of select="div"/>
+			<xsl:call-template name="process-common-attributes-and-children"/>
+		</fo:block>
+		<xsl:call-template name="append-new-line"/>
+
+	</xsl:template>
+
+	<xsl:template match="*[@class='espd-panel-heading']">
+		<xsl:call-template name="append-new-line"/>
 		<fo:block xsl:use-attribute-sets="espd-panel-heading">
-			<xsl:value-of select=".//span"/>
+			<xsl:choose>
+				<xsl:when test="text()">
+					<xsl:value-of select="."/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:value-of select="span"/>
+				</xsl:otherwise>
+			</xsl:choose>
 		</fo:block>
 	</xsl:template>
+
+
 
 	<xsl:strip-space elements="*"/>
 

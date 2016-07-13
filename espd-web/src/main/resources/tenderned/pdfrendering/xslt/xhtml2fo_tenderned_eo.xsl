@@ -14,19 +14,6 @@
 		<xsl:attribute name="end-indent">12pt</xsl:attribute>
 	</xsl:attribute-set>
 
-	<xsl:attribute-set name="bold-text">
-		<xsl:attribute name="font-weight">600</xsl:attribute>
-	</xsl:attribute-set>
-
-	<xsl:attribute-set name="espd-panel-heading">
-		<xsl:attribute name="background-color">rgb(4,102,164)</xsl:attribute>
-		<xsl:attribute name="color">rgb(255,255,255)</xsl:attribute>
-		<xsl:attribute name="font-weight">bold</xsl:attribute>
-	</xsl:attribute-set>
-
-	<xsl:template match="div[@id='separate_espd_div']"/>
-
-
 	<!-- templates used for checking values in text elements, if value is '', there will be shown a dash -->
 	<xsl:template name="check-value">
 		<xsl:choose>
@@ -66,6 +53,12 @@
 		</xsl:choose>
 	</xsl:template>
 
+	<xsl:template name="append-new-line">
+		<fo:block white-space="pre">
+			<xsl:text>&#xA;</xsl:text>
+		</fo:block>
+	</xsl:template>
+
 	<!-- these templates are used to find the country that is selected, if no country is selected a dash will show -->
 
 	<xsl:template name="country-has-value">
@@ -96,11 +89,13 @@
 			<xsl:value-of select="@name"/>
 		</xsl:variable>
 		<xsl:choose>
-			<xsl:when test="$type-of-select = 'paymentTaxes.currency'">
-				<xsl:value-of select="./option[@selected='selected']"/>
+			<xsl:when test="contains($type-of-select, 'country')">
+				<xsl:call-template name="select-country"/>
 			</xsl:when>
 			<xsl:otherwise>
-				<xsl:call-template name="select-country"/>
+				<fo:block>
+					<xsl:value-of select="./option[@selected='selected']"/>
+				</fo:block>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
@@ -144,7 +139,6 @@
 				<fo:block/>
 
 				<xsl:choose>
-
 					<xsl:when test="@checked = 'checked'">
 						<fo:inline font-family='ZapfDingbats'>&#x25CF;</fo:inline>
 						<xsl:value-of select="span"/>
@@ -177,12 +171,48 @@
 		</fo:block>
 	</xsl:template>
 
-	<xsl:template match="div[@class='espd-panel-heading']">
+	<xsl:template match="div[@class='alert alert-espd-info']">
+		<fo:block xsl:use-attribute-sets="tooltip-table">
+			<xsl:choose>
+				<xsl:when test="ul">
+					<xsl:value-of select="ul/li//span"/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:call-template name="process-common-attributes-and-children"/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</fo:block>
+		<xsl:call-template name="append-new-line"/>
+	</xsl:template>
+
+	<xsl:template match="div[@class='col-md-12 alert alert-espd-info']">
+		<fo:block xsl:use-attribute-sets="tooltip-table">
+			<xsl:value-of select="div"/>
+			<xsl:call-template name="process-common-attributes-and-children"/>
+		</fo:block>
+		<xsl:call-template name="append-new-line"/>
+	</xsl:template>
+
+	<xsl:template match="*[@class='espd-panel-heading']">
+		<xsl:call-template name="append-new-line"/>
 		<fo:block xsl:use-attribute-sets="espd-panel-heading">
-			<xsl:value-of select=".//span"/>
+			<xsl:choose>
+				<xsl:when test="text()">
+					<xsl:value-of select="."/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:value-of select="span"/>
+				</xsl:otherwise>
+			</xsl:choose>
 		</fo:block>
 	</xsl:template>
 
 	<xsl:strip-space elements="*"/>
+
+
+	<xsl:template match="div[@id='separate_espd_div']"/>
+	<xsl:template match="div[@class='collapse']"/>
+	<xsl:template match="div[@class='col-md-12 collapse']"/>
+	<xsl:template match="div[@class='form-group collapse']"/>
 
 </xsl:stylesheet>

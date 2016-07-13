@@ -14,27 +14,6 @@
 		<xsl:attribute name="end-indent">12pt</xsl:attribute>
 	</xsl:attribute-set>
 
-	<xsl:attribute-set name="bold-text">
-		<xsl:attribute name="font-weight">600</xsl:attribute>
-	</xsl:attribute-set>
-
-	<xsl:attribute-set name="espd-panel-heading">
-		<xsl:attribute name="background-color">rgb(4,102,164)</xsl:attribute>
-		<xsl:attribute name="color">rgb(255,255,255)</xsl:attribute>
-		<xsl:attribute name="font-weight">bold</xsl:attribute>
-	</xsl:attribute-set>
-
-	<xsl:attribute-set name="tooltip-table">
-		<xsl:attribute name="background-color">rgb(216,216,216)</xsl:attribute>
-		<xsl:attribute name="border">1px dotted blue</xsl:attribute>
-	</xsl:attribute-set>
-
-	<xsl:template name="append-new-line">
-		<fo:block white-space="pre">
-			<xsl:text>&#xA;</xsl:text>
-		</fo:block>
-	</xsl:template>
-
 	<!-- templates used for checking values in text elements, if value is '', there will be shown a dash -->
 	<xsl:template name="check-value">
 		<xsl:choose>
@@ -188,7 +167,6 @@
 			<xsl:call-template name="process-common-attributes-and-children"/>
 		</fo:block>
 		<xsl:call-template name="append-new-line"/>
-
 	</xsl:template>
 
 	<xsl:template match="*[@class='espd-panel-heading']">

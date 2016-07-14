@@ -39,7 +39,6 @@ import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.stereotype.Component;
 
 import javax.xml.bind.JAXBElement;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import java.io.BufferedInputStream;
@@ -115,8 +114,6 @@ public class EspdExchangeMarshaller {
      * Method used for creating a xml file of the ESPD document
      * @param espdDocument is a {@link EspdDocument} object
      * @return a byte[]
-     * @throws IOException
-     * @throws TransformerConfigurationException
      */
     public byte[] generateEspdRequestCa(EspdDocument espdDocument) {
         ESPDRequestType espdRequestType = toEspdRequestTransformer.buildRequestType(espdDocument);

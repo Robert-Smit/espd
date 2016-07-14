@@ -57,13 +57,12 @@ public class ClientMultipartFormPost {
 
     /**
      * Used to send a POST request to TenderNed.
-     * @param xml is a byte[]
+     *
+     * @param xml    is a byte[]
      * @param tnData is a {@link TenderNedData} object
      * @throws IOException Thrown if an I/O error occurs
      */
-    public String sendPosttoTN(byte[] xml, File pdfFile, TenderNedData tnData) throws IOException {
-        String errorCode = "0";
-
+    public void sendPostToTN(byte[] xml, File pdfFile, TenderNedData tnData) throws IOException {
         CloseableHttpClient httpClient = HttpClients.createDefault();
         HttpPost httpPost = new HttpPost(tnData.getUploadURL());
 
@@ -90,10 +89,8 @@ public class ClientMultipartFormPost {
         httpClient.close();
 
         if (statusCode != HttpStatus.SC_OK) {
-            errorCode = "1";
+            tnData.setErrorCode("1");
             log.error("Error returned from POST, HTTP status: " + statusCode);
         }
-        return errorCode;
     }
-
 }

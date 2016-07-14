@@ -346,7 +346,7 @@ class EspdController {
             @PathVariable String step,
             @RequestParam String next,
             @ModelAttribute("espd") EspdDocument espd,
-            @ModelAttribute("tenderned") TenderNedData tenderNedData,
+            @ModelAttribute("tenderned") TenderNedData tnData,
             HttpServletRequest request,
             HttpServletResponse response,
             BindingResult bindingResult) throws IOException {
@@ -354,19 +354,14 @@ class EspdController {
             return flow + "_" + agent + "_" + step;
         }
         if ("savePrintHtml".equals(next)) {
-            espd.setHtml(addHtmlHeader(espd.getHtml()));
+            espd.setHtml(TenderNedUtils.addHtmlHeader(espd.getHtml()));
             //tijdelijk voor het opslaan van html
             HtmlToPdfTransformer.saveHtml(espd.getHtml());
-            sendTenderNedData(agent, espd, tenderNedData);
-            return redirectToTN(TenderNedUtils.createGetUrl(tenderNedData));
+            sendTenderNedData(espd, tnData);
+            return redirectToTN(TenderNedUtils.createGetUrl(tnData));
         }
         return redirectToPage(flow + "/" + agent + "/" + next);
     }
-
-    private String addHtmlHeader(String html) throws IOException {
-        return "<html><head/><body>" + html + "</div></body></html>";
-    }
-
 
     private static String redirectToPage(String pageName) {
         return "redirect:/" + pageName;
@@ -392,24 +387,28 @@ class EspdController {
         }
     }
 
-    public void sendTenderNedData(String agent, EspdDocument espd, TenderNedData tnData) throws IOException {
+    public void sendTenderNedData(EspdDocument espd, TenderNedData tnData) throws IOException {
         byte[] xmlString = new byte[0];
-        if ("ca".equals(agent)) {
+        if ("ca".equals(tnData.getAgent())) {
             xmlString = exchangeMarshaller.generateEspdRequestCa(espd);
         } else {
             xmlString = exchangeMarshaller.generateEspdResponse(espd);
         }
-        HtmlToPdfTransformer pdfTransformer = new HtmlToPdfTransformer();
+        if (xmlString.length == 0) {
+            tnData.setErrorCode("1");
+        }
 
-        File pdfFile;
+        HtmlToPdfTransformer pdfTransformer = new HtmlToPdfTransformer();
+        File pdfFile = null;
         try {
-            pdfFile = pdfTransformer.convertToPDF(espd.getHtml(), agent);
+            pdfFile = pdfTransformer.convertToPDF(espd.getHtml(), tnData.getAgent());
         } catch (PdfRenderingException e) {
-            throw new RuntimeException("Pdf could not be generated", e);
+            tnData.setErrorCode("1");
+            log.error("An error occured while creating the pdf file", e);
         }
 
         ClientMultipartFormPost formPost = new ClientMultipartFormPost();
-        tnData.setErrorCode(formPost.sendPosttoTN(xmlString, pdfFile, tnData));
+        formPost.sendPostToTN(xmlString, pdfFile, tnData);
     }
 
     @InitBinder

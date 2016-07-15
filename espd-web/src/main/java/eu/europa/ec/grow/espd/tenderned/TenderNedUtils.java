@@ -3,15 +3,16 @@
  */
 package eu.europa.ec.grow.espd.tenderned;
 
-import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
-import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+
+import javax.annotation.PostConstruct;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * espd - Description.
@@ -75,9 +76,5 @@ public class TenderNedUtils {
             log.error(e.getMessage(), e);
         }
         return hexString.toString();
-    }
-
-    public static String addHtmlHeader(String html) throws IOException {
-        return "<html><head/><body>" + html + "</div></body></html>";
     }
 }

@@ -170,7 +170,7 @@
                 <%--</div>--%>
             <div class="tab-pane" id="eo_show_xml_file">
                 <h3 data-i18n="filter_upload_document"><s:message code='filter_upload_document'/></h3>
-                <c:out value="${tenderned.bestandsNaam}"/>
+                <c:out value="${tenderned.bestandsnaam}"/>
             </div>
                 <%--<div class="tab-pane" id="tab-multiple-upload">--%>
                 <%--<h3 data-i18n="filter_upload_documents"><s:message code='filter_upload_documents'/></h3>--%>

@@ -1511,4 +1511,34 @@ e.g., style="text-align: center; color: red"
     </xsl:if>
     <xsl:apply-templates/>
   </xsl:template>
+  <!--
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+     Ruby
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+-->
+  <xsl:template match="ruby">
+    <fo:inline-container alignment-baseline="central" block-progression-dimension="1em" text-indent="0pt" last-line-end-indent="0pt" start-indent="0pt" end-indent="0pt" text-align="center" text-align-last="center">
+      <xsl:call-template name="process-common-attributes"/>
+      <fo:block font-size="50%" wrap-option="no-wrap" line-height="1" space-before.conditionality="retain" space-before="-1.1em" space-after="0.1em" role="rt">
+        <xsl:for-each select="rt | rtc[1]/rt">
+          <xsl:call-template name="process-common-attributes"/>
+          <xsl:apply-templates/>
+        </xsl:for-each>
+      </fo:block>
+      <fo:block wrap-option="no-wrap" line-height="1" role="rb">
+        <xsl:for-each select="rb | rbc[1]/rb">
+          <xsl:call-template name="process-common-attributes"/>
+          <xsl:apply-templates/>
+        </xsl:for-each>
+      </fo:block>
+      <xsl:if test="rtc[2]/rt">
+        <fo:block font-size="50%" wrap-option="no-wrap" line-height="1" space-before="0.1em" space-after.conditionality="retain" space-after="-1.1em" role="rt">
+          <xsl:for-each select="rt | rtc[2]/rt">
+            <xsl:call-template name="process-common-attributes"/>
+            <xsl:apply-templates/>
+          </xsl:for-each>
+        </fo:block>
+      </xsl:if>
+    </fo:inline-container>
+  </xsl:template>
 </xsl:stylesheet>

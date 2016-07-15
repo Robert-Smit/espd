@@ -33,7 +33,7 @@
 <div class="form-group">
 	${span18n["crit_information_available_electronically"]}
 	<form:radiobutton path="${field}.availableElectronically.answer" value="true" data-target-show="${'#'}${field}-electronically"/>${span18n["yes"]}
-	<form:radiobutton path="${field}.availableElectronically.answer" value="false" data-target-hide="${'#'}${field}-electronically"/>${span18n["no"]}		
+	<form:radiobutton path="${field}.availableElectronically.answer" value="false" data-target-hide="${'#'}${field}-electronically"/>${span18n["no"]}
 </div>
 
 <div id="${field}-electronically" class="form-group ${espd[field].availableElectronically.answer ? '' : 'collapse'}">
@@ -41,12 +41,12 @@
 		${span18n["crit_url"]}
 	</label>
 	<div class="col-md-5">
-		<form:input type="text" path="${field}.availableElectronically.url" class="form-control input-sm" data-i18n="crit_url_placeholder" placeholder="${i18n['crit_url_placeholder']}" url="true"/>
+		<form:textarea rows="1" path="${field}.availableElectronically.url" class="form-control input-sm" url="true"/>
 	</div>
 	<label class="control-label col-md-1 small">
 		${span18n["crit_code"]}
 	</label>
 	<div class="col-md-4">
-		<form:input type="text" path="${field}.availableElectronically.code" class="form-control input-sm" data-i18n="crit_code_placeholder" placeholder="${i18n['crit_code_placeholder']}"/>
+		<form:textarea rows="1" path="${field}.availableElectronically.code" class="form-control input-sm"/>
 	</div>
 </div>

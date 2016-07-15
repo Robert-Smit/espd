@@ -67,7 +67,7 @@ request.setAttribute("qualityAssuranceListEO", CriteriaTemplates.qualityAssuranc
 				));
 			}
 			else {
-				$(this).replaceWith($("<span />").text(this.value));
+				$(this).replaceWith($("<span />").addClass("wordwrap").text(this.value));
 			}
 		});
 
@@ -80,7 +80,7 @@ request.setAttribute("qualityAssuranceListEO", CriteriaTemplates.qualityAssuranc
 			}
 		});
 		$('#espdform').find('textarea').each(function() {
-			$(this).replaceWith($("<span />").text(this.value));
+			$(this).replaceWith($("<span />").addClass("wordwrap").text(this.value));
 		});
 
 
@@ -115,7 +115,7 @@ request.setAttribute("qualityAssuranceListEO", CriteriaTemplates.qualityAssuranc
                         <label class="control-label col-md-4">${span18n['createca_ojs_label']}</label>
 
                         <div class="col-md-8">
-                            <form:input cssClass="form-control" path="ojsNumber"
+                            <form:textarea rows="1" cssClass="form-control" path="ojsNumber"
                                         placeholder="[ ][ ][ ][ ]/S [ ][ ][ ]–[ ][ ][ ][ ][ ][ ]"/>
                         </div>
                     </div>
@@ -140,9 +140,7 @@ request.setAttribute("qualityAssuranceListEO", CriteriaTemplates.qualityAssuranc
                             <label class="control-label col-md-4">${span18n['createca_name']}</label>
 
                             <div class="col-md-8">
-                                <form:input cssClass="form-control" path="authority.name"
-                                            placeholder="${i18n['createca_name_placeholder']}"
-                                            data-i18n="createca_name_placeholder" required="true"/>
+                                <form:textarea rows="1" cssClass="form-control" path="authority.name" required="true"/>
                                 <span class="error"></span>
                             </div>
                         </div>
@@ -176,9 +174,7 @@ request.setAttribute("qualityAssuranceListEO", CriteriaTemplates.qualityAssuranc
                             <label class="control-label col-md-4">${span18n['createca_procurer_name']}</label>
 
                             <div class="col-md-8">
-                                <form:input cssClass="form-control" path="procedureTitle"
-                                            placeholder="${i18n['createca_procurer_name_placeholder']}"
-                                            data-i18n="createca_procurer_name_placeholder"/>
+                                <form:textarea rows="1" cssClass="form-control" path="procedureTitle" />
                             </div>
                         </div>
                     </div>
@@ -187,10 +183,7 @@ request.setAttribute("qualityAssuranceListEO", CriteriaTemplates.qualityAssuranc
                             <label class="control-label col-md-4">${span18n['createca_title_or_short_desc']}</label>
 
                             <div class="col-md-8">
-                                <form:textarea path="procedureShortDesc" cssStyle="resize: none" rows="4" cols="20"
-                                               cssClass="form-control"
-                                               placeholder="${i18n['createca_title_or_short_desc_placeholder']}"
-                                               data-i18n="createca_title_or_short_desc_placeholder"/>
+                                <form:textarea path="procedureShortDesc" cssStyle="resize: none" rows="4" cols="20" cssClass="form-control"/>
                             </div>
                         </div>
                     </div>
@@ -201,9 +194,7 @@ request.setAttribute("qualityAssuranceListEO", CriteriaTemplates.qualityAssuranc
                             </label>
 
                             <div class="col-md-8">
-                                <form:input cssClass="form-control" path="fileRefByCA"
-                                            placeholder="${i18n['createca_file_ref_ca_placeholder']}"
-                                            data-i18n="createca_file_ref_ca_placeholder"/>
+                                <form:textarea rows="1" cssClass="form-control" path="fileRefByCA"/>
                             </div>
                         </div>
                     </div>
@@ -225,9 +216,7 @@ request.setAttribute("qualityAssuranceListEO", CriteriaTemplates.qualityAssuranc
                                     <label class="control-label col-md-4">${span18n['createeo_name']}</label>
 
                                     <div class="col-md-8">
-                                        <form:input cssClass="form-control" path="economicOperator.name"
-                                                    placeholder="${i18n['createeo_name_placeholder']}"
-                                                    data-i18n="createeo_name_placeholder"/>
+                                        <form:textarea rows="1" cssClass="form-control" path="economicOperator.name"/>
                                     </div>
                                 </div>
                                 <tiles:insertDefinition name="partyInfo">
@@ -238,9 +227,7 @@ request.setAttribute("qualityAssuranceListEO", CriteriaTemplates.qualityAssuranc
                                     <label class="control-label col-md-4">${span18n['createeo_internet_addr_if_exists']}</label>
 
                                     <div class="col-md-8">
-                                        <form:input cssClass="form-control" path="economicOperator.website"
-                                                    placeholder="${i18n['createeo_internet_addr_if_exists_placeholder']}"
-                                                    data-i18n="createeo_internet_addr_if_exists_placeholder"/>
+                                        <form:textarea rows="1" cssClass="form-control" path="economicOperator.website"/>
                                     </div>
                                 </div>
                             </div>
@@ -253,27 +240,21 @@ request.setAttribute("qualityAssuranceListEO", CriteriaTemplates.qualityAssuranc
                                     <label class="control-label col-md-4">${span18n['createeo_contact_person']}</label>
 
                                     <div class="col-md-8">
-                                        <form:input cssClass="form-control" path="economicOperator.contactName"
-                                                    placeholder="${i18n['createeo_contact_person_placeholder']}"
-                                                    data-i18n="createeo_contact_person_placeholder"/>
+                                        <form:textarea rows="1" cssClass="form-control" path="economicOperator.contactName"/>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label col-md-4">${span18n['createeo_vat']}</label>
 
                                     <div class="col-md-8">
-                                        <form:input cssClass="form-control" path="economicOperator.vatNumber"
-                                                    placeholder="${i18n['createeo_vat_placeholder']}"
-                                                    data-i18n="createeo_vat_placeholder"/>
+                                        <form:textarea rows="1" cssClass="form-control" path="economicOperator.vatNumber"/>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label col-md-4">${span18n['createeo_another_vat']}</label>
 
                                     <div class="col-md-8">
-                                        <form:input cssClass="form-control" path="economicOperator.anotherNationalId"
-                                                    placeholder="${i18n['createeo_another_vat_placeholder']}"
-                                                    data-i18n="createeo_another_vat_placeholder"/>
+                                        <form:textarea rows="1" cssClass="form-control" path="economicOperator.anotherNationalId"/>
                                     </div>
                                 </div>
                             </div>
@@ -304,19 +285,14 @@ request.setAttribute("qualityAssuranceListEO", CriteriaTemplates.qualityAssuranc
                                     <label class="control-label col-md-6">${span18n['createeo_percentage_disworkers']}</label>
 
                                     <div class="col-md-6">
-                                        <form:input cssClass="form-control" path="procurementReserved.doubleValue1"
-                                                    number="true"
-                                                    placeholder="${i18n['createeo_percentage_disworkers_placeholder']}"
-                                                    data-i18n="createeo_percentage_disworkers_placeholder"/>
+                                        <form:textarea rows="1" cssClass="form-control" path="procurementReserved.doubleValue1" number="true"/>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label col-md-6">${span18n['createeo_disworkers_details']}</label>
 
                                     <div class="col-md-6">
-                                        <form:input cssClass="form-control" path="procurementReserved.description1"
-                                                    placeholder="${i18n['createeo_disworkers_details_placeholder']}"
-                                                    data-i18n="createeo_disworkers_details_placeholder"/>
+                                        <form:textarea rows="1" cssClass="form-control" path="procurementReserved.description1"/>
                                     </div>
                                 </div>
                             </div>
@@ -340,9 +316,7 @@ request.setAttribute("qualityAssuranceListEO", CriteriaTemplates.qualityAssuranc
                                         <label class="control-label col-md-6">${span18n['createeo_provide_regnumber']}</label>
 
                                         <div class="col-md-6">
-                                            <form:input cssClass="form-control" path="eoRegistered.description1"
-                                                        placeholder="${i18n['createeo_provide_regnumber_placeholder']}"
-                                                        data-i18n="createeo_provide_regnumber_placeholder"/>
+                                            <form:textarea rows="1" cssClass="form-control" path="eoRegistered.description1"/>
                                         </div>
                                     </div>
                                 </div>
@@ -351,9 +325,7 @@ request.setAttribute("qualityAssuranceListEO", CriteriaTemplates.qualityAssuranc
                                         <label class="control-label col-md-6">${span18n['createeo_cert_e_avaliable']}</label>
 
                                         <div class="col-md-6">
-                                            <form:input cssClass="form-control" path="eoRegistered.description2"
-                                                        placeholder="${i18n['createeo_cert_e_avaliable_placeholder']}"
-                                                        data-i18n="createeo_cert_e_avaliable_placeholder"/>
+                                            <form:textarea rows="1" cssClass="form-control" path="eoRegistered.description2"/>
                                         </div>
                                     </div>
                                 </div>
@@ -362,9 +334,7 @@ request.setAttribute("qualityAssuranceListEO", CriteriaTemplates.qualityAssuranc
                                         <label class="control-label col-md-6">${span18n['createeo_ref_for_cert']}</label>
 
                                         <div class="col-md-6">
-                                            <form:input cssClass="form-control" path="eoRegistered.description3"
-                                                        placeholder="${i18n['createeo_ref_for_cert_placeholder']}"
-                                                        data-i18n="createeo_ref_for_cert_placeholder"/>
+                                            <form:textarea rows="1" cssClass="form-control" path="eoRegistered.description3"/>
                                         </div>
                                     </div>
                                 </div>
@@ -399,9 +369,7 @@ request.setAttribute("qualityAssuranceListEO", CriteriaTemplates.qualityAssuranc
                                         <label class="control-label col-md-6">${span18n['createeo_doc_e_avaliable']}</label>
 
                                         <div class="col-md-6">
-                                            <form:input cssClass="form-control" path="eoRegistered.description5"
-                                                        placeholder="${i18n['createeo_doc_e_avaliable_placeholder']}"
-                                                        data-i18n="createeo_doc_e_avaliable_placeholder"/>
+                                            <form:textarea rows="1" cssClass="form-control" path="eoRegistered.description5"/>
                                         </div>
                                     </div>
                                 </div>
@@ -424,10 +392,8 @@ request.setAttribute("qualityAssuranceListEO", CriteriaTemplates.qualityAssuranc
                                         <label class="control-label col-md-6"> ${span18n['createeo_eo_group_role']}</label>
 
                                         <div class="col-md-6">
-                                            <form:input cssClass="form-control"
-                                                        path="eoParticipatingProcurementProcedure.description1"
-                                                        placeholder="${i18n['createeo_eo_group_role_placeholder']}"
-                                                        data-i18n="createeo_eo_group_role_placeholder"/>
+                                            <form:textarea rows="1" cssClass="form-control"
+                                                        path="eoParticipatingProcurementProcedure.description1"/>
                                         </div>
                                     </div>
                                 </div>
@@ -436,10 +402,7 @@ request.setAttribute("qualityAssuranceListEO", CriteriaTemplates.qualityAssuranc
                                         <label class="control-label col-md-6"> ${span18n['createeo_other_eo_part']}</label>
 
                                         <div class="col-md-6">
-                                            <form:input cssClass="form-control"
-                                                        path="eoParticipatingProcurementProcedure.description2"
-                                                        placeholder="${i18n['createeo_other_eo_part_placeholder']}"
-                                                        data-i18n="createeo_other_eo_part_placeholder"/>
+                                            <form:textarea rows="1" cssClass="form-control" path="eoParticipatingProcurementProcedure.description2"/>
                                         </div>
                                     </div>
                                 </div>
@@ -448,10 +411,7 @@ request.setAttribute("qualityAssuranceListEO", CriteriaTemplates.qualityAssuranc
                                         <label class="control-label col-md-6"> ${span18n['createeo_name_part_group']}</label>
 
                                         <div class="col-md-6">
-                                            <form:input cssClass="form-control"
-                                                        path="eoParticipatingProcurementProcedure.description3"
-                                                        placeholder="${i18n['createeo_name_part_group_placeholder']}"
-                                                        data-i18n="createeo_name_part_group_placeholder"/>
+                                            <form:textarea rows="1" cssClass="form-control" path="eoParticipatingProcurementProcedure.description3"/>
                                         </div>
                                     </div>
                                 </div>
@@ -461,9 +421,7 @@ request.setAttribute("qualityAssuranceListEO", CriteriaTemplates.qualityAssuranc
                                     <label class="control-label col-md-6">${span18n['createeo_lots_concerned']}</label>
 
                                     <div class="col-md-6">
-                                        <form:input cssClass="form-control" path="lotConcerned" id="lotConcerned"
-                                                    placeholder="${i18n['createeo_lots_concerned_placeholder']}"
-                                                    data-i18n="createeo_lots_concerned_placeholder"/>
+                                        <form:textarea rows="1" cssClass="form-control" path="lotConcerned" id="lotConcerned"/>
                                     </div>
                                 </div>
                             </div>
@@ -487,20 +445,14 @@ request.setAttribute("qualityAssuranceListEO", CriteriaTemplates.qualityAssuranc
                                     <label class="control-label col-md-4">${span18n['createeo_first_name']}</label>
 
                                     <div class="col-md-8">
-                                        <form:input cssClass="form-control"
-                                                    path="economicOperator.representative.firstName"
-                                                    placeholder="${i18n['createeo_first_name_placeholder']}"
-                                                    data-i18n="createeo_first_name_placeholder"/>
+                                        <form:textarea rows="1" cssClass="form-control" path="economicOperator.representative.firstName"/>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label col-md-4">${span18n['createeo_birth_date']}</label>
 
                                     <div class="col-md-8">
-                                        <form:input path="economicOperator.representative.dateOfBirth"
-                                                    cssClass="form-control datepicker"
-                                                    placeholder="${i18n['createeo_birth_date_placeholder']}"
-                                                    data-i18n="createeo_birth_date_placeholder"/>
+                                        <form:input type="text" path="economicOperator.representative.dateOfBirth" cssClass="form-control datepicker"/>
                                     </div>
                                 </div>
                             </div>
@@ -509,20 +461,14 @@ request.setAttribute("qualityAssuranceListEO", CriteriaTemplates.qualityAssuranc
                                     <label class="control-label col-md-4">${span18n['createeo_last_name']}</label>
 
                                     <div class="col-md-8">
-                                        <form:input cssClass="form-control"
-                                                    path="economicOperator.representative.lastName"
-                                                    placeholder="${i18n['createeo_last_name_placeholder']}"
-                                                    data-i18n="createeo_last_name_placeholder"/>
+                                        <form:textarea rows="1" cssClass="form-control" path="economicOperator.representative.lastName"/>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label col-md-4">${span18n['createeo_birth_place']}</label>
 
                                     <div class="col-md-8">
-                                        <form:input cssClass="form-control"
-                                                    path="economicOperator.representative.placeOfBirth"
-                                                    placeholder="${i18n['createeo_birth_place_placeholder']}"
-                                                    data-i18n="createeo_birth_place_placeholder"/>
+                                        <form:textarea rows="1" cssClass="form-control" path="economicOperator.representative.placeOfBirth"/>
                                     </div>
                                 </div>
                             </div>
@@ -538,9 +484,7 @@ request.setAttribute("qualityAssuranceListEO", CriteriaTemplates.qualityAssuranc
                                             code="createca_email"/></label>
 
                                     <div class="col-md-8">
-                                        <form:input cssClass="form-control" path="economicOperator.representative.email"
-                                                    placeholder="${i18n['createca_email_placeholder']}"
-                                                    data-i18n="createca_email_placeholder"/>
+                                        <form:textarea rows="1" cssClass="form-control" path="economicOperator.representative.email"/>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -548,19 +492,14 @@ request.setAttribute("qualityAssuranceListEO", CriteriaTemplates.qualityAssuranc
                                             code="createca_telephone"/></label>
 
                                     <div class="col-md-8">
-                                        <form:input cssClass="form-control" path="economicOperator.representative.phone"
-                                                    placeholder="${i18n['createca_telephone_placeholder']}"
-                                                    data-i18n="createca_telephone_placeholder"/>
+                                        <form:textarea rows="1" cssClass="form-control" path="economicOperator.representative.phone"/>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label col-md-4">${span18n['createeo_pos_act_in_capacity']}</label>
 
                                     <div class="col-md-8">
-                                        <form:input cssClass="form-control"
-                                                    path="economicOperator.representative.position"
-                                                    placeholder="${i18n['createeo_pos_act_in_capacity_placeholder']}"
-                                                    data-i18n="createeo_pos_act_in_capacity_placeholder"/>
+                                        <form:textarea rows="1" cssClass="form-control" path="economicOperator.representative.position"/>
                                     </div>
                                 </div>
                             </div>
@@ -571,9 +510,7 @@ request.setAttribute("qualityAssuranceListEO", CriteriaTemplates.qualityAssuranc
                                     <div class="col-md-10">
                                         <form:textarea path="economicOperator.representative.additionalInfo"
                                                        cssStyle="resize: none" rows="4" cols="20"
-                                                       cssClass="form-control"
-                                                       placeholder="${i18n['createeo_detinfo_of_represent_placeholder']}"
-                                                       data-i18n="createeo_detinfo_of_represent_placeholder"/>
+                                                       cssClass="form-control"/>
                                     </div>
                                 </div>
                             </div>
@@ -632,9 +569,7 @@ request.setAttribute("qualityAssuranceListEO", CriteriaTemplates.qualityAssuranc
 									<label class="control-label col-md-6">${span18n['createeo_information_subcontractors_description']}</label>
 		
 									<div class="col-md-6">
-										<form:input cssClass="form-control" path="subcontractingThirdParties.description1"
-											placeholder="${i18n['createeo_information_subcontractors_placeholder']}"
-											data-i18n="createeo_information_subcontractors_placeholder"/>
+										<form:textarea rows="1" cssClass="form-control" path="subcontractingThirdParties.description1"/>
 									</div>
 								</div>
                             </div>
@@ -761,20 +696,17 @@ request.setAttribute("qualityAssuranceListEO", CriteriaTemplates.qualityAssuranc
 
 	<%-- FINISH --%>
 	<div class="panel-default">
-
 		<div class="paragraph">
 			<h2>
 				<span data-i18n="createcafinish_header"><s:message code="createcafinish_header"/></span>
 			</h2>
 		</div>
-		
 		<div class="panel panel-default espd-panel">
 			<div data-i18n="createcafinish_reduction" class="espd-panel-heading" data-toggle="collapse" data-target="#finish-reduction-of-numbers-section">
 				 <s:message code='createcafinish_reduction'/>
 			</div>
             <div id="finish-reduction-of-numbers-section" class="collapse in">
                 <div class="espd-panel-body panel-body">
-
 					<div class="alert alert-espd-info">
 						<ul class="fa-ul">
 						<li>
@@ -783,21 +715,17 @@ request.setAttribute("qualityAssuranceListEO", CriteriaTemplates.qualityAssuranc
 						</li>
 						</ul>
 					</div>
-					
 					<span data-i18n="createcafinish_reduction_question" style="font-weight: bold;">
                         <s:message code='createcafinish_reduction_question'/>
                     </span>
-
 					<tiles:insertDefinition name="objectiveFormTemplate">
 						<tiles:putAttribute name="field" value="meetsObjective"/>
 						<tiles:putAttribute name="title_code" value="createcafinish_title_eo_declares_that"/>
 						<tiles:putAttribute name="description_code" value="createcafinish_text_eo_declares_that"/>
 					</tiles:insertDefinition>
-
                 </div>
             </div>
 		</div>
-		
 		<div class="panel panel-default espd-panel">
 			<div data-i18n="createcafinish_concl_statements" class="espd-panel-heading" data-toggle="collapse" data-target="#finish-statements-signature-section">
 				 <s:message code='createcafinish_concl_statements'/>
@@ -807,26 +735,34 @@ request.setAttribute("qualityAssuranceListEO", CriteriaTemplates.qualityAssuranc
                     <span data-i18n="createcafinish_concl_statements_text">
                         <s:message code='createcafinish_concl_statements_text'/>
                     </span>
-                    
                     <p>
 	                    <span data-i18n="createcafinish_concl_statements_signature">
 	                        <s:message code='createcafinish_concl_statements_signature'/>
 	                    </span>
                     </p>
-                    
-                    <br><br><br><br><br><br>
-                    
+                    <div class="form-group">
+                        <label class="control-label col-md-2 small">${span18n['crit_date']}</label>
+                        <div class="col-md-4">
+                           <form:input type="text" path="documentDate" cssClass="form-control datepicker" cssStyle="border-radius: 0;"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-2 small">${span18n['place']}</label>
+                        <div class="col-md-4">
+                            <form:textarea rows="1" path="location" cssClass="form-control"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-2 small">${span18n['signature']}</label>
+                    </div>
+                    <br/><br/><br/>
                 </div>
             </div>
 		</div>
-		
         <tiles:insertDefinition name="footerButtons">
             <tiles:putAttribute name="nextCode" value="export"/>
             <tiles:putAttribute name="prev" value="finish"/>
             <tiles:putAttribute name="next" value="generate"/>
         </tiles:insertDefinition>
-        
 	</div>
-
-
 </form:form>

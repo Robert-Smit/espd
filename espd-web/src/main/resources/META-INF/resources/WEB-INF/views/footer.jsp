@@ -2,7 +2,6 @@
 <%@ taglib prefix="s" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <%--
   ~
@@ -33,16 +32,13 @@
 	<div class="row">
 		<div class="col-lg-12">
 			<span data-i18n="footer_last_update"><s:message code='footer_last_update'/></span>
-			<span class="datefmt"> <fmt:formatDate value="${now}"/> </span> |
-			<a target="_blank" href="http://ec.europa.eu/growth/tools-databases/security-incidents/index_en.htm">
-				<span data-i18n="footer_report_security_incident"><s:message code='footer_report_security_incident'/></span>
-			</a>
+			<span class="datefmt"> <fmt:formatDate value="${now}"/> </span>
 		</div>
 	</div>
 </footer>
-<spring:eval var="piwikEnabled" scope="page" expression='@espdConfiguration.piwikEnabled' />
-<spring:eval var="piwikServer" scope="page" expression='@espdConfiguration.piwikServer' />
-<spring:eval var="piwikId" scope="page" expression='@espdConfiguration.piwikId' />
+<s:eval var="piwikEnabled" scope="page" expression='@espdConfiguration.piwikEnabled' />
+<s:eval var="piwikServer" scope="page" expression='@espdConfiguration.piwikServer' />
+<s:eval var="piwikId" scope="page" expression='@espdConfiguration.piwikId' />
 <c:if test="${piwikEnabled == true}">
     <script type="text/javascript">
         var piwik = Piwik.getTracker("${piwikServer}", ${piwikId});

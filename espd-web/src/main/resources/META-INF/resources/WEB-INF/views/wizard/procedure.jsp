@@ -66,6 +66,8 @@
     
     <div class="panel-default">
         <tiles:insertDefinition name="progress">
+        	<tiles:putAttribute name="agent" value="${agent}"/>
+        	<tiles:putAttribute name="flow" value="${flow}"/>
             <tiles:putAttribute name="procedure" value="true"/>
         </tiles:insertDefinition>
         <div class="errorContainer alert alert-danger" style="display: none">
@@ -91,8 +93,7 @@
                         <label class="control-label col-md-4">${span18n['createca_ojs_label']}</label>
 
                         <div class="col-md-8">
-                            <form:input cssClass="form-control" path="ojsNumber"
-                                        placeholder="[ ][ ][ ][ ]/S [ ][ ][ ]–[ ][ ][ ][ ][ ][ ]"/>
+                            <form:input cssClass="form-control" path="ojsNumber" placeholder="[ ][ ][ ][ ]/S [ ][ ][ ]–[ ][ ][ ][ ][ ][ ]"/>
                         </div>
                     </div>
                     <div class="form-group">
@@ -116,9 +117,7 @@
                             <label class="control-label col-md-4">${span18n['createca_name']}</label>
 
                             <div class="col-md-8">
-                                <form:input cssClass="form-control" path="authority.name"
-                                            placeholder="${i18n['createca_name_placeholder']}"
-                                            data-i18n="createca_name_placeholder"/>
+                                <form:textarea rows="1" cssClass="form-control" path="authority.name"/>
                                 <span class="error"></span>
                             </div>
                         </div>
@@ -151,9 +150,7 @@
                             <label class="control-label col-md-4">${span18n['createca_procurer_name']}</label>
 
                             <div class="col-md-8">
-                                <form:input cssClass="form-control" path="procedureTitle"
-                                            placeholder="${i18n['createca_procurer_name_placeholder']}"
-                                            data-i18n="createca_procurer_name_placeholder"/>
+                                <form:textarea rows="1" cssClass="form-control" path="procedureTitle"/>
                             </div>
                         </div>
                     </div>
@@ -163,9 +160,7 @@
 
                             <div class="col-md-8">
                                 <form:textarea path="procedureShortDesc" cssStyle="resize: none" rows="4" cols="20"
-                                               cssClass="form-control"
-                                               placeholder="${i18n['createca_title_or_short_desc_placeholder']}"
-                                               data-i18n="createca_title_or_short_desc_placeholder"/>
+                                               cssClass="form-control"/>
                             </div>
                         </div>
                     </div>
@@ -176,9 +171,7 @@
                             </label>
 
                             <div class="col-md-8">
-                                <form:input cssClass="form-control" path="fileRefByCA"
-                                            placeholder="${i18n['createca_file_ref_ca_placeholder']}"
-                                            data-i18n="createca_file_ref_ca_placeholder"/>
+                                <form:textarea rows="1" cssClass="form-control" path="fileRefByCA"/>
                             </div>
                         </div>
                     </div>
@@ -198,9 +191,7 @@
                                     <label class="control-label col-md-4">${span18n['createeo_name']}</label>
 
                                     <div class="col-md-8">
-                                        <form:input cssClass="form-control" path="economicOperator.name"
-                                                    placeholder="${i18n['createeo_name_placeholder']}"
-                                                    data-i18n="createeo_name_placeholder"/>
+                                        <form:textarea rows="1" cssClass="form-control" path="economicOperator.name"/>
                                     </div>
                                 </div>
                                 <tiles:insertDefinition name="partyInfo">
@@ -211,9 +202,7 @@
                                     <label class="control-label col-md-4">${span18n['createeo_internet_addr_if_exists']}</label>
 
                                     <div class="col-md-8">
-                                        <form:input cssClass="form-control" path="economicOperator.website"
-                                                    placeholder="${i18n['createeo_internet_addr_if_exists_placeholder']}"
-                                                    data-i18n="createeo_internet_addr_if_exists_placeholder"/>
+                                        <form:textarea rows="1" cssClass="form-control" path="economicOperator.website"/>
                                     </div>
                                 </div>
                             </div>
@@ -226,27 +215,21 @@
                                     <label class="control-label col-md-4">${span18n['createeo_contact_person']}</label>
 
                                     <div class="col-md-8">
-                                        <form:input cssClass="form-control" path="economicOperator.contactName"
-                                                    placeholder="${i18n['createeo_contact_person_placeholder']}"
-                                                    data-i18n="createeo_contact_person_placeholder"/>
+                                        <form:textarea rows="1" cssClass="form-control" path="economicOperator.contactName"/>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label col-md-4">${span18n['createeo_vat']}</label>
 
                                     <div class="col-md-8">
-                                        <form:input cssClass="form-control" path="economicOperator.vatNumber"
-                                                    placeholder="${i18n['createeo_vat_placeholder']}"
-                                                    data-i18n="createeo_vat_placeholder"/>
+                                        <form:textarea rows="1" cssClass="form-control" path="economicOperator.vatNumber"/>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label col-md-4">${span18n['createeo_another_vat']}</label>
 
                                     <div class="col-md-8">
-                                        <form:input cssClass="form-control" path="economicOperator.anotherNationalId"
-                                                    placeholder="${i18n['createeo_another_vat_placeholder']}"
-                                                    data-i18n="createeo_another_vat_placeholder"/>
+                                        <form:textarea rows="1" cssClass="form-control" path="economicOperator.anotherNationalId"/>
                                     </div>
                                 </div>
                             </div>
@@ -278,19 +261,14 @@
                                     <label class="control-label col-md-6">${span18n['createeo_percentage_disworkers']}</label>
 
                                     <div class="col-md-6">
-                                        <form:input cssClass="form-control" path="procurementReserved.doubleValue1"
-                                                    number="true"
-                                                    placeholder="${i18n['createeo_percentage_disworkers_placeholder']}"
-                                                    data-i18n="createeo_percentage_disworkers_placeholder"/>
+                                        <form:textarea rows="1" cssClass="form-control" path="procurementReserved.doubleValue1" number="true"/>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label col-md-6">${span18n['createeo_disworkers_details']}</label>
 
                                     <div class="col-md-6">
-                                        <form:input cssClass="form-control" path="procurementReserved.description1"
-                                                    placeholder="${i18n['createeo_disworkers_details_placeholder']}"
-                                                    data-i18n="createeo_disworkers_details_placeholder"/>
+                                        <form:textarea rows="1" cssClass="form-control" path="procurementReserved.description1"/>
                                     </div>
                                 </div>
                             </div>
@@ -314,9 +292,7 @@
                                         <label class="control-label col-md-6">${span18n['createeo_provide_regnumber']}</label>
 
                                         <div class="col-md-6">
-                                            <form:input cssClass="form-control" path="eoRegistered.description1"
-                                                        placeholder="${i18n['createeo_provide_regnumber_placeholder']}"
-                                                        data-i18n="createeo_provide_regnumber_placeholder"/>
+                                            <form:textarea rows="1" cssClass="form-control" path="eoRegistered.description1"/>
                                         </div>
                                     </div>
                                 </div>
@@ -325,9 +301,7 @@
                                         <label class="control-label col-md-6">${span18n['createeo_cert_e_avaliable']}</label>
 
                                         <div class="col-md-6">
-                                            <form:input cssClass="form-control" path="eoRegistered.description2"
-                                                        placeholder="${i18n['createeo_cert_e_avaliable_placeholder']}"
-                                                        data-i18n="createeo_cert_e_avaliable_placeholder"/>
+                                            <form:textarea rows="1" cssClass="form-control" path="eoRegistered.description2"/>
                                         </div>
                                     </div>
                                 </div>
@@ -336,9 +310,7 @@
                                         <label class="control-label col-md-6">${span18n['createeo_ref_for_cert']}</label>
 
                                         <div class="col-md-6">
-                                            <form:input cssClass="form-control" path="eoRegistered.description3"
-                                                        placeholder="${i18n['createeo_ref_for_cert_placeholder']}"
-                                                        data-i18n="createeo_ref_for_cert_placeholder"/>
+                                            <form:textarea rows="1" cssClass="form-control" path="eoRegistered.description3"/>
                                         </div>
                                     </div>
                                 </div>
@@ -372,9 +344,7 @@
                                         <label class="control-label col-md-6">${span18n['createeo_doc_e_avaliable']}</label>
 
                                         <div class="col-md-6">
-                                            <form:input cssClass="form-control" path="eoRegistered.description5"
-                                                        placeholder="${i18n['createeo_doc_e_avaliable_placeholder']}"
-                                                        data-i18n="createeo_doc_e_avaliable_placeholder"/>
+                                            <form:textarea rows="1" cssClass="form-control" path="eoRegistered.description5"/>
                                         </div>
                                     </div>
                                 </div>
@@ -397,10 +367,8 @@
                                         <label class="control-label col-md-6"> ${span18n['createeo_eo_group_role']}</label>
 
                                         <div class="col-md-6">
-                                            <form:input cssClass="form-control"
-                                                        path="eoParticipatingProcurementProcedure.description1"
-                                                        placeholder="${i18n['createeo_eo_group_role_placeholder']}"
-                                                        data-i18n="createeo_eo_group_role_placeholder"/>
+                                            <form:textarea rows="1" cssClass="form-control"
+                                                        path="eoParticipatingProcurementProcedure.description1"/>
                                         </div>
                                     </div>
                                 </div>
@@ -409,10 +377,8 @@
                                         <label class="control-label col-md-6"> ${span18n['createeo_other_eo_part']}</label>
 
                                         <div class="col-md-6">
-                                            <form:input cssClass="form-control"
-                                                        path="eoParticipatingProcurementProcedure.description2"
-                                                        placeholder="${i18n['createeo_other_eo_part_placeholder']}"
-                                                        data-i18n="createeo_other_eo_part_placeholder"/>
+                                            <form:textarea rows="1" cssClass="form-control"
+                                                        path="eoParticipatingProcurementProcedure.description2"/>
                                         </div>
                                     </div>
                                 </div>
@@ -421,10 +387,8 @@
                                         <label class="control-label col-md-6"> ${span18n['createeo_name_part_group']}</label>
 
                                         <div class="col-md-6">
-                                            <form:input cssClass="form-control"
-                                                        path="eoParticipatingProcurementProcedure.description3"
-                                                        placeholder="${i18n['createeo_name_part_group_placeholder']}"
-                                                        data-i18n="createeo_name_part_group_placeholder"/>
+                                            <form:textarea rows="1" cssClass="form-control"
+                                                        path="eoParticipatingProcurementProcedure.description3"/>
                                         </div>
                                     </div>
                                 </div>
@@ -434,9 +398,7 @@
                                     <label class="control-label col-md-6">${span18n['createeo_lots_concerned']}</label>
 
                                     <div class="col-md-6">
-                                        <form:input cssClass="form-control" path="lotConcerned" id="lotConcerned"
-                                                    placeholder="${i18n['createeo_lots_concerned_placeholder']}"
-                                                    data-i18n="createeo_lots_concerned_placeholder"/>
+                                        <form:textarea rows="1" cssClass="form-control" path="lotConcerned" id="lotConcerned"/>
                                     </div>
                                 </div>
                             </div>
@@ -454,99 +416,92 @@
                                  style="border: 1px dotted blue; background-color: #D8D8D8;">
                                     ${span18n['createeo_person_empowered']}
                             </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="control-label col-md-4">${span18n['createeo_first_name']}</label>
-
-                                    <div class="col-md-8">
-                                        <form:input cssClass="form-control"
-                                                    path="economicOperator.representative.firstName"
-                                                    placeholder="${i18n['createeo_first_name_placeholder']}"
-                                                    data-i18n="createeo_first_name_placeholder"/>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="control-label col-md-4">${span18n['createeo_birth_date']}</label>
-
-                                    <div class="col-md-8">
-                                        <form:input path="economicOperator.representative.dateOfBirth"
-                                                    cssClass="form-control datepicker"
-                                                    placeholder="${i18n['createeo_birth_date_placeholder']}"
-                                                    data-i18n="createeo_birth_date_placeholder"/>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="control-label col-md-4">${span18n['createeo_last_name']}</label>
-
-                                    <div class="col-md-8">
-                                        <form:input cssClass="form-control"
-                                                    path="economicOperator.representative.lastName"
-                                                    placeholder="${i18n['createeo_last_name_placeholder']}"
-                                                    data-i18n="createeo_last_name_placeholder"/>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="control-label col-md-4">${span18n['createeo_birth_place']}</label>
-
-                                    <div class="col-md-8">
-                                        <form:input cssClass="form-control"
-                                                    path="economicOperator.representative.placeOfBirth"
-                                                    placeholder="${i18n['createeo_birth_place_placeholder']}"
-                                                    data-i18n="createeo_birth_place_placeholder"/>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <tiles:insertDefinition name="partyInfo">
-                                    <tiles:putAttribute name="field" value="economicOperator.representative"/>
-                                    <tiles:putAttribute name="address" value="true"/>
-                                </tiles:insertDefinition>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label class="control-label col-md-4" data-i18n="createca_email"><s:message
-                                            code="createca_email"/></label>
-
-                                    <div class="col-md-8">
-                                        <form:input cssClass="form-control" path="economicOperator.representative.email"
-                                                    placeholder="${i18n['createca_email_placeholder']}"
-                                                    data-i18n="createca_email_placeholder"/>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="control-label col-md-4" data-i18n="createca_telephone"><s:message
-                                            code="createca_telephone"/></label>
-
-                                    <div class="col-md-8">
-                                        <form:input cssClass="form-control" path="economicOperator.representative.phone"
-                                                    placeholder="${i18n['createca_telephone_placeholder']}"
-                                                    data-i18n="createca_telephone_placeholder"/>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="control-label col-md-4">${span18n['createeo_pos_act_in_capacity']}</label>
-
-                                    <div class="col-md-8">
-                                        <form:input cssClass="form-control"
-                                                    path="economicOperator.representative.position"
-                                                    placeholder="${i18n['createeo_pos_act_in_capacity_placeholder']}"
-                                                    data-i18n="createeo_pos_act_in_capacity_placeholder"/>
-                                    </div>
-                                </div>
+                            <div class="col-md-12">
+                            	<div class="col-md-6">
+	                                <div class="form-group">
+	                                    <label class="control-label col-md-4">${span18n['createeo_first_name']}</label>
+	
+	                                    <div class="col-md-8">
+	                                        <form:textarea rows="1" cssClass="form-control"
+	                                                    path="economicOperator.representative.firstName"/>
+	                                    </div>
+	                                </div>
+                            	</div>
+                            	<div class="col-md-6">
+	                                <div class="form-group">
+	                                    <label class="control-label col-md-4">${span18n['createeo_last_name']}</label>
+	
+	                                    <div class="col-md-8">
+	                                        <form:textarea rows="1" cssClass="form-control"
+	                                                    path="economicOperator.representative.lastName"/>
+	                                    </div>
+	                                </div>
+                            	</div>
+                            </div> 
+                            <div class="col-md-12">
+                            	<div class="col-md-6">
+	                                <div class="form-group">
+	                                    <label class="control-label col-md-4">${span18n['createeo_birth_date']}</label>
+	                                    <div class="col-md-8">
+	                                        <form:input type="text" path="economicOperator.representative.dateOfBirth" cssClass="form-control datepicker"/>
+	                                    </div>
+	                                </div>
+                            	</div>
+                            	<div class="col-md-6">
+	                                <div class="form-group">
+	                                    <label class="control-label col-md-4">${span18n['createeo_birth_place']}</label>
+	
+	                                    <div class="col-md-8">
+	                                        <form:textarea rows="1" cssClass="form-control"
+	                                                    path="economicOperator.representative.placeOfBirth"/>
+	                                    </div>
+	                                </div>
+                            	</div>
                             </div>
                             <div class="col-md-12">
-                                <div class="form-group">
-                                    <label class="control-label col-md-2">${span18n['createeo_detinfo_of_represent']}</label>
-
-                                    <div class="col-md-10">
-                                        <form:textarea path="economicOperator.representative.additionalInfo"
-                                                       cssStyle="resize: none" rows="4" cols="20"
-                                                       cssClass="form-control"
-                                                       placeholder="${i18n['createeo_detinfo_of_represent_placeholder']}"
-                                                       data-i18n="createeo_detinfo_of_represent_placeholder"/>
-                                    </div>
+	                            <div class="col-md-6">
+	                                <tiles:insertDefinition name="partyInfo">
+	                                    <tiles:putAttribute name="field" value="economicOperator.representative"/>
+	                                    <tiles:putAttribute name="address" value="true"/>
+	                                </tiles:insertDefinition>
+	                            </div>
+	                            <div class="col-md-6">
+	                                <div class="form-group">
+	                                    <label class="control-label col-md-4" data-i18n="createca_email"><s:message
+	                                            code="createca_email"/></label>
+	
+	                                    <div class="col-md-8">
+	                                        <form:textarea rows="1" cssClass="form-control" path="economicOperator.representative.email"/>
+	                                    </div>
+	                                </div>
+	                                <div class="form-group">
+	                                    <label class="control-label col-md-4" data-i18n="createca_telephone"><s:message
+	                                            code="createca_telephone"/></label>
+	
+	                                    <div class="col-md-8">
+	                                        <form:textarea rows="1" cssClass="form-control" path="economicOperator.representative.phone"/>
+	                                    </div>
+	                                </div>
+	                                <div class="form-group">
+	                                    <label class="control-label col-md-4">${span18n['createeo_pos_act_in_capacity']}</label>
+	
+	                                    <div class="col-md-8">
+	                                        <form:textarea rows="1" cssClass="form-control" path="economicOperator.representative.position"/>
+	                                    </div>
+	                                </div>
+	                            </div>
+                            </div>
+                            <div class="col-md-12">
+                            	<div class="col-md-12">
+	                                <div class="form-group">
+	                                    <label class="control-label col-md-2">${span18n['createeo_detinfo_of_represent']}</label>
+	
+	                                    <div class="col-md-10">
+	                                        <form:textarea path="economicOperator.representative.additionalInfo"
+	                                                       cssStyle="resize: none" rows="4" cols="20"
+	                                                       cssClass="form-control"/>
+	                                    </div>
+	                                </div>
                                 </div>
                             </div>
                         </div>
@@ -604,9 +559,7 @@
 									<label class="control-label col-md-6">${span18n['createeo_information_subcontractors_description']}</label>
 		
 									<div class="col-md-6">
-										<form:input cssClass="form-control" path="subcontractingThirdParties.description1"
-											placeholder="${i18n['createeo_information_subcontractors_placeholder']}"
-											data-i18n="createeo_information_subcontractors_placeholder"/>
+										<form:textarea rows="1" cssClass="form-control" path="subcontractingThirdParties.description1"/>
 									</div>
 								</div>
                             </div>
@@ -616,8 +569,6 @@
                     </div>
                 </div>
             </div>
-            
-            
         </c:if>
     </div>
     <tiles:insertDefinition name="footerButtons">

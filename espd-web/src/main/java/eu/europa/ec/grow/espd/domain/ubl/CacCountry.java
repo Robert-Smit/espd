@@ -24,14 +24,16 @@
 
 package eu.europa.ec.grow.espd.domain.ubl;
 
+import java.io.Serializable;
+
 /**
  * Created by vigi on 11/19/15:2:57 PM.
  */
-public interface CacCountry {
+public interface CacCountry extends Serializable {
 
     String getName();
 
-    String getIsoCode();
+    String getIso2Code();
     
     String getIsoType();
 }

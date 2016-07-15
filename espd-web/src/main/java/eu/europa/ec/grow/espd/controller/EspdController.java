@@ -173,7 +173,7 @@ class EspdController {
             Model model,
             BindingResult result) throws IOException {
 
-        Country country = Country.findByIsoCode(countryIso);
+        Country country = Country.findByIso2Code(countryIso);
         EspdDocument espd = new EspdDocument();
 
         if ("eo".equals(agent)) {
@@ -214,6 +214,8 @@ class EspdController {
 
     private String createNewRequestAsCA(Country country, EspdDocument document) {
         document.getAuthority().setCountry(country);
+        document.selectCAExclusionCriteria();
+        copyTedInformation(document);
         return redirectToPage(REQUEST_CA_PROCEDURE_PAGE);
     }
 
@@ -233,9 +235,9 @@ class EspdController {
         document.setTedUrl(notice.getTedUrl());
     }
 
-    private String reuseRequestAsCA(String attachment, Model model,
+    private String reuseRequestAsCA(MultipartFile attachment, Model model,
                                     BindingResult result) throws IOException {
-        try (InputStream is = new ByteArrayInputStream(attachment.getBytes(StandardCharsets.UTF_8))) {
+        try (InputStream is = attachment.getInputStream()) {
             Optional<EspdDocument> espd = exchangeMarshaller.importEspdRequest(is);
             if (espd.isPresent()) {
                 model.addAttribute("espd", espd.get());
@@ -300,6 +302,17 @@ class EspdController {
         return isBlank(espdDocument.getOjsNumber()) && isNotBlank(espdDocument.getTedReceptionId());
     }
 
+
+    private String createNewResponseAsEO(Country country, EspdDocument document) {
+        if (document.getEconomicOperator() == null) {
+            document.setEconomicOperator(new EconomicOperatorImpl());
+        }
+        document.getEconomicOperator().setCountry(country);
+        document.giveLifeToAllExclusionCriteria();
+        document.giveLifeToAllSelectionCriteria();
+        return redirectToPage(RESPONSE_EO_PROCEDURE_PAGE);
+    }
+
     @RequestMapping("/{flow:request|response}/{agent:ca|eo}/{step:procedure|exclusion|selection|finish|print}")
     public String view(
             @PathVariable String flow,
@@ -320,8 +333,8 @@ class EspdController {
             @ModelAttribute("espd") EspdDocument espd,
             @ModelAttribute("tenderned") TenderNedData tenderNedData,
             BindingResult bindingResult) {
-        return bindingResult.hasErrors()
-                ? flow + "_" + agent + "_" + step : redirectToPage(flow + "/" + agent + "/" + prev);
+        return bindingResult.hasErrors() ?
+                flow + "_" + agent + "_" + step : redirectToPage(flow + "/" + agent + "/" + prev);
     }
 
 

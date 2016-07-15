@@ -32,6 +32,14 @@
     padding-bottom: 15px;
 }
 
+textarea.form-control {
+	resize: none; overflow: auto; line-height: 1.2;
+} 
+
+dl {
+	margin-bottom: 0px;/*override bootstrap*/
+}
+
 h2 {
     font-size: 1.2em;
     font-family: Verdana, Arial, Helvetica, "DejaVu Sans", sans-serif;
@@ -74,12 +82,28 @@ h2 {
 }
 
 .espd-panel-heading:after {
+    content: "\e114";
     font-family: "Glyphicons Halflings", serif;
-    content: "\e114"
 }
 
-.espd-panel-heading.collapsed:after {
+.espd-panel-heading.collapsed:after{
     content: "\e080";
+}
+
+.ecertis-link-header:after {
+    content: "\e114";
+    font-family: "Glyphicons Halflings", serif;
+	font-size: xx-small;
+}
+
+.ecertis-link-header.collapsed:after {
+    content: "\e080";
+    font-family: "Glyphicons Halflings", serif;
+	font-size: xx-small;
+}
+
+.ecertis-link-header:hover {
+    text-decoration: underline;
 }
 
 option:disabled {
@@ -419,4 +443,12 @@ a.splashLangBox {
 
 .icon-arrow-right:before {
     content: "\f0a9";
+}
+
+.wordwrap { 
+   white-space: pre-wrap;      /* CSS3 */   
+   white-space: -moz-pre-wrap; /* Firefox */    
+   white-space: -pre-wrap;     /* Opera <7 */   
+   white-space: -o-pre-wrap;   /* Opera 7 */    
+   word-wrap: break-word;      /* IE */
 }

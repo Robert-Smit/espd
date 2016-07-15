@@ -43,6 +43,8 @@
     
     <div class="panel-default">
         <tiles:insertDefinition name="progress">
+        	<tiles:putAttribute name="agent" value="${agent}"/>
+        	<tiles:putAttribute name="flow" value="${flow}"/>
             <tiles:putAttribute name="exclusion" value="true"/>
         </tiles:insertDefinition>
         <div class="paragraph">
@@ -64,17 +66,19 @@
                     <span data-i18n="crit_eu_main_purely_national" style="font-weight: bold;">
                         <s:message code='crit_eu_main_purely_national'/>
                     </span>
+                   
 	                <tiles:insertDefinition name="checkTemplate">
 	                    <tiles:putAttribute name="field" value="purelyNationalGrounds"/>
 	                    <tiles:putAttribute name="title_code" value="crit_eu_title_purely_national"/>
 	                    <tiles:putAttribute name="description_code" value="crit_eu_text_purely_national"/>
+	                    <tiles:putAttribute name="hasCriterion" value="false"/>
 	                </tiles:insertDefinition>
+	                 
             </div>
         </div>
         <tiles:insertDefinition name="footerButtons">
             <tiles:putAttribute name="prev" value="procedure"/>
             <tiles:putAttribute name="next" value="selection"/>
-            <tiles:putAttribute name="cancel" value="${tenderned.callbackURL}"/>
         </tiles:insertDefinition>
     </div>
 </form:form>

@@ -55,6 +55,8 @@
     <div class="panel-default">
 
         <tiles:insertDefinition name="progress">
+        	<tiles:putAttribute name="agent" value="${agent}"/>
+        	<tiles:putAttribute name="flow" value="${flow}"/>
             <tiles:putAttribute name="exclusion" value="true"/>
         </tiles:insertDefinition>
 
@@ -102,7 +104,6 @@
         <tiles:insertDefinition name="footerButtons">
             <tiles:putAttribute name="prev" value="procedure"/>
             <tiles:putAttribute name="next" value="selection"/>
-            <tiles:putAttribute name="cancel" value="${tenderned.callbackURL}"/>
         </tiles:insertDefinition>
     </div>
 

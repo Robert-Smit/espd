@@ -31,7 +31,7 @@
 		<div style="color:black">
 			${span18n["contact_info"]}
 		</div>
-		
+
 		<br>
 
 		<div style="color:black">
@@ -40,7 +40,7 @@
 				GROW-ESPD@ec.europa.eu
 			</a>
 		</div>
-		
+
 		<div style="color:black">
 			${span18n["report_security_incident_title"]}
 			<a target="_blank" href="http://ec.europa.eu/growth/tools-databases/security-incidents/index_en.htm">

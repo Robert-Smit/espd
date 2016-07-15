@@ -70,6 +70,9 @@
             $('.radioCa').removeAttr('checked');
             $('[value="empty"]').prop('selected', true);
             $("input:file").val('');
+
+            $('#where_are_you_from_'+(($(this).val()=='eo')?'ca':'eo')).hide();
+            $('#where_are_you_from_' + $(this).val()).show();
         });
         $("input:file").change(function (){
             if($(this).val() != '') {
@@ -161,6 +164,16 @@
                 <label><input id="eo_import_espd" name="action" value="eo_import_espd" class="radiotab radioCa" type="radio" data-target="#tab-single-upload"/>${span18n['filter_import_espd']}</label>
                 <span data-i18n="tooltip_filter_eo_can_import_espd" data-toggle="tooltip" title="${i18n['tooltip_filter_eo_can_import_espd']}"></span>
             </div>
+            <%--<div class="radio">
+                <span class="k-button fa fa-upload hoverable"></span>
+                <label><input name="action" value="eo_merge_espds" class="radiotab radioCa" type="radio" data-target="#tab-multiple-upload"/>${span18n['filter_merge_espds']}</label>
+                <span data-i18n="tooltip_filter_eo_merge_espds" data-toggle="tooltip" title="${i18n['tooltip_filter_eo_merge_espds']}"></span>
+            </div>
+            <div class="radio">
+                <span class="k-button fa fa-upload hoverable"></span>
+                <label><input name="action" value="eo_create_response" class="radiotab radioCa" type="radio" data-target="#tab-country-selection"/>${span18n['filter_create_response']}</label>
+                <span data-i18n="tooltip_filter_create_response" data-toggle="tooltip" title="${i18n['tooltip_filter_create_response']}"></span>
+            </div>--%>
         </div>
         <div class="tab-content" >
                 <%--<div class="tab-pane" id="tab-single-upload">--%>
@@ -170,7 +183,7 @@
                 <%--</div>--%>
             <div class="tab-pane" id="eo_show_xml_file">
                 <h3 data-i18n="filter_upload_document"><s:message code='filter_upload_document'/></h3>
-                <c:out value="${tenderned.bestandsNaam}"/>
+                <c:out value="${tenderned.bestandsnaam}"/>
             </div>
                 <%--<div class="tab-pane" id="tab-multiple-upload">--%>
                 <%--<h3 data-i18n="filter_upload_documents"><s:message code='filter_upload_documents'/></h3>--%>
@@ -180,7 +193,8 @@
                 <%--<form:input type="file" path="attachments"/>--%>
                 <%--</div>--%>
             <div class="tab-pane" id="tab-country-selection">
-                <h3>${span18n['filter_where_are_you_from']}</h3>
+                <h3 id="where_are_you_from_ca">${span18n['filter_where_are_you_from_ca']}</h3>
+                <h3 id="where_are_you_from_eo">${span18n['filter_where_are_you_from_eo']}</h3>
                 <span data-i18n="filter_select_country"><s:message code='filter_select_country'/></span>
                 <tiles:insertDefinition name="countries">
                     <tiles:putAttribute name="field" value="authority.country"/>

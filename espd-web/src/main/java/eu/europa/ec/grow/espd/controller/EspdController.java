@@ -167,7 +167,7 @@ class EspdController {
             @RequestParam(value = "btwNummer", required = false) String btwNummer,
             @RequestParam(value = "kvkNummer", required = false) String kvkNummer,
             @RequestParam(value = "isNewResponse", required = false) String isNewResponse,
-            @RequestParam(value = "bestandsNaam", required = false) String bestandsNaam,
+            @RequestParam(value = "bestandsnaam", required = false) String bestandsnaam,
             @RequestParam (value = "xml", required = false) String xml,
             @ModelAttribute("tenderned") TenderNedData tenderNedData,
             Model model,

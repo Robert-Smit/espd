@@ -257,23 +257,19 @@
                                                                 <div class="col-md-8">
                                                                     <form:textarea
                                                                             path="${req.response[0].description.value}"
-                                                                            class="form-control"
-                                                                            data-i18n="crit_please_describe_them_placeholder"
-                                                                            placeholder="${i18n['crit_please_describe_them_placeholder']}"></form:textarea>
+                                                                            class="form-control"></form:textarea>
                                                                 </div>
                                                             </c:when>
                                                             <c:when test="${req.responseDataType == 'DATE'}">
                                                                 <div class="col-md-8">
-                                                                    <form:input path="${req.response[0].date.value}"
-                                                                                cssClass="form-control datepicker"
-                                                                                placeholder="${dateOfconvictionPlaceholder}"/>
+                                                                    <form:input type="text" path="${req.response[0].date.value}"
+                                                                                cssClass="form-control datepicker"/>
                                                                 </div>
                                                             </c:when>
                                                             <c:when test="${req.responseDataType == 'AMOUNT'}">
                                                                 <div class="col-md-8">
-                                                                    <form:input path="${req.response[0].amount.value}"
-                                                                                number="true" cssClass="form-control"
-                                                                                placeholder="${i18n['crit_amount_concerned_placeholder']}"/>
+                                                                    <form:textarea rows="1" path="${req.response[0].amount.value}"
+                                                                                   number="true" cssClass="form-control"/>
                                                                     <form:select
                                                                             path="${req.response[0].amount.currencyID}"
                                                                             cssClass="form-control" cssStyle="${style}">
@@ -335,20 +331,16 @@
                                                             </c:when>
                                                             <c:when test="${req.responseDataType == 'CODE'}">
                                                                 <div class="col-md-8">
-                                                                    <form:input
-                                                                            path="${req.response[0].code.value}"
-                                                                            class="form-control"
-                                                                            data-i18n="crit_please_describe_them_placeholder"
-                                                                            placeholder="${i18n['crit_please_describe_them_placeholder']}"></form:input>
+                                                                    <form:textarea rows="1"
+                                                                                   path="${req.response[0].code.value}"
+                                                                                   class="form-control"/>
                                                                 </div>
                                                             </c:when>
                                                             <c:when test="${req.responseDataType == 'EVIDENCE_URL'}">
                                                                 <div class="col-md-8">
-                                                                    <form:input type="text"
-                                                                                path="${req.response[0].evidence[0].evidenceDocumentReference[0].attachment.uri.value}"
-                                                                                class="form-control input-sm"
-                                                                                data-i18n="crit_code_placeholder"
-                                                                                placeholder="${i18n['crit_code_placeholder']}"/>
+                                                                    <form:textarea rows="1"
+                                                                                   path="${req.response[0].evidence[0].evidenceDocumentReference[0].attachment.uri.value}"
+                                                                                   class="form-control input-sm"/>
                                                                 </div>
                                                             </c:when>
                                                         </c:choose>

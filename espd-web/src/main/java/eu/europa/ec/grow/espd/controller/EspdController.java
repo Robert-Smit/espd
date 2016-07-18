@@ -39,7 +39,9 @@ import eu.europa.ec.grow.espd.tenderned.TenderNedUtils;
 import eu.europa.ec.grow.espd.tenderned.exception.PdfRenderingException;
 import eu.europa.ec.grow.espd.xml.EspdExchangeMarshaller;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.codec.binary.StringUtils;
 import org.apache.commons.io.output.CountingOutputStream;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.fop.apps.FOPException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -369,7 +371,8 @@ class EspdController {
             return flow + "_" + agent + "_" + step;
         }
         if ("savePrintHtml".equals(next)) {
-            espd.setHtml(addHtmlHeader(espd.getHtml()));
+            String html = StringEscapeUtils.unescapeHtml4(espd.getHtml()) ;
+            espd.setHtml(addHtmlHeader(html));
             //tijdelijk voor het opslaan van html
             HtmlToPdfTransformer.saveHtml(espd.getHtml());
 

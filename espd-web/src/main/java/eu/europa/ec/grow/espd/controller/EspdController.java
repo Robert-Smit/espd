@@ -215,7 +215,7 @@ class EspdController {
     private String createNewRequestAsCA(Country country, EspdDocument document) {
         document.getAuthority().setCountry(country);
         document.selectCAExclusionCriteria();
-        copyTedInformation(document);
+//        copyTedInformation(document);
         return redirectToPage(REQUEST_CA_PROCEDURE_PAGE);
     }
 

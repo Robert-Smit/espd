@@ -182,6 +182,7 @@ $(function() {
     <div class="form-group">
     </div>
     <tiles:insertDefinition name="footerButtons">
+    	<tiles:putAttribute name="prev" value="/welcome"/>
     	<tiles:putAttribute name="next" value="procedure"/>
     </tiles:insertDefinition>
 </form:form>

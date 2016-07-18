@@ -6,7 +6,6 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="tiles" uri="http://tiles.apache.org/tags-tiles" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-
 <%--
   ~
   ~ Copyright 2016 EUROPEAN COMMISSION
@@ -118,7 +117,7 @@
 
                             <div class="col-md-8">
                                 <form:textarea rows="1" cssClass="form-control" path="ojsNumber"
-                                               placeholder="[ ][ ][ ][ ]/S [ ][ ][ ]–[ ][ ][ ][ ][ ][ ]"/>
+                                               placeholder="[ ][ ][ ][ ]/S [ ][ ][ ]-[ ][ ][ ][ ][ ][ ]"/>
                             </div>
                         </div>
                         <div class="form-group">
@@ -305,7 +304,7 @@
                                 <div class="col-md-6">
                                     <form:radiobutton path="eoRegistered.answer" value="true" id="eo_registered_answer_yes" data-target-show="#reg-official-yes" data-target-hide="#reg-official-no"/>${span18n["yes"]}
                                     <form:radiobutton path="eoRegistered.answer" value="false" id="eo_registered_answer_no" data-target-show="#reg-official-no" data-target-hide="#reg-official-yes"/>${span18n["no"]}
-                                    &nbsp;&nbsp;&nbsp;&nbsp;
+
                                     <form:checkbox path="eoRegistered.booleanValue2" id="eo_registered_na"/>${span18n['not_applicable']}
                                 </div>
                             </div>
@@ -575,7 +574,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-12 alert alert-espd-info"style="border: 1px dotted blue; background-color: #D8D8D8;">
+                        <div class="col-md-12 alert alert-espd-info" style="border: 1px dotted blue; background-color: #D8D8D8;">
                                 ${span18n['createeo_information_subcontractors_footer']}
                         </div>
                     </div>
@@ -765,8 +764,6 @@
     </c:set>
     ${applicationScope.cachedFragment}
 
-
-    <%--<input type="hidden" name="html" value="${fn:escapeXml(applicationScope.cachedFragment)}"/>--%>
     <input type="hidden"
            name="html"
            value="${fn:escapeXml(applicationScope.cachedFragment)}" />

@@ -1,4 +1,3 @@
-<%@ page import="eu.europa.ec.grow.espd.domain.enums.other.Country" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="s" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
@@ -45,19 +44,20 @@
             ca.checked = true;
             eo.disabled = true;
             $(ca).tab('show');
+            $('#where_are_you_from_eo').hide();
 
-            //Activate this code when XML is send to ESPD via TenderNed.
-            <%--if ('${tenderned.noUpload}' == 'true') {--%>
             var caCreateRequest = document.getElementById('ca_create_espd_request');
             caCreateRequest.checked = true;
             document.getElementById('ca_reuse_espd_request').disabled = true;
             $('#tab-country-selection').addClass('active');
+            document.getElementsById('where_are_you_from_eo').removeClass('active');
         } else if (agent == 'eo') {
             ca.disabled = true;
             eo.checked = true;
             $(eo).tab('show');
 
             $('#eo_show_xml_file').addClass('active');
+            $('#where_are_you_from_ca').hide();
             document.getElementById('eo_import_espd').checked = 'true';
             $('#tab-country-selection').addClass('active');
         }
@@ -92,6 +92,8 @@
 <form:form id="espdform" role="form" class="form-horizontal" action="filterESPD" method="post" commandName="espd" data-toggle="validator" enctype="multipart/form-data">
     <div class="panel-default">
     <tiles:insertDefinition name="progress">
+        <tiles:putAttribute name="agent" value="unknown"/>
+        <tiles:putAttribute name="flow" value="unknown"/>
         <tiles:putAttribute name="start" value="true"/>
     </tiles:insertDefinition>
     <div class="paragraph">

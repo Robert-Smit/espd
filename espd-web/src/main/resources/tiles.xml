@@ -36,7 +36,7 @@
     </definition>
 
     <definition name="contact" extends="espdTemplate"><put-attribute name="body" value="/WEB-INF/tenderned/views/contact.jsp"/></definition>
-    <!--<definition name="welcome" extends="espdTemplate"><put-attribute name="body" value="/WEB-INF/tenderned/views/filter.jsp"/></definition>-->
+    <definition name="welcome" extends="espdTemplate"><put-attribute name="body" value="/WEB-INF/tenderned/views/filter.jsp"/></definition>
 	<definition name="filter" extends="espdTemplate"><put-attribute name="body" value="/WEB-INF/tenderned/views/filter.jsp"/></definition>
     <definition name="about" extends="espdTemplate"><put-attribute name="body" value="/WEB-INF/tenderned/views/about.jsp"/></definition>
     <definition name="error" extends="espdTemplate"><put-attribute name="body" value="/WEB-INF/tenderned/views/error.jsp"/></definition>
@@ -81,9 +81,6 @@
     <definition name="response_eo_finish" extends="response_eo"><put-attribute name="body" value="/WEB-INF/tenderned/views/wizard/finish.jsp" /></definition>
     <definition name="response_ca_print" extends="response_eo"><put-attribute name="body" value="/WEB-INF/tenderned/views/print.jsp" /></definition>
     <definition name="response_eo_print" extends="response_eo"><put-attribute name="body" value="/WEB-INF/tenderned/views/print.jsp" /></definition>
-
-    <definition name="exportXML"><put-attribute name="body" value="/WEB-INF/tenderned/views/exportXML.jsp" /></definition>
-
 
     <definition name="viewChangeRole" template="/WEB-INF/tenderned/views/wizard/viewChangeRole.jsp"><!-- page, agent --></definition>
 

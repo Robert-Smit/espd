@@ -61,44 +61,10 @@
 
 	<!-- these templates are used to find the country that is selected, if no country is selected a dash will show -->
 
-	<xsl:template name="country-has-value">
-		<xsl:choose>
-			<xsl:when test="./option[@selected = 'selected']">false</xsl:when>
-			<xsl:otherwise>true</xsl:otherwise>
-		</xsl:choose>
-	</xsl:template>
-
-	<xsl:template name="select-country">
-		<xsl:variable name="country-val">
-			<xsl:call-template name="country-has-value"/>
-		</xsl:variable>
-		<xsl:choose>
-			<xsl:when test="$country-val = 'false'">
-				<xsl:text>-</xsl:text>
-			</xsl:when>
-			<xsl:otherwise>
-				<fo:block>
-					<xsl:value-of select="./optgroup//option[@selected='selected']"/>
-				</fo:block>
-			</xsl:otherwise>
-		</xsl:choose>
-	</xsl:template>
-
 	<xsl:template match="select">
-		<xsl:variable name="type-of-select">
-			<xsl:value-of select="@name"/>
-		</xsl:variable>
-		<xsl:choose>
-			<xsl:when test="contains($type-of-select, 'country')">
-				<xsl:call-template name="select-country"/>
-			</xsl:when>
-			<xsl:otherwise>
-				<fo:block>
-					<xsl:value-of select="./option[@selected='selected']"/>
-				</fo:block>
-			</xsl:otherwise>
-		</xsl:choose>
+		<xsl:value-of select="./option[@selected='selected']"/>
 	</xsl:template>
+
 
 	<xsl:template name="input-is-text">
 		<xsl:choose>

@@ -32,7 +32,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import eu.europa.ec.grow.espd.domain.ubl.*;
+import eu.europa.ec.grow.espd.domain.ubl.CcvCriterion;
+import eu.europa.ec.grow.espd.domain.ubl.CcvCriterionRequirement;
+import eu.europa.ec.grow.espd.domain.ubl.CcvCriterionType;
+import eu.europa.ec.grow.espd.domain.ubl.CcvLegislation;
+import eu.europa.ec.grow.espd.domain.ubl.CcvRequirementGroup;
+import eu.europa.ec.grow.espd.domain.ubl.CcvResponseType;
 import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;

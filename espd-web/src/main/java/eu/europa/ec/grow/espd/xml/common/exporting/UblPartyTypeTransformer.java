@@ -26,10 +26,23 @@ package eu.europa.ec.grow.espd.xml.common.exporting;
 
 import com.google.common.base.Function;
 import eu.europa.ec.grow.espd.domain.ubl.CacParty;
-import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_2.*;
-import oasis.names.specification.ubl.schema.xsd.commonbasiccomponents_2.*;
+import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_2.AddressType;
+import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_2.ContactType;
+import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_2.PartyIdentificationType;
+import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_2.PartyNameType;
+import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_2.PartyType;
+import oasis.names.specification.ubl.schema.xsd.commonbasiccomponents_2.CityNameType;
+import oasis.names.specification.ubl.schema.xsd.commonbasiccomponents_2.ElectronicMailType;
+import oasis.names.specification.ubl.schema.xsd.commonbasiccomponents_2.IDType;
+import oasis.names.specification.ubl.schema.xsd.commonbasiccomponents_2.NameType;
+import oasis.names.specification.ubl.schema.xsd.commonbasiccomponents_2.PostboxType;
+import oasis.names.specification.ubl.schema.xsd.commonbasiccomponents_2.StreetNameType;
+import oasis.names.specification.ubl.schema.xsd.commonbasiccomponents_2.TelephoneType;
+import oasis.names.specification.ubl.schema.xsd.commonbasiccomponents_2.WebsiteURIType;
 
-import static org.apache.commons.lang3.StringUtils.*;
+import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.trimToEmpty;
 
 /**
  * Created by ratoico on 1/18/16 at 5:29 PM.

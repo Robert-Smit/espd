@@ -24,9 +24,28 @@
 
 package eu.europa.ec.grow.espd.xml.common.importing;
 
-import eu.europa.ec.grow.espd.domain.*;
+import eu.europa.ec.grow.espd.domain.AvailableElectronically;
+import eu.europa.ec.grow.espd.domain.BankruptcyCriterion;
+import eu.europa.ec.grow.espd.domain.ConflictInterestCriterion;
+import eu.europa.ec.grow.espd.domain.CriminalConvictionsCriterion;
+import eu.europa.ec.grow.espd.domain.EconomicFinancialStandingCriterion;
+import eu.europa.ec.grow.espd.domain.EspdCriterion;
+import eu.europa.ec.grow.espd.domain.LawCriterion;
+import eu.europa.ec.grow.espd.domain.MisconductDistortionCriterion;
 import eu.europa.ec.grow.espd.domain.OtherCriterion;
-import eu.europa.ec.grow.espd.domain.enums.criteria.*;
+import eu.europa.ec.grow.espd.domain.PurelyNationalGrounds;
+import eu.europa.ec.grow.espd.domain.QualityAssuranceCriterion;
+import eu.europa.ec.grow.espd.domain.SatisfiesAllCriterion;
+import eu.europa.ec.grow.espd.domain.SelfCleaning;
+import eu.europa.ec.grow.espd.domain.SuitabilityCriterion;
+import eu.europa.ec.grow.espd.domain.TaxesCriterion;
+import eu.europa.ec.grow.espd.domain.TechnicalProfessionalCriterion;
+import eu.europa.ec.grow.espd.domain.enums.criteria.ExclusionCriterionRequirement;
+import eu.europa.ec.grow.espd.domain.enums.criteria.ExclusionCriterionTypeCode;
+import eu.europa.ec.grow.espd.domain.enums.criteria.OtherCriterionRequirement;
+import eu.europa.ec.grow.espd.domain.enums.criteria.OtherCriterionTypeCode;
+import eu.europa.ec.grow.espd.domain.enums.criteria.SelectionCriterionRequirement;
+import eu.europa.ec.grow.espd.domain.enums.criteria.SelectionCriterionTypeCode;
 import eu.europa.ec.grow.espd.domain.enums.other.Country;
 import eu.europa.ec.grow.espd.domain.intf.MultipleAmountHolder;
 import eu.europa.ec.grow.espd.domain.intf.MultipleDescriptionHolder;

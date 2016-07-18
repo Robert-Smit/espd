@@ -16,6 +16,10 @@ import lombok.Setter;
 @Data
 public class TenderNedData {
 
+    public TenderNedData() {
+        this.errorCode = "0";
+    }
+
     private String uploadURL;
 
     private String callbackURL;

@@ -25,7 +25,6 @@
 package eu.europa.ec.grow.espd.xml;
 
 import com.google.common.collect.ImmutableMap;
-
 import eu.europa.ec.grow.espd.domain.enums.criteria.ExclusionCriterion;
 import eu.europa.ec.grow.espd.domain.enums.criteria.SelectionCriterion;
 

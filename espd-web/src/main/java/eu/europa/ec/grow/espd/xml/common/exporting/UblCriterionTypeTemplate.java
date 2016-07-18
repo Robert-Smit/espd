@@ -25,16 +25,21 @@
 package eu.europa.ec.grow.espd.xml.common.exporting;
 
 import eu.europa.ec.grow.espd.domain.EspdCriterion;
-import eu.europa.ec.grow.espd.domain.enums.other.Agency;
 import eu.europa.ec.grow.espd.domain.enums.criteria.CriterionJurisdictionLevel;
+import eu.europa.ec.grow.espd.domain.enums.other.Agency;
 import eu.europa.ec.grow.espd.domain.ubl.CcvCriterion;
-import eu.europa.ec.grow.espd.domain.ubl.CcvRequirementGroup;
 import eu.europa.ec.grow.espd.domain.ubl.CcvCriterionRequirement;
+import eu.europa.ec.grow.espd.domain.ubl.CcvRequirementGroup;
 import isa.names.specification.ubl.schema.xsd.ccv_commonaggregatecomponents_1.CriterionType;
 import isa.names.specification.ubl.schema.xsd.ccv_commonaggregatecomponents_1.LegislationType;
 import isa.names.specification.ubl.schema.xsd.ccv_commonaggregatecomponents_1.RequirementGroupType;
 import isa.names.specification.ubl.schema.xsd.ccv_commonaggregatecomponents_1.RequirementType;
-import oasis.names.specification.ubl.schema.xsd.commonbasiccomponents_2.*;
+import oasis.names.specification.ubl.schema.xsd.commonbasiccomponents_2.DescriptionType;
+import oasis.names.specification.ubl.schema.xsd.commonbasiccomponents_2.IDType;
+import oasis.names.specification.ubl.schema.xsd.commonbasiccomponents_2.NameType;
+import oasis.names.specification.ubl.schema.xsd.commonbasiccomponents_2.TextType;
+import oasis.names.specification.ubl.schema.xsd.commonbasiccomponents_2.TypeCodeType;
+import oasis.names.specification.ubl.schema.xsd.commonbasiccomponents_2.URIType;
 
 import java.util.ArrayList;
 import java.util.List;

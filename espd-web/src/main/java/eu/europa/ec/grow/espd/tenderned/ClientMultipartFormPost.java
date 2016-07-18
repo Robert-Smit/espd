@@ -16,8 +16,12 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.joda.time.DateTime;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 /**
  * espd - Description.
@@ -53,16 +57,16 @@ public class ClientMultipartFormPost {
 
     public static final String FILENAME_XML = "uea_output.xml";
 
-    public static final String FILENAME_pdf = "uea_output.pdf";
+    public static final String FILENAME_PDF = "uea_output.pdf";
 
     /**
      * Used to send a POST request to TenderNed.
-     * @param xml is a byte[]
+     *
+     * @param xml    is a byte[]
      * @param tnData is a {@link TenderNedData} object
      * @throws IOException Thrown if an I/O error occurs
      */
-    public String sendPosttoTN(byte[] xml, File pdfFile, TenderNedData tnData) throws IOException {
-        String errorCode = "0";
+    public void sendPosttoTN(byte[] xml, byte[] pdf, TenderNedData tnData) throws IOException {
 
         CloseableHttpClient httpClient = HttpClients.createDefault();
         HttpPost httpPost = new HttpPost(tnData.getUploadURL());
@@ -70,7 +74,9 @@ public class ClientMultipartFormPost {
         File xmlFile = new File(FILENAME_XML);
         FileUtils.writeByteArrayToFile(xmlFile, xml);
         FileBody fileBodyXml = new FileBody(xmlFile, ContentType.APPLICATION_XML, FILENAME_XML);
-        FileBody fileBodyPdf = new FileBody(pdfFile, ContentType.create("application/pdf"), FILENAME_pdf);
+        File pdfFile = new File(FILENAME_XML);
+        FileUtils.writeByteArrayToFile(pdfFile, pdf);
+        FileBody fileBodyPdf = new FileBody(pdfFile, ContentType.create("application/pdf"), FILENAME_PDF);
 
         String time = DateTime.now().toString("yyyyMMddHHmmss");
 
@@ -90,10 +96,20 @@ public class ClientMultipartFormPost {
         httpClient.close();
 
         if (statusCode != HttpStatus.SC_OK) {
-            errorCode = "1";
+            tnData.setErrorCode("1");
             log.error("Error returned from POST, HTTP status: " + statusCode);
         }
-        return errorCode;
+    }
+
+    public String getInputStream(File file) throws IOException {
+        InputStream is = new FileInputStream(file);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+        StringBuilder value = new StringBuilder();
+        char[] buffer = new char[1024];
+        for (int length = 0; (length = reader.read(buffer)) > 0; ) {
+            value.append(buffer, 0, length);
+        }
+        return  value.toString();
     }
 
 }

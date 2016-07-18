@@ -40,6 +40,7 @@ import eu.europa.ec.grow.espd.tenderned.exception.PdfRenderingException;
 import eu.europa.ec.grow.espd.xml.EspdExchangeMarshaller;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.output.CountingOutputStream;
+import org.apache.fop.apps.FOPException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.http.HttpHeaders;
@@ -58,10 +59,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.transform.TransformerException;
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -362,7 +364,7 @@ class EspdController {
             @ModelAttribute("tenderned") TenderNedData tenderNedData,
             HttpServletRequest request,
             HttpServletResponse response,
-            BindingResult bindingResult) throws IOException {
+            BindingResult bindingResult) throws IOException, FOPException, URISyntaxException, TransformerException {
         if (bindingResult.hasErrors()) {
             return flow + "_" + agent + "_" + step;
         }
@@ -370,6 +372,7 @@ class EspdController {
             espd.setHtml(addHtmlHeader(espd.getHtml()));
             //tijdelijk voor het opslaan van html
             HtmlToPdfTransformer.saveHtml(espd.getHtml());
+
             sendTenderNedData(agent, espd, tenderNedData);
             return redirectToTN(TenderNedUtils.createGetUrl(tenderNedData));
         }
@@ -405,7 +408,7 @@ class EspdController {
         }
     }
 
-    public void sendTenderNedData(String agent, EspdDocument espd, TenderNedData tnData) throws IOException {
+    public void sendTenderNedData(String agent, EspdDocument espd, TenderNedData tnData) throws IOException, URISyntaxException, FOPException, TransformerException {
         byte[] xmlString = new byte[0];
         if ("ca".equals(agent)) {
             xmlString = exchangeMarshaller.generateEspdRequestCa(espd);
@@ -414,15 +417,20 @@ class EspdController {
         }
         HtmlToPdfTransformer pdfTransformer = new HtmlToPdfTransformer();
 
-        File pdfFile;
+        byte[] pdfString = new byte[0];
         try {
-            pdfFile = pdfTransformer.convertToPDF(espd.getHtml(), agent);
+            pdfString = pdfTransformer.convertToPDF(espd.getHtml(), agent);
         } catch (PdfRenderingException e) {
-            throw new RuntimeException("Pdf could not be generated", e);
+            tnData.setErrorCode("1");
+        }
+
+        //if the pdfString has a length of 15, an error occured while transforming HTML to PDF.
+        if (pdfString.length == 15) {
+            tnData.setErrorCode("1");
         }
 
         ClientMultipartFormPost formPost = new ClientMultipartFormPost();
-        tnData.setErrorCode(formPost.sendPosttoTN(xmlString, pdfFile, tnData));
+        formPost.sendPosttoTN(xmlString, pdfString, tnData);
     }
 
     @InitBinder

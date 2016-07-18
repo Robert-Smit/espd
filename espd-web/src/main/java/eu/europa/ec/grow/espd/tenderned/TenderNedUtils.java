@@ -3,16 +3,14 @@
  */
 package eu.europa.ec.grow.espd.tenderned;
 
+import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-
-import javax.annotation.PostConstruct;
-
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * espd - Description.

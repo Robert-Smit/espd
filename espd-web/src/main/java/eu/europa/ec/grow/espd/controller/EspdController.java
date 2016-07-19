@@ -419,28 +419,37 @@ class EspdController {
     }
 
     public void sendTenderNedData(String agent, EspdDocument espd, TenderNedData tnData) throws PdfRenderingException, IOException {
-        ByteArrayOutputStream xmlString = new ByteArrayOutputStream();
+        boolean errorOccured = false;
+        ByteArrayOutputStream xml = null;
+
         if ("ca".equals(agent)) {
-            xmlString = (ByteArrayOutputStream)exchangeMarshaller.generateEspdRequestCa(espd);
+            xml = (ByteArrayOutputStream) exchangeMarshaller.generateEspdRequestCa(espd);
         } else {
-            xmlString = (ByteArrayOutputStream)exchangeMarshaller.generateEspdResponse(espd);
+            xml = (ByteArrayOutputStream) exchangeMarshaller.generateEspdResponse(espd);
         }
 
-        HtmlToPdfTransformer pdfTransformer = new HtmlToPdfTransformer();
-        ByteArrayOutputStream pdfString = new ByteArrayOutputStream();
+        ByteArrayOutputStream pdf = null;
+
         try {
-            pdfString = pdfTransformer.convertToPDF(espd.getHtml(), agent);
+            HtmlToPdfTransformer pdfTransformer = new HtmlToPdfTransformer();
+            pdf = pdfTransformer.convertToPDF(espd.getHtml(), agent);
         } catch (PdfRenderingException e) {
-            tnData.setErrorCode("1");
+            errorOccured = true;
+            log.error("Error rendering PDF: ", e);
         }
 
-        //if the pdfString has a length of 15, an error occured while transforming HTML to PDF.
-        if (pdfString.size() == 15) {
-            tnData.setErrorCode("1");
+        // if the pdf has a length of 15, an error occured while transforming HTML to PDF.
+        if (pdf != null && pdf.size() == 15) {
+            errorOccured = true;
+            log.error("Error transforming HTML to PDF");
         }
 
-        ClientMultipartFormPost formPost = new ClientMultipartFormPost();
-        formPost.sendPosttoTN(xmlString, pdfString, tnData);
+        if (errorOccured) {
+            tnData.setErrorCode("1");
+        } else {
+            ClientMultipartFormPost formPost = new ClientMultipartFormPost();
+            formPost.sendPosttoTN(xml, pdf, tnData);
+        }
     }
 
     @InitBinder

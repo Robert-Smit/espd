@@ -59,8 +59,8 @@ public class ClientMultipartFormPost {
     /**
      * Used to send a POST request to TenderNed.
      *
-     * @param xml    is a byte[]
-     * @param pdf is a byte[]
+     * @param xml The XML to send
+     * @param pdf The PDF to send
      * @param tnData is a {@link TenderNedData} object
      * @throws IOException Thrown if an I/O error occurs
      */

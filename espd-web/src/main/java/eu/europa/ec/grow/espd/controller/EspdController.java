@@ -42,7 +42,6 @@ import eu.europa.ec.grow.espd.xml.EspdExchangeMarshaller;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.output.CountingOutputStream;
 import org.apache.commons.lang3.StringEscapeUtils;
-import org.apache.fop.apps.FOPException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.http.HttpHeaders;
@@ -61,11 +60,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.transform.TransformerException;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -367,14 +365,14 @@ class EspdController {
             HttpServletRequest request,
             HttpServletResponse response,
             BindingResult bindingResult,
-            SessionStatus status) throws IOException, FOPException, URISyntaxException, TransformerException {
+            SessionStatus status) throws PdfRenderingException, IOException {
         if (bindingResult.hasErrors()) {
             return flow + "_" + agent + "_" + step;
         }
 
         if ("savePrintHtml".equals(next)) {
 
-            String html = StringEscapeUtils.unescapeHtml4(espd.getHtml()) ;
+            String html = StringEscapeUtils.unescapeHtml4(espd.getHtml());
             espd.setHtml(addHtmlHeader(html));
             //tijdelijk voor het opslaan van html
             HtmlToPdfTransformer.saveHtml(espd.getHtml());
@@ -420,17 +418,16 @@ class EspdController {
         }
     }
 
-    public void sendTenderNedData(String agent, EspdDocument espd, TenderNedData tnData) throws IOException, URISyntaxException, FOPException, TransformerException {
-        byte[] xmlString = new byte[0];
+    public void sendTenderNedData(String agent, EspdDocument espd, TenderNedData tnData) throws PdfRenderingException, IOException {
+        ByteArrayOutputStream xmlString = new ByteArrayOutputStream();
         if ("ca".equals(agent)) {
-            xmlString = exchangeMarshaller.generateEspdRequestCa(espd);
+            xmlString = (ByteArrayOutputStream)exchangeMarshaller.generateEspdRequestCa(espd);
         } else {
-            xmlString = exchangeMarshaller.generateEspdResponse(espd);
+            xmlString = (ByteArrayOutputStream)exchangeMarshaller.generateEspdResponse(espd);
         }
 
         HtmlToPdfTransformer pdfTransformer = new HtmlToPdfTransformer();
-
-        byte[] pdfString = new byte[0];
+        ByteArrayOutputStream pdfString = new ByteArrayOutputStream();
         try {
             pdfString = pdfTransformer.convertToPDF(espd.getHtml(), agent);
         } catch (PdfRenderingException e) {
@@ -438,7 +435,7 @@ class EspdController {
         }
 
         //if the pdfString has a length of 15, an error occured while transforming HTML to PDF.
-        if (pdfString.length == 15) {
+        if (pdfString.size() == 15) {
             tnData.setErrorCode("1");
         }
 

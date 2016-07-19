@@ -2,7 +2,6 @@ package eu.europa.ec.grow.espd.tenderned;
 
 import eu.europa.ec.grow.espd.tenderned.exception.PdfRenderingException;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.fop.apps.FOPException;
 import org.apache.fop.apps.Fop;
 import org.apache.fop.apps.FopFactory;
@@ -17,6 +16,7 @@ import javax.xml.transform.URIResolver;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamSource;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,32 +36,36 @@ public class HtmlToPdfTransformer {
      * @param html is a String of html content
      * @throws PdfRenderingException
      */
-    public byte[] convertToPDF(String html, String agent) throws TransformerException, IOException, FOPException, URISyntaxException, PdfRenderingException {
+    public ByteArrayOutputStream convertToPDF(String html, String agent) throws PdfRenderingException {
         String xsl;
         if ("ca".equals(agent)) {
             xsl = XSL_CA;
         } else {
             xsl = XSL_EO;
         }
-
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        InputStream htmlInputStream = new ByteArrayInputStream(html.getBytes(UTF_8));
-        InputStreamReader htmlInputStreamReader = new InputStreamReader(htmlInputStream, UTF_8);
-        StreamSource xhtmlSource = new StreamSource(htmlInputStreamReader);
 
-        final XsltURIResolver resolver = new XsltURIResolver();
-        final TransformerFactory transformerFactory = TransformerFactory.newInstance();
-        transformerFactory.setURIResolver(resolver);
+        try {
+            InputStream htmlInputStream = new ByteArrayInputStream(html.getBytes(UTF_8));
+            InputStreamReader htmlInputStreamReader = new InputStreamReader(htmlInputStream, UTF_8);
+            StreamSource xhtmlSource = new StreamSource(htmlInputStreamReader);
 
-        final Source xslSource = resolver.resolve(xsl, null);
-        final URI fopConfigURI = this.getClass().getResource("/tenderned/pdfrendering/fop/fop-config.xml").toURI();
-        final Transformer xhtml2foTransformer = transformerFactory.newTransformer(xslSource);
-        final FopFactory fopFactory = FopFactory.newInstance(fopConfigURI);
-        final Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, out);
-        final Result res = new SAXResult(fop.getDefaultHandler());
-        xhtml2foTransformer.transform(xhtmlSource, res);
-        out.close();
-        return out.toByteArray();
+            final XsltURIResolver resolver = new XsltURIResolver();
+            final TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            transformerFactory.setURIResolver(resolver);
+
+            final Source xslSource = resolver.resolve(xsl, null);
+            final URI fopConfigURI = this.getClass().getResource("/tenderned/pdfrendering/fop/fop-config.xml").toURI();
+            final Transformer xhtml2foTransformer = transformerFactory.newTransformer(xslSource);
+            final FopFactory fopFactory = FopFactory.newInstance(fopConfigURI);
+            final Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, out);
+            final Result res = new SAXResult(fop.getDefaultHandler());
+            xhtml2foTransformer.transform(xhtmlSource, res);
+            out.close();
+        } catch (TransformerException | IOException | URISyntaxException | FOPException e) {
+            throw new PdfRenderingException("Something went wrong while generating PDF file");
+        }
+        return out;
     }
 
     private static class XsltURIResolver implements URIResolver {

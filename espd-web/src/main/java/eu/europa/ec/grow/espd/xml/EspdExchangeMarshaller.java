@@ -118,14 +118,12 @@ public class EspdExchangeMarshaller {
      * @throws IOException
      * @throws TransformerConfigurationException
      */
-    public byte[] generateEspdRequestCa(EspdDocument espdDocument) {
+    public OutputStream generateEspdRequestCa(EspdDocument espdDocument) {
         ESPDRequestType espdRequestType = toEspdRequestTransformer.buildRequestType(espdDocument);
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         StreamResult result = new StreamResult(os);
         jaxb2Marshaller.marshal(espdRequestObjectFactory.createESPDRequest(espdRequestType), result);
-        String xmlReq = result.getOutputStream().toString();
-
-        return xmlReq.getBytes();
+        return result.getOutputStream();
     }
 
         /**
@@ -135,14 +133,13 @@ public class EspdExchangeMarshaller {
          * @param espdDocument The ESPD document that will be written out
          * @return byte[]
          */
-    public byte[] generateEspdResponse(EspdDocument espdDocument) {
+    public OutputStream generateEspdResponse(EspdDocument espdDocument) {
         ESPDResponseType espdResponseType = toEspdResponseTransformer.buildResponseType(espdDocument);
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         StreamResult result = new StreamResult(os);
         jaxb2Marshaller.marshal(espdResponseObjectFactory.createESPDResponse(espdResponseType), result);
-        String xmlRes = result.getOutputStream().toString();
 
-        return xmlRes.getBytes();
+        return result.getOutputStream();
     }
 
         /**

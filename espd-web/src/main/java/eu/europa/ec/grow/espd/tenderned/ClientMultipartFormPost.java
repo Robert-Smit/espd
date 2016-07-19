@@ -16,6 +16,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.joda.time.DateTime;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 
@@ -63,17 +64,17 @@ public class ClientMultipartFormPost {
      * @param tnData is a {@link TenderNedData} object
      * @throws IOException Thrown if an I/O error occurs
      */
-    public void sendPosttoTN(byte[] xml, byte[] pdf, TenderNedData tnData) throws IOException {
+    public void sendPosttoTN(ByteArrayOutputStream xml, ByteArrayOutputStream pdf, TenderNedData tnData) throws IOException {
 
         CloseableHttpClient httpClient = HttpClients.createDefault();
         HttpPost httpPost = new HttpPost(tnData.getUploadURL());
 
         File xmlFile = new File(FILENAME_XML);
-        FileUtils.writeByteArrayToFile(xmlFile, xml);
+        FileUtils.writeByteArrayToFile(xmlFile, xml.toByteArray());
         FileBody fileBodyXml = new FileBody(xmlFile, ContentType.APPLICATION_XML, FILENAME_XML);
 
         File pdfFile = new File(FILENAME_PDF);
-        FileUtils.writeByteArrayToFile(pdfFile, pdf);
+        FileUtils.writeByteArrayToFile(pdfFile, pdf.toByteArray());
         FileBody fileBodyPdf = new FileBody(pdfFile, ContentType.create("application/pdf"), FILENAME_PDF);
 
         String time = DateTime.now().toString("yyyyMMddHHmmss");

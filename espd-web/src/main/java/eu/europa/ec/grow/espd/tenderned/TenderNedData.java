@@ -16,37 +16,27 @@ import lombok.Setter;
 @Data
 public class TenderNedData {
 
-    public TenderNedData() {
-        this.errorCode = "0";
-    }
-
-    private String uploadURL;
-
-    private String callbackURL;
-
     private String accessToken;
 
     private String agent;
 
     private String bestandsnaam;
 
-    @Setter(AccessLevel.NONE)
-    private String xml;
-
-    @Setter(AccessLevel.NONE)
-    private boolean noUpload;
-
-    @Setter(AccessLevel.NONE)
-    private boolean noMergeESPDs;
+    private String callbackURL;
 
     private String errorCode;
 
-    public void setNoUpload(String noUpload) {
-        this.noUpload = Boolean.parseBoolean(noUpload);
-    }
+    private String uploadURL;
 
-    public void setNoMergeESPDs(String noMergeESPDs) {
-        this.noMergeESPDs = Boolean.parseBoolean(noMergeESPDs);
+    @Setter(AccessLevel.NONE)
+    private String xml;
+
+
+    /**
+     * Constructor for {@link TenderNedData}
+     */
+    public TenderNedData() {
+        this.errorCode = "0";
     }
 
     public void setXml(String xml) {

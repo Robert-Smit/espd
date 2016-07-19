@@ -790,7 +790,6 @@
     <tiles:insertDefinition name="footerButtons">
         <tiles:putAttribute name="nextCode" value="export"/>
         <tiles:putAttribute name="prev" value="finish"/>
-        <tiles:putAttribute name="cancel" value="${tenderned.callbackURL}"/>
         <tiles:putAttribute name="next" value="savePrintHtml"/>
     </tiles:insertDefinition>
 </form:form>

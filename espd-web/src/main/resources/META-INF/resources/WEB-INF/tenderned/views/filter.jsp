@@ -210,6 +210,5 @@
     <tiles:insertDefinition name="footerButtons">
         <tiles:putAttribute name="prev" value="hidden"/>
         <tiles:putAttribute name="next" value="procedure"/>
-        <tiles:putAttribute name="cancel" value="${tenderned.callbackURL}"/>
     </tiles:insertDefinition>
 </form:form>

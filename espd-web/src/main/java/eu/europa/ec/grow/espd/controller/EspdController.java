@@ -34,12 +34,12 @@ import eu.europa.ec.grow.espd.ted.TedResponse;
 import eu.europa.ec.grow.espd.ted.TedService;
 import eu.europa.ec.grow.espd.tenderned.ClientMultipartFormPost;
 import eu.europa.ec.grow.espd.tenderned.HtmlToPdfTransformer;
+import eu.europa.ec.grow.espd.tenderned.SessionUtils;
 import eu.europa.ec.grow.espd.tenderned.TenderNedData;
 import eu.europa.ec.grow.espd.tenderned.TenderNedUtils;
 import eu.europa.ec.grow.espd.tenderned.exception.PdfRenderingException;
 import eu.europa.ec.grow.espd.xml.EspdExchangeMarshaller;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.codec.binary.StringUtils;
 import org.apache.commons.io.output.CountingOutputStream;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.fop.apps.FOPException;
@@ -366,18 +366,27 @@ class EspdController {
             @ModelAttribute("tenderned") TenderNedData tenderNedData,
             HttpServletRequest request,
             HttpServletResponse response,
-            BindingResult bindingResult) throws IOException, FOPException, URISyntaxException, TransformerException {
+            BindingResult bindingResult,
+            SessionStatus status) throws IOException, FOPException, URISyntaxException, TransformerException {
         if (bindingResult.hasErrors()) {
             return flow + "_" + agent + "_" + step;
         }
+
         if ("savePrintHtml".equals(next)) {
+
             String html = StringEscapeUtils.unescapeHtml4(espd.getHtml()) ;
             espd.setHtml(addHtmlHeader(html));
             //tijdelijk voor het opslaan van html
             HtmlToPdfTransformer.saveHtml(espd.getHtml());
 
             sendTenderNedData(agent, espd, tenderNedData);
-            return redirectToTN(TenderNedUtils.createGetUrl(tenderNedData));
+            String callbackUrl = TenderNedUtils.createGetUrl(tenderNedData);
+            try {
+                return redirectToTN(callbackUrl);
+            } finally {
+                SessionUtils.removeCookies(request, response);
+                status.setComplete();
+            }
         }
         return redirectToPage(flow + "/" + agent + "/" + next);
     }
@@ -418,6 +427,7 @@ class EspdController {
         } else {
             xmlString = exchangeMarshaller.generateEspdResponse(espd);
         }
+
         HtmlToPdfTransformer pdfTransformer = new HtmlToPdfTransformer();
 
         byte[] pdfString = new byte[0];
@@ -442,4 +452,29 @@ class EspdController {
         CustomDateEditor editor = new CustomDateEditor(dateFormat, true);
         binder.registerCustomEditor(Date.class, editor);
     }
+
+    /**
+     * Method specific for return to TenderNed when clicking on the 'cancel' button.
+     * @param tenderNedData is a {@link TenderNedData} object
+     * @param status is a {@link SessionStatus} object
+     * @param request is a {@link HttpServletRequest} object
+     * @return
+     */
+    @RequestMapping(value = "/cancel")
+    public String cancel(
+            @ModelAttribute("tenderned") TenderNedData tenderNedData,
+            SessionStatus status,
+            HttpServletRequest request,
+            HttpServletResponse response) {
+        try {
+            String callbackUrl = tenderNedData.getCallbackURL();
+            return "redirect:" + callbackUrl;
+        } finally {
+            SessionUtils.removeCookies(request, response);
+            status.setComplete();
+        }
+    }
+
 }
+
+

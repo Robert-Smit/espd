@@ -108,8 +108,6 @@
         <tiles:insertDefinition name="footerButtons">
             <tiles:putAttribute name="prev" value="selection"/>
             <tiles:putAttribute name="next" value="print"/>
-			<%--<tiles:putAttribute name="print" value="${true}"/>--%>
-			<tiles:putAttribute name="cancel" value="${tenderned.callbackURL}"/>
 		</tiles:insertDefinition>
 	</div>
 

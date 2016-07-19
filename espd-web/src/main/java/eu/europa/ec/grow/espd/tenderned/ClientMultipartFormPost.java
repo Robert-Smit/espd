@@ -16,12 +16,8 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.joda.time.DateTime;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 
 /**
  * espd - Description.
@@ -63,6 +59,7 @@ public class ClientMultipartFormPost {
      * Used to send a POST request to TenderNed.
      *
      * @param xml    is a byte[]
+     * @param pdf is a byte[]
      * @param tnData is a {@link TenderNedData} object
      * @throws IOException Thrown if an I/O error occurs
      */
@@ -74,7 +71,8 @@ public class ClientMultipartFormPost {
         File xmlFile = new File(FILENAME_XML);
         FileUtils.writeByteArrayToFile(xmlFile, xml);
         FileBody fileBodyXml = new FileBody(xmlFile, ContentType.APPLICATION_XML, FILENAME_XML);
-        File pdfFile = new File(FILENAME_XML);
+
+        File pdfFile = new File(FILENAME_PDF);
         FileUtils.writeByteArrayToFile(pdfFile, pdf);
         FileBody fileBodyPdf = new FileBody(pdfFile, ContentType.create("application/pdf"), FILENAME_PDF);
 
@@ -100,16 +98,4 @@ public class ClientMultipartFormPost {
             log.error("Error returned from POST, HTTP status: " + statusCode);
         }
     }
-
-    public String getInputStream(File file) throws IOException {
-        InputStream is = new FileInputStream(file);
-        BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
-        StringBuilder value = new StringBuilder();
-        char[] buffer = new char[1024];
-        for (int length = 0; (length = reader.read(buffer)) > 0; ) {
-            value.append(buffer, 0, length);
-        }
-        return  value.toString();
-    }
-
 }

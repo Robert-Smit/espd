@@ -203,7 +203,7 @@ public enum Country implements CacCountry {
 	NF("NF", "Norfolk Island", "country_NF"), 
 	NG("NG", "Nigeria", "country_NG"), 
 	NI("NI", "Nicaragua", "country_NI"), 
-	NL("NL", "Netherlands", "country_NL"), 
+	NL("NL", "Nederland", "country_NL"),
 	NO("NO", "Norway", "country_NO"), 
 	NP("NP", "Nepal", "country_NP"), 
 	NR("NR", "Nauru", "country_NR"), 

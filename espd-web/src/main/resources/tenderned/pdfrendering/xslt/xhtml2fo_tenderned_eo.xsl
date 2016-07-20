@@ -176,7 +176,6 @@
 
 	<xsl:strip-space elements="*"/>
 
-
 	<xsl:template match="div[@id='separate_espd_div']"/>
 	<xsl:template match="div[@class='collapse']"/>
 	<xsl:template match="div[@class='col-md-12 collapse']"/>

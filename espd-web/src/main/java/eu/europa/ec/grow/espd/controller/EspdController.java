@@ -213,7 +213,6 @@ class EspdController {
         return redirectToPage("filter");
     }
 
-
     private String createNewRequestAsCA(Country country, EspdDocument document) {
         document.getAuthority().setCountry(country);
         document.selectCAExclusionCriteria();
@@ -267,15 +266,18 @@ class EspdController {
 
     private EspdDocument importEspdAsEo(Country country, String attachment, Model model, BindingResult result)
             throws IOException {
+
         EspdDocument espd = new EspdDocument();
-        InputStream is = new ByteArrayInputStream(attachment.getBytes(StandardCharsets.UTF_8));
-        Optional<EspdDocument> wrappedEspd = exchangeMarshaller.importAmbiguousEspdFile(is);
-        // how can wrappedEspd be null???
+        InputStream inputStream = new ByteArrayInputStream(attachment.getBytes(StandardCharsets.UTF_8));
+        Optional<EspdDocument> wrappedEspd = exchangeMarshaller.importAmbiguousEspdFile(inputStream);
+
         if (wrappedEspd != null && wrappedEspd.isPresent()) {
             espd = wrappedEspd.get();
+
             if (espd.getEconomicOperator() == null) {
                 espd.setEconomicOperator(new EconomicOperatorImpl());
             }
+
             if (needsToLoadProcurementProcedureInformation(espd)) {
                 // in this case we need to contact TED again to load the procurement information
                 copyTedInformation(espd);
@@ -287,9 +289,12 @@ class EspdController {
 
     private String mergeTwoEspds(List<MultipartFile> attachments, Model model, BindingResult result)
             throws IOException {
+
         try (InputStream reqIs = attachments.get(1).getInputStream();
              InputStream respIs = attachments.get(2).getInputStream()) {
+
             Optional<EspdDocument> wrappedEspd = exchangeMarshaller.mergeEspdRequestAndResponse(reqIs, respIs);
+
             if (wrappedEspd.isPresent()) {
                 model.addAttribute("espd", wrappedEspd.get());
                 return redirectToPage(RESPONSE_EO_PROCEDURE_PAGE);
@@ -309,6 +314,7 @@ class EspdController {
         if (document.getEconomicOperator() == null) {
             document.setEconomicOperator(new EconomicOperatorImpl());
         }
+
         document.getEconomicOperator().setCountry(country);
         document.giveLifeToAllExclusionCriteria();
         document.giveLifeToAllSelectionCriteria();
@@ -321,8 +327,8 @@ class EspdController {
             @PathVariable String agent,
             @PathVariable String step,
             @ModelAttribute("espd") EspdDocument espd,
-            @ModelAttribute("tenderned") TenderNedData tenderNedData
-    ) {
+            @ModelAttribute("tenderned") TenderNedData tenderNedData) {
+
         return flow + "_" + agent + "_" + step;
     }
 
@@ -335,6 +341,7 @@ class EspdController {
             @ModelAttribute("espd") EspdDocument espd,
             @ModelAttribute("tenderned") TenderNedData tenderNedData,
             BindingResult bindingResult) {
+
         return bindingResult.hasErrors() ?
                 flow + "_" + agent + "_" + step : redirectToPage(flow + "/" + agent + "/" + prev);
     }
@@ -349,6 +356,7 @@ class EspdController {
             @ModelAttribute("espd") EspdDocument espd,
             @ModelAttribute("tenderned") TenderNedData tenderNedData,
             BindingResult bindingResult) {
+
         return bindingResult.hasErrors() ?
                 flow + "_" + agent + "_" + step : redirectToPage(flow + "/" + agent + "/print");
     }
@@ -366,6 +374,7 @@ class EspdController {
             HttpServletResponse response,
             BindingResult bindingResult,
             SessionStatus status) throws PdfRenderingException, IOException {
+
         if (bindingResult.hasErrors()) {
             return flow + "_" + agent + "_" + step;
         }
@@ -374,11 +383,12 @@ class EspdController {
 
             String html = StringEscapeUtils.unescapeHtml4(espd.getHtml());
             espd.setHtml(addHtmlHeader(html));
-            //tijdelijk voor het opslaan van html
+            // tijdelijk voor het opslaan van html
             HtmlToPdfTransformer.saveHtml(espd.getHtml());
 
             sendTenderNedData(agent, espd, tenderNedData);
             String callbackUrl = TenderNedUtils.createGetUrl(tenderNedData);
+
             try {
                 return redirectToTN(callbackUrl);
             } finally {
@@ -393,7 +403,6 @@ class EspdController {
         return "<html><head/><body>" + html + "</div></body></html>";
     }
 
-
     private static String redirectToPage(String pageName) {
         return "redirect:/" + pageName;
     }
@@ -402,10 +411,14 @@ class EspdController {
         return "redirect:" + callbackUrl;
     }
 
-    private void downloadEspdFile(@PathVariable String agent, @ModelAttribute("espd") EspdDocument espd,
-                                  HttpServletResponse response) throws IOException {
+    private void downloadEspdFile(
+            @PathVariable String agent,
+            @ModelAttribute("espd") EspdDocument espd,
+            HttpServletResponse response) throws IOException {
+
         try (CountingOutputStream out = new CountingOutputStream(response.getOutputStream())) {
             response.setContentType(APPLICATION_XML_VALUE);
+
             if ("eo".equals(agent)) {
                 response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"espd-response.xml\"");
                 exchangeMarshaller.generateEspdResponse(espd, out);
@@ -472,6 +485,7 @@ class EspdController {
             SessionStatus status,
             HttpServletRequest request,
             HttpServletResponse response) {
+
         try {
             String callbackUrl = tenderNedData.getCallbackURL();
             return "redirect:" + callbackUrl;
@@ -480,7 +494,4 @@ class EspdController {
             status.setComplete();
         }
     }
-
 }
-
-

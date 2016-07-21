@@ -3,16 +3,18 @@
  */
 package eu.europa.ec.grow.espd.tenderned;
 
-import lombok.extern.slf4j.Slf4j;
+import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
+import javax.annotation.PostConstruct;
+
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
-import java.io.IOException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * espd - Description.
@@ -24,13 +26,8 @@ import java.security.NoSuchAlgorithmException;
 @Slf4j
 public class TenderNedUtils {
 
+    public static final String TIMESTAMP_FORMAT = "yyyyMMddHHmmss";
     public static String SHARED_ESPD_PASSWORD;
-
-    @PostConstruct
-    public void init(){
-        SHARED_ESPD_PASSWORD = SHARED_ESPD_PASSWORD_NONSTATIC;
-    }
-
     @Value("${shared.espd.password}")
     private String SHARED_ESPD_PASSWORD_NONSTATIC;
 
@@ -40,27 +37,26 @@ public class TenderNedUtils {
 
     /**
      * This method is used to create the Get Parameters for the redirect to TenderNed
+     *
      * @param tenderNedData is a {@link TenderNedData} object
      * @return a String
      */
     public static String createGetUrl(TenderNedData tenderNedData) {
-        String time = DateTime.now().toString("yyyyMMddHHmmss");
+        String time = DateTime.now().toString(TIMESTAMP_FORMAT);
         String callbackUrl = tenderNedData.getCallbackURL();
 
-        return callbackUrl
-                .concat("&a=")
-                .concat(tenderNedData.getAccessToken())
-                .concat("&t=")
-                .concat(time)
-                .concat("&s=")
-                .concat(createSecurityHash(tenderNedData.getAccessToken(), time))
-                .concat("&UEA_ERROR_CODE=")
-                .concat(tenderNedData.getErrorCode());
+        return new UrlBuilder(callbackUrl)
+                .addParameter("a", tenderNedData.getAccessToken())
+                .addParameter("t", time)
+                .addParameter("s", createSecurityHash(tenderNedData.getAccessToken(), time))
+                .addParameter("UEA_ERROR_CODE", tenderNedData.getErrorCode())
+                .build();
     }
 
     /**
      * This method is for adding headers to the html code that's being saved on
      * the print.jsp page to make the html valid for creating a PDF file.
+     *
      * @param html is a String
      * @return a String
      * @throws IOException
@@ -72,8 +68,9 @@ public class TenderNedUtils {
 
     /**
      * Creates a security hash
+     *
      * @param accessToken is a String, saved in the object {@link TenderNedData}
-     * @param timestamp is a String
+     * @param timestamp   is a String
      * @return the hexString
      */
     public static String createSecurityHash(String accessToken, String timestamp) {
@@ -94,5 +91,33 @@ public class TenderNedUtils {
             log.error(e.getMessage(), e);
         }
         return hexString.toString();
+    }
+
+    @PostConstruct
+    public void init() {
+        SHARED_ESPD_PASSWORD = SHARED_ESPD_PASSWORD_NONSTATIC;
+    }
+
+    private static class UrlBuilder {
+        private final StringBuilder url;
+        private String querySeparator;
+
+        public UrlBuilder(String url) {
+            this.url = new StringBuilder(url);
+            querySeparator = url.contains("?") ? "&" : "?";
+        }
+
+        public UrlBuilder addParameter(String param, String value) {
+            url.append(querySeparator);
+            url.append(param);
+            url.append("=");
+            url.append(value);
+            querySeparator = "&";
+            return this;
+        }
+
+        public String build() {
+            return url.toString();
+        }
     }
 }

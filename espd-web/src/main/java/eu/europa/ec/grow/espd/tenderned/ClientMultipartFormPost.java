@@ -77,7 +77,7 @@ public class ClientMultipartFormPost {
         FileUtils.writeByteArrayToFile(pdfFile, pdf.toByteArray());
         FileBody fileBodyPdf = new FileBody(pdfFile, ContentType.create("application/pdf"), FILENAME_PDF);
 
-        String time = DateTime.now().toString("yyyyMMddHHmmss");
+        String time = DateTime.now().toString(TenderNedUtils.TIMESTAMP_FORMAT);
 
         HttpEntity entity = MultipartEntityBuilder.create()
                 .addPart("xml", fileBodyXml)

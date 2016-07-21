@@ -33,7 +33,11 @@
         var ca = document.getElementById("whoareyou_ca");
         var eo = document.getElementById("whoareyou_eo");
         var agent = "${tenderned.agent}";
-        var country = "authority.country";
+        var reuseRequest = "${tenderned.reuseRequest}";
+        var country = '';
+
+        console.log("xml is " + reuseRequest);
+        console.log(reuseRequest == 'false');
 
         $('input.radiotab').click(function () {
             $(this).tab('show');
@@ -41,22 +45,29 @@
         });
 
         if (agent == 'ca') {
+            var caCreateRequest = document.getElementById('ca_create_espd_request');
+            var caReuseRequest = document.getElementById('ca_reuse_espd_request');
             ca.checked = true;
             eo.disabled = true;
             $(ca).tab('show');
             $('#where_are_you_from_eo').hide();
-
-            var caCreateRequest = document.getElementById('ca_create_espd_request');
-            caCreateRequest.checked = true;
-            document.getElementById('ca_reuse_espd_request').disabled = true;
             $('#tab-country-selection').addClass('active');
-            document.getElementsById('where_are_you_from_eo').removeClass('active');
+
+            if (reuseRequest == 'true') {
+                caReuseRequest.checked = true;
+                caCreateRequest.disabled = true;
+                $('#show_xml_file').addClass('active');
+            } else {
+                caCreateRequest.checked = true;
+                caReuseRequest.disabled = true;
+            }
+
         } else if (agent == 'eo') {
             ca.disabled = true;
             eo.checked = true;
             $(eo).tab('show');
 
-            $('#eo_show_xml_file').addClass('active');
+            $('#show_xml_file').addClass('active');
             $('#where_are_you_from_ca').hide();
             document.getElementById('eo_import_espd').checked = 'true';
             $('#tab-country-selection').addClass('active');
@@ -183,7 +194,7 @@
                 <%--<s:message code="filter_upload_request_response"/>--%>
                 <%--<form:input type="file" path="attachments"/>--%>
                 <%--</div>--%>
-            <div class="tab-pane" id="eo_show_xml_file">
+            <div class="tab-pane" id="show_xml_file">
                 <h3 data-i18n="filter_upload_document"><s:message code='filter_upload_document'/></h3>
                 <c:out value="${tenderned.bestandsnaam}"/>
             </div>

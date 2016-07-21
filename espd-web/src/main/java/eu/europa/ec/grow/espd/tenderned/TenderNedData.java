@@ -31,6 +31,8 @@ public class TenderNedData {
     @Setter(AccessLevel.NONE)
     private String xml;
 
+    private boolean reuseRequest;
+
 
     /**
      * Constructor for {@link TenderNedData}

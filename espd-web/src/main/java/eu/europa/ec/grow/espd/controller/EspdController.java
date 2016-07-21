@@ -175,6 +175,7 @@ class EspdController {
 
         Country country = Country.findByIso2Code(countryIso);
         EspdDocument espd = new EspdDocument();
+        boolean reuseRequest = false;
 
         if ("eo".equals(agent)) {
             espd = importEspdAsEo(country, tenderNedData.getXml(), model, result);

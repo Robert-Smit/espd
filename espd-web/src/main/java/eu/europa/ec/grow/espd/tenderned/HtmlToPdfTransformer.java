@@ -77,12 +77,4 @@ public class HtmlToPdfTransformer {
             return new StreamSource(inputStream);
         }
     }
-
-    // Tijdelijke code om html op te slaan
-    public static void saveHtml(String html) throws IOException {
-        File htmlFile = new File("/htmlprintpage.xhtml");
-        System.out.println("htmlFile path = " + htmlFile.getAbsolutePath());
-        byte[] htmlByteArray = html.getBytes(UTF_8);
-        FileUtils.writeByteArrayToFile(htmlFile, htmlByteArray);
-    }
 }

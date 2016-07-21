@@ -383,8 +383,6 @@ class EspdController {
 
             String html = StringEscapeUtils.unescapeHtml4(espd.getHtml());
             espd.setHtml(addHtmlHeader(html));
-            // tijdelijk voor het opslaan van html
-            HtmlToPdfTransformer.saveHtml(espd.getHtml());
 
             sendTenderNedData(agent, espd, tenderNedData);
             String callbackUrl = TenderNedUtils.createGetUrl(tenderNedData);

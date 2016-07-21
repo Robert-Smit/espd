@@ -4,11 +4,13 @@
 package eu.europa.ec.grow.espd.tenderned;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -56,6 +58,24 @@ public class TenderNedUtils {
                 .concat(tenderNedData.getErrorCode());
     }
 
+    /**
+     * This method is for adding headers to the html code that's being saved on
+     * the print.jsp page to make the html valid for creating a PDF file.
+     * @param html is a String
+     * @return a String
+     * @throws IOException
+     */
+    public static String addHtmlHeader(String html) throws IOException {
+        String newHtml = StringEscapeUtils.unescapeHtml4(html);
+        return "<html><head/><body>" + newHtml + "</div></body></html>";
+    }
+
+    /**
+     * Creates a security hash
+     * @param accessToken is a String, saved in the object {@link TenderNedData}
+     * @param timestamp is a String
+     * @return the hexString
+     */
     public static String createSecurityHash(String accessToken, String timestamp) {
         StringBuffer hexString = new StringBuffer();
 

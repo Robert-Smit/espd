@@ -1,7 +1,6 @@
 package eu.europa.ec.grow.espd.tenderned;
 
 import eu.europa.ec.grow.espd.tenderned.exception.PdfRenderingException;
-import org.apache.commons.io.FileUtils;
 import org.apache.fop.apps.FOPException;
 import org.apache.fop.apps.Fop;
 import org.apache.fop.apps.FopFactory;
@@ -17,7 +16,6 @@ import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamSource;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -26,15 +24,20 @@ import java.net.URISyntaxException;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
+/**
+ * This class converts html to pdf file
+ */
 public class HtmlToPdfTransformer {
 
-    public final static String XSL_CA = "xhtml2fo_tenderned_ca.xsl";
-    public final static String XSL_EO = "xhtml2fo_tenderned_eo.xsl";
+    public static final String XSL_CA = "xhtml2fo_tenderned_ca.xsl";
+    public static final String XSL_EO = "xhtml2fo_tenderned_eo.xsl";
 
     /**
      * Method that will convert the given XML to PDF
      * @param html is a String of html content
+     * @param agent is a String, can be 'ca' or 'eo'
      * @throws PdfRenderingException
+     * @return a {@link ByteArrayOutputStream} object
      */
     public ByteArrayOutputStream convertToPDF(String html, String agent) throws PdfRenderingException {
         String xsl;

@@ -17,6 +17,13 @@ import javax.servlet.http.HttpServletResponse;
 public class SessionUtils {
 
     /**
+     * private constructor to hide the public one
+     */
+    private SessionUtils() {
+        throw new IllegalAccessError("Utility class");
+    }
+
+    /**
      * Method used for removing cookies from ESPD
      * @param request is a {@link HttpServletRequest} object
      * @param response is a {@link HttpServletResponse} object

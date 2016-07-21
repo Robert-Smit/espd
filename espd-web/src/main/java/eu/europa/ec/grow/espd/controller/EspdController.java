@@ -41,7 +41,6 @@ import eu.europa.ec.grow.espd.tenderned.exception.PdfRenderingException;
 import eu.europa.ec.grow.espd.xml.EspdExchangeMarshaller;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.output.CountingOutputStream;
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.http.HttpHeaders;
@@ -221,11 +220,6 @@ class EspdController {
     private String createNewRequestAsCA(Country country, EspdDocument document) {
         document.getAuthority().setCountry(country);
         document.selectCAExclusionCriteria();
-//        copyTedInformation(document);
-        return redirectToPage(REQUEST_CA_PROCEDURE_PAGE);
-    }
-
-    private String reuseRequestAsCa(EspdDocument document) {
         return redirectToPage(REQUEST_CA_PROCEDURE_PAGE);
     }
 
@@ -372,10 +366,9 @@ class EspdController {
 
         if ("savePrintHtml".equals(next)) {
 
-            String html = StringEscapeUtils.unescapeHtml4(espd.getHtml());
-            espd.setHtml(addHtmlHeader(html));
+            espd.setHtml(TenderNedUtils.addHtmlHeader(espd.getHtml()));
 
-            sendTenderNedData(agent, espd, tenderNedData);
+            sendTenderNedData(espd, tenderNedData);
             String callbackUrl = TenderNedUtils.createGetUrl(tenderNedData);
 
             try {
@@ -388,9 +381,7 @@ class EspdController {
         return redirectToPage(flow + "/" + agent + "/" + next);
     }
 
-    private String addHtmlHeader(String html) throws IOException {
-        return "<html><head/><body>" + html + "</div></body></html>";
-    }
+
 
 
     private static String redirectToPage(String pageName) {
@@ -420,11 +411,21 @@ class EspdController {
         }
     }
 
-    public void sendTenderNedData(String agent, EspdDocument espd, TenderNedData tnData) throws PdfRenderingException, IOException {
+    /**
+     * This method creates the xml and pdf files and will be send back to TenderNed.
+     * If something goed wrong while creating these files, the callback URL
+     * to TenderNed will be called without sending a post.
+     * @param espd is a {@link EspdDocument} object
+     * @param tnData is a {@link TenderNedData} object
+     * @throws PdfRenderingException
+     * @throws IOException
+     */
+    public void sendTenderNedData(EspdDocument espd, TenderNedData tnData)
+            throws PdfRenderingException, IOException {
         boolean errorOccured = false;
-        ByteArrayOutputStream xml = null;
+        ByteArrayOutputStream xml;
 
-        if ("ca".equals(agent)) {
+        if ("ca".equals(tnData.getAgent())) {
             xml = (ByteArrayOutputStream) exchangeMarshaller.generateEspdRequestCa(espd);
         } else {
             xml = (ByteArrayOutputStream) exchangeMarshaller.generateEspdResponse(espd);
@@ -434,13 +435,13 @@ class EspdController {
 
         try {
             HtmlToPdfTransformer pdfTransformer = new HtmlToPdfTransformer();
-            pdf = pdfTransformer.convertToPDF(espd.getHtml(), agent);
+            pdf = pdfTransformer.convertToPDF(espd.getHtml(), tnData.getAgent());
         } catch (PdfRenderingException e) {
             errorOccured = true;
             log.error("Error rendering PDF: ", e);
         }
 
-        // if the pdf has a length of 15, an error occured while transforming HTML to PDF.
+        // if the pdf has a length of 15, an error occurred while transforming HTML to PDF.
         if (pdf != null && pdf.size() == 15) {
             errorOccured = true;
             log.error("Error transforming HTML to PDF");
@@ -466,7 +467,10 @@ class EspdController {
      * @param tenderNedData is a {@link TenderNedData} object
      * @param status is a {@link SessionStatus} object
      * @param request is a {@link HttpServletRequest} object
-     * @return
+     * @param response is a {@link HttpServletResponse} object
+     * @return a String, which is the callback URL to TenderNed
+     *          before returning to TenderNed, the session is set to complete
+     *          and the cookies will be deleted.
      */
     @RequestMapping(value = "/cancel")
     public String cancel(
@@ -482,7 +486,6 @@ class EspdController {
             status.setComplete();
         }
     }
-
 }
 
 

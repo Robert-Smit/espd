@@ -447,7 +447,7 @@ class EspdController {
         }
 
         if (errorOccured) {
-            tnData.setErrorCode(tnData.ERROR_CODE_NOK);
+            tnData.setErrorCode(TenderNedData.ERROR_CODE_NOK);
         } else {
             ClientMultipartFormPost formPost = new ClientMultipartFormPost();
             formPost.sendPosttoTN(xml, pdf, tnData);

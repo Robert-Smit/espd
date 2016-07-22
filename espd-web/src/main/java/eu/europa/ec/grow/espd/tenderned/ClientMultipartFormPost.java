@@ -11,6 +11,7 @@ import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -19,6 +20,8 @@ import org.joda.time.DateTime;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
 
 /**
  * espd - Description.
@@ -53,7 +56,6 @@ import java.io.IOException;
 public class ClientMultipartFormPost {
 
     public static final String FILENAME_XML = "uea_output.xml";
-
     public static final String FILENAME_PDF = "uea_output.pdf";
 
     /**
@@ -65,39 +67,34 @@ public class ClientMultipartFormPost {
      * @throws IOException Thrown if an I/O error occurs
      */
     public void sendPosttoTN(ByteArrayOutputStream xml, ByteArrayOutputStream pdf, TenderNedData tnData) throws IOException {
+        log.info("Sending POST data to {}", tnData.getUploadURL());
 
         CloseableHttpClient httpClient = HttpClients.createDefault();
         HttpPost httpPost = new HttpPost(tnData.getUploadURL());
+        httpPost.setEntity(getHttpEntity(xml, pdf, tnData));
 
-        File xmlFile = new File(FILENAME_XML);
-        FileUtils.writeByteArrayToFile(xmlFile, xml.toByteArray());
-        FileBody fileBodyXml = new FileBody(xmlFile, ContentType.APPLICATION_XML, FILENAME_XML);
+        HttpResponse response = httpClient.execute(httpPost);
+        final int statusCode = response.getStatusLine().getStatusCode();
+        httpClient.close();
 
-        File pdfFile = new File(FILENAME_PDF);
-        FileUtils.writeByteArrayToFile(pdfFile, pdf.toByteArray());
-        FileBody fileBodyPdf = new FileBody(pdfFile, ContentType.create("application/pdf"), FILENAME_PDF);
+        if (statusCode != HttpStatus.SC_OK) {
+            tnData.setErrorCode(TenderNedData.ERROR_CODE_NOK);
+            log.error("Status {} returned from POST: {}", statusCode, response.getStatusLine());
+        }
+    }
+
+    private HttpEntity getHttpEntity(ByteArrayOutputStream xml, ByteArrayOutputStream pdf, TenderNedData tnData) {
+        ByteArrayBody fileBodyXml = new ByteArrayBody(xml.toByteArray(), ContentType.APPLICATION_XML, FILENAME_XML);
+        ByteArrayBody fileBodyPdf = new ByteArrayBody(pdf.toByteArray(), ContentType.create("application/pdf"), FILENAME_PDF);
 
         String time = DateTime.now().toString(TenderNedUtils.TIMESTAMP_FORMAT);
 
-        HttpEntity entity = MultipartEntityBuilder.create()
+        return MultipartEntityBuilder.create()
                 .addPart("xml", fileBodyXml)
                 .addPart("pdf", fileBodyPdf)
                 .addTextBody("accessToken", tnData.getAccessToken())
                 .addTextBody("time", time)
                 .addTextBody("security", TenderNedUtils.createSecurityHash(tnData.getAccessToken(), time))
                 .build();
-
-        httpPost.setEntity(entity);
-
-        log.info("Sending POST");
-        HttpResponse response = httpClient.execute(httpPost);
-        final int statusCode = response.getStatusLine().getStatusCode();
-        httpClient.close();
-
-        if (statusCode != HttpStatus.SC_OK) {
-            tnData.setErrorCode(tnData.ERROR_CODE_NOK);
-            log.error("Status {} returned from POST: {}", statusCode, response.getStatusLine());
-        }
     }
-
 }

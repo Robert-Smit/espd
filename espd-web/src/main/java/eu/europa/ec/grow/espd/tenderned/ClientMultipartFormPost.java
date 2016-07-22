@@ -95,8 +95,8 @@ public class ClientMultipartFormPost {
         httpClient.close();
 
         if (statusCode != HttpStatus.SC_OK) {
-            tnData.setErrorCode("1");
-            log.error("Error returned from POST, HTTP status: " + statusCode);
+            tnData.setErrorCode(tnData.ERROR_CODE_NOK);
+            log.error("Status {} returned from POST: {}", statusCode, response.getStatusLine());
         }
     }
 

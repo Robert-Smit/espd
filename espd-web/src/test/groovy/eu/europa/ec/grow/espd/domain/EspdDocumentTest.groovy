@@ -74,21 +74,33 @@ class EspdDocumentTest extends Specification {
         result == crit
     }
 
-    //TODO edit test
-//    def "should preselect the mandatory exclusion criteria for CA"() {
-//        given:
-//        def espd = new EspdDocument()
-//
-//        when:
-//        espd.selectCAExclusionCriteria()
-//
-//        then:
-//        for (eu.europa.ec.grow.espd.domain.enums.criteria.ExclusionCriterion crit : eu.europa.ec.grow.espd.domain.enums.criteria.ExclusionCriterion.values()) {
-//            if (!eu.europa.ec.grow.espd.domain.enums.criteria.ExclusionCriterion.NATIONAL_EXCLUSION_GROUNDS.equals(crit)) {
-//                PropertyUtils.getNestedProperty(espd, "${crit.espdDocumentField}.exists") == true
-//            } else {
-//                espd.purelyNationalGrounds.exists == false
-//            }
-//        }
-//    }
+    def "should preselect the mandatory exclusion criteria for CA when NL"() {
+        given:
+        def espd = new EspdDocument()
+
+        when:
+        espd.selectCAExclusionCriteria(true)
+
+        then:
+        for (eu.europa.ec.grow.espd.domain.enums.criteria.ExclusionCriterion crit : eu.europa.ec.grow.espd.domain.enums.criteria.ExclusionCriterion.values()) {
+            if (!eu.europa.ec.grow.espd.domain.enums.criteria.ExclusionCriterion.NATIONAL_EXCLUSION_GROUNDS.equals(crit)) {
+                PropertyUtils.getNestedProperty(espd, "${crit.espdDocumentField}.exists") == true
+            } else {
+                espd.purelyNationalGrounds.exists == false
+            }
+        }
+    }
+
+    def "should preselect the mandatory exclusion criteria for CA when EU"() {
+        given:
+        def espd = new EspdDocument()
+
+        when:
+        espd.selectCAExclusionCriteria(false)
+
+        then:
+        for (eu.europa.ec.grow.espd.domain.enums.criteria.ExclusionCriterion crit : eu.europa.ec.grow.espd.domain.enums.criteria.ExclusionCriterion.values()) {
+                PropertyUtils.getNestedProperty(espd, "${crit.espdDocumentField}.exists") == false
+        }
+    }
 }

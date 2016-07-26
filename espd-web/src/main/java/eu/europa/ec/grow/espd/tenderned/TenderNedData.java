@@ -3,7 +3,9 @@
  */
 package eu.europa.ec.grow.espd.tenderned;
 
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Setter;
 
 /**
  * espd - Data received from caller.
@@ -24,7 +26,16 @@ public class TenderNedData {
     private String uploadURL;
     private String xml;
 
+    @Setter(AccessLevel.NONE)
+    private boolean isInternationalCode;
+
     private boolean reuseRequest;
+
+    public void setIsInternationalCode(String nationaalOfEuropeesCode) {
+        if (("EU").equalsIgnoreCase(nationaalOfEuropeesCode)) {
+            this.isInternationalCode = true;
+        }
+    }
 
     /**
      * Constructor for {@link TenderNedData}

@@ -3,25 +3,22 @@
  */
 package eu.europa.ec.grow.espd.tenderned;
 
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FileUtils;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.StatusLine;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.ByteArrayBody;
-import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.joda.time.DateTime;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * espd - Description.
@@ -74,12 +71,15 @@ public class ClientMultipartFormPost {
         httpPost.setEntity(getHttpEntity(xml, pdf, tnData));
 
         HttpResponse response = httpClient.execute(httpPost);
-        final int statusCode = response.getStatusLine().getStatusCode();
+        final StatusLine statusLine = response.getStatusLine();
+        final int statusCode = statusLine.getStatusCode();
         httpClient.close();
 
-        if (statusCode != HttpStatus.SC_OK) {
+        if (statusCode == HttpStatus.SC_OK) {
+            log.info("Status {} returned from POST: {}", statusCode, statusLine);
+        } else {
             tnData.setErrorCode(TenderNedData.ERROR_CODE_NOK);
-            log.error("Status {} returned from POST: {}", statusCode, response.getStatusLine());
+            log.error("Status {} returned from POST: {}", statusCode, statusLine);
         }
     }
 

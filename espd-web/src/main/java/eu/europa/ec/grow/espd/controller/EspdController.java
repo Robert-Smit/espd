@@ -24,22 +24,23 @@
 
 package eu.europa.ec.grow.espd.controller;
 
-import com.google.common.base.Optional;
-import eu.europa.ec.grow.espd.domain.EconomicOperatorImpl;
-import eu.europa.ec.grow.espd.domain.EspdDocument;
-import eu.europa.ec.grow.espd.domain.PartyImpl;
-import eu.europa.ec.grow.espd.domain.enums.other.Country;
-import eu.europa.ec.grow.espd.ted.TedRequest;
-import eu.europa.ec.grow.espd.ted.TedResponse;
-import eu.europa.ec.grow.espd.ted.TedService;
-import eu.europa.ec.grow.espd.tenderned.ClientMultipartFormPost;
-import eu.europa.ec.grow.espd.tenderned.HtmlToPdfTransformer;
-import eu.europa.ec.grow.espd.tenderned.SessionUtils;
-import eu.europa.ec.grow.espd.tenderned.TenderNedData;
-import eu.europa.ec.grow.espd.tenderned.TenderNedUtils;
-import eu.europa.ec.grow.espd.tenderned.exception.PdfRenderingException;
-import eu.europa.ec.grow.espd.xml.EspdExchangeMarshaller;
-import lombok.extern.slf4j.Slf4j;
+import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.io.output.CountingOutputStream;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,21 +59,23 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
+import com.google.common.base.Optional;
 
-import static org.apache.commons.lang3.StringUtils.isBlank;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import eu.europa.ec.grow.espd.domain.EconomicOperatorImpl;
+import eu.europa.ec.grow.espd.domain.EspdDocument;
+import eu.europa.ec.grow.espd.domain.PartyImpl;
+import eu.europa.ec.grow.espd.domain.enums.other.Country;
+import eu.europa.ec.grow.espd.ted.TedRequest;
+import eu.europa.ec.grow.espd.ted.TedResponse;
+import eu.europa.ec.grow.espd.ted.TedService;
+import eu.europa.ec.grow.espd.tenderned.ClientMultipartFormPost;
+import eu.europa.ec.grow.espd.tenderned.HtmlToPdfTransformer;
+import eu.europa.ec.grow.espd.tenderned.SessionUtils;
+import eu.europa.ec.grow.espd.tenderned.TenderNedData;
+import eu.europa.ec.grow.espd.tenderned.TenderNedUtils;
+import eu.europa.ec.grow.espd.tenderned.exception.PdfRenderingException;
+import eu.europa.ec.grow.espd.xml.EspdExchangeMarshaller;
+import lombok.extern.slf4j.Slf4j;
 
 @Controller
 @SessionAttributes(value = {"espd", "tenderned"})
@@ -363,6 +366,7 @@ class EspdController {
             HttpServletResponse response,
             BindingResult bindingResult,
             SessionStatus status) throws PdfRenderingException, IOException {
+
         if (bindingResult.hasErrors()) {
             return flow + "_" + agent + "_" + step;
         }
@@ -391,6 +395,7 @@ class EspdController {
 
         try (CountingOutputStream out = new CountingOutputStream(response.getOutputStream())) {
             response.setContentType(APPLICATION_XML_VALUE);
+
             if ("eo".equals(agent)) {
                 response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"espd-response.xml\"");
                 exchangeMarshaller.generateEspdResponse(espd, out);
@@ -415,6 +420,7 @@ class EspdController {
      */
     public void sendTenderNedData(EspdDocument espd, TenderNedData tnData)
             throws PdfRenderingException, IOException {
+
         boolean errorOccured = false;
         ByteArrayOutputStream xml;
 
@@ -424,6 +430,7 @@ class EspdController {
             xml = (ByteArrayOutputStream) exchangeMarshaller.generateEspdResponse(espd);
         }
 
+        log.debug("Created XML: {}", xml);
         ByteArrayOutputStream pdf = null;
 
         try {
@@ -443,6 +450,7 @@ class EspdController {
         if (errorOccured) {
             tnData.setErrorCode(TenderNedData.ERROR_CODE_NOK);
         } else {
+            log.debug("Successfully created XML and PDF");
             ClientMultipartFormPost formPost = new ClientMultipartFormPost();
             formPost.sendPosttoTN(xml, pdf, tnData);
         }
@@ -472,6 +480,7 @@ class EspdController {
             SessionStatus status,
             HttpServletRequest request,
             HttpServletResponse response) {
+
         try {
             String callbackUrl = tenderNedData.getCallbackURL();
             return "redirect:" + callbackUrl;

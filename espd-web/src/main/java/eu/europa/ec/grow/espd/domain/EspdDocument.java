@@ -180,7 +180,7 @@ public class EspdDocument {
 	 */
 	public final void giveLifeToAllExclusionCriteria() {
 		for (eu.europa.ec.grow.espd.domain.enums.criteria.ExclusionCriterion crit : ExclusionCriterion.values()) {
-			instantiateEspdCriterion(crit.getEspdDocumentField(), false);
+			instantiateEspdCriterion(crit.getEspdDocumentField(), true);
 		}
 	}
 
@@ -198,24 +198,10 @@ public class EspdDocument {
 	 * workaround in order to overcome the Section C exclusion criteria which need to be preselected and could
 	 * become not selected.
 	 */
-	public final void selectCAExclusionCriteriaNL() {
-		for (eu.europa.ec.grow.espd.domain.enums.criteria.ExclusionCriterion crit : ExclusionCriterion.values()) {
-			instantiateEspdCriterion(crit.getEspdDocumentField(), false);
-		}
-	}
-
-	public final void selectCAExclusionCriteriaEU() {
+	public final void selectCAExclusionCriteria() {
 		for (eu.europa.ec.grow.espd.domain.enums.criteria.ExclusionCriterion crit : ExclusionCriterion.values()) {
 			instantiateEspdCriterion(crit.getEspdDocumentField(),
 					!ExclusionCriterion.NATIONAL_EXCLUSION_GROUNDS.equals(crit));
-		}
-	}
-
-	public final void selectCAExclusionCriteria(boolean isInternationalCode) {
-		if (isInternationalCode) {
-			selectCAExclusionCriteriaEU();
-		} else {
-			selectCAExclusionCriteriaNL();
 		}
 	}
 

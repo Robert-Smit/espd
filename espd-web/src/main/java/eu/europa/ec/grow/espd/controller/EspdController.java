@@ -140,7 +140,7 @@ class EspdController {
             Model model,
             BindingResult result) throws IOException {
         if ("ca_create_espd_request".equals(action)) {
-            return createNewRequestAsCA(country, document);
+            return createNewRequestAsCA(country, document, tenderNedData.getNationaalOfEuropeesCode());
         } else if ("ca_reuse_espd_request".equals(action)) {
             return redirectToPage(REQUEST_CA_PROCEDURE_PAGE);
         } else if ("eo_import_espd".equals(action)) {
@@ -171,7 +171,7 @@ class EspdController {
             @RequestParam(value = "telefoonnummer", required = false) String telefoonnummer,
             @RequestParam(value = "btwNummer", required = false) String btwNummer,
             @RequestParam(value = "kvkNummer", required = false) String kvkNummer,
-            @RequestParam(value = "nationaalOfEuropeesCode", required = false) String isInternationalCode,
+            @RequestParam(value = "nationaalOfEuropeesCode", required = false) String nationaalOfEuropeesCode,
             @RequestParam(value = "isNewResponse", required = false) String isNewResponse,
             @RequestParam(value = "bestandsnaam", required = false) String bestandsnaam,
             @RequestParam(value = "xml", required = false) String xml,
@@ -223,9 +223,9 @@ class EspdController {
         return redirectToPage("filter");
     }
 
-    private String createNewRequestAsCA(Country country, EspdDocument document) {
+    private String createNewRequestAsCA(Country country, EspdDocument document, String nationaalOfEuropeesCode) {
         document.getAuthority().setCountry(country);
-        document.selectCAExclusionCriteria();
+        document.selectCAExclusionCriteria(nationaalOfEuropeesCode);
         return redirectToPage(REQUEST_CA_PROCEDURE_PAGE);
     }
 
@@ -363,7 +363,8 @@ class EspdController {
             HttpServletRequest request,
             HttpServletResponse response,
             BindingResult bindingResult,
-            SessionStatus status) throws PdfRenderingException, IOException {
+            SessionStatus status,
+            Model model) throws PdfRenderingException, IOException {
 
         if (bindingResult.hasErrors()) {
             return flow + "_" + agent + "_" + step;

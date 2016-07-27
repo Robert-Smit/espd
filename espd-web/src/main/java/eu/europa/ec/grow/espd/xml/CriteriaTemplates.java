@@ -278,6 +278,7 @@ public final class CriteriaTemplates {
                     put("field", "criminalConvictions").
                     put("title_code", "crit_eu_title_grounds_criminal_conv").
                     put("description_code", "crit_eu_text_grounds_criminal_conv").
+                    put("checkExistanse", "true").
                     build(),
 
             ImmutableMap.<String, Object>builder().
@@ -285,6 +286,8 @@ public final class CriteriaTemplates {
                     put("field", "corruption").
                     put("title_code", "crit_eu_title_corruption").
                     put("description_code", "crit_eu_text_corruption").
+                    put("checkExistanse", "true").
+
                     build(),
 
             ImmutableMap.<String, Object>builder().
@@ -292,6 +295,8 @@ public final class CriteriaTemplates {
                     put("field", "fraud").
                     put("title_code", "crit_eu_title_fraud").
                     put("description_code", "crit_eu_text_fraud").
+                    put("checkExistanse", "true").
+
                     build(),
 
             ImmutableMap.<String, Object>builder().
@@ -299,6 +304,8 @@ public final class CriteriaTemplates {
                     put("field", "terroristOffences").
                     put("title_code", "crit_eu_title_terrorist").
                     put("description_code", "crit_eu_text_terrorist").
+                    put("checkExistanse", "true").
+
                     build(),
 
             ImmutableMap.<String, Object>builder().
@@ -306,6 +313,8 @@ public final class CriteriaTemplates {
                     put("field", "moneyLaundering").
                     put("title_code", "crit_eu_title_money_laundering").
                     put("description_code", "crit_eu_text_money_laundering").
+                    put("checkExistanse", "true").
+
                     build(),
 
             ImmutableMap.<String, Object>builder().
@@ -313,6 +322,8 @@ public final class CriteriaTemplates {
                     put("field", "childLabour").
                     put("title_code", "crit_eu_title_child_labour").
                     put("description_code", "crit_eu_text_child_labour").
+                    put("checkExistanse", "true").
+
                     build()
     };
 
@@ -322,6 +333,7 @@ public final class CriteriaTemplates {
                     put("field", "paymentTaxes").
                     put("title_code", "crit_eu_title_payment_taxes").
                     put("description_code", "crit_eu_text_payment_taxes").
+                    put("checkExistanse", "true").
                     put("selfCleaning", "false").
                     build(),
 
@@ -330,6 +342,7 @@ public final class CriteriaTemplates {
                     put("field", "paymentSocialSecurity").
                     put("title_code", "crit_eu_title_payment_social_security").
                     put("description_code", "crit_eu_text_payment_social_security").
+                    put("checkExistanse", "true").
                     put("selfCleaning", "false").
                     build(),
     };

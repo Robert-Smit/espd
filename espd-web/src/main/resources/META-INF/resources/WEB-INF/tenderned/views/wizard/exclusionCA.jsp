@@ -1,3 +1,5 @@
+<%@ page import="eu.europa.ec.grow.espd.xml.CriteriaTemplatesNL" %>
+<%@ page import="eu.europa.ec.grow.espd.xml.CriteriaTemplates" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -29,8 +31,10 @@
   ~
   --%>
 
-<%request.setAttribute("exclusionCA", eu.europa.ec.grow.espd.xml.CriteriaTemplates.exclusionCA);%>
-
+<%
+    request.setAttribute("exclusionCA_NL", CriteriaTemplatesNL.exclusionCA_NL);
+    request.setAttribute("exclusionCA_EU", eu.europa.ec.grow.espd.xml.CriteriaTemplates.exclusionCA);
+%>
 <tiles:importAttribute name="flow"/>
 
 <form:form id="espdform" role="form" class="form-horizontal" method="post" commandName="espd" data-toggle="validator">
@@ -54,7 +58,7 @@
         </div>
 
 		<tiles:insertDefinition name="topLevelCriteriaTemplate">
-			<tiles:putAttribute name="topLevelCriteriaList" value="${exclusionCA}"/>
+			<tiles:putAttribute name="topLevelCriteriaList" value="${tenderned.nationaalOfEuropeesCode == 'EU' ? exclusionCA_EU : exclusionCA_NL}"/>
 		</tiles:insertDefinition>
 
         <div class="panel panel-default espd-panel">
@@ -73,7 +77,6 @@
 	                    <tiles:putAttribute name="description_code" value="crit_eu_text_purely_national"/>
 	                    <tiles:putAttribute name="hasCriterion" value="false"/>
 	                </tiles:insertDefinition>
-	                 
             </div>
         </div>
         <tiles:insertDefinition name="footerButtons">

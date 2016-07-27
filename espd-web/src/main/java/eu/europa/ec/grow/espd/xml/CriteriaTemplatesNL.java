@@ -26,23 +26,17 @@ package eu.europa.ec.grow.espd.xml;
 
 import com.google.common.collect.ImmutableMap;
 import eu.europa.ec.grow.espd.domain.enums.criteria.ExclusionCriterion;
-import eu.europa.ec.grow.espd.domain.enums.criteria.SelectionCriterion;
 
 import java.util.Map;
 
+/**
+ * This class contains the method criminalListCA_NL which creates a map of the exclusions
+ * specifically for NL procedures.
+ */
 @SuppressWarnings({ "unchecked", "rawtypes" })
 public final class CriteriaTemplatesNL {
 
-    public static final int YEAR = java.util.Calendar.getInstance().get(java.util.Calendar.YEAR);
-    public static final Integer[] LAST_YEARS_AMOUNT = new Integer[] { YEAR - 1, YEAR - 2, YEAR - 3, YEAR - 4, YEAR - 5 };
-    public static final Integer[] LAST_YEARS_NUMBER = new Integer[] { YEAR - 1, YEAR - 2, YEAR - 3 };
-
-    private CriteriaTemplatesNL() {
-
-    }
-
-    /* EXCLUSION CA */
-    public static final Map[] criminalListCA_NL = new Map[] {
+    protected static final Map[] criminalListCA_NL = new Map[] {
             ImmutableMap.<String, Object>builder().
                     put("template", "checkTemplate").
                     put("field", "criminalConvictions").
@@ -89,7 +83,7 @@ public final class CriteriaTemplatesNL {
                     put("criterion", ExclusionCriterion.CHILD_LABOUR).build()
     };
 
-    public static final Map[] taxesListCA_NL = new Map[] {
+    protected static final Map[] taxesListCA_NL = new Map[] {
             ImmutableMap.<String, Object>builder().
                     put("template", "checkTemplate").
                     put("field", "paymentTaxes").
@@ -105,7 +99,7 @@ public final class CriteriaTemplatesNL {
                     put("criterion", ExclusionCriterion.PAYMENT_OF_SOCIAL_SECURITY).build()
     };
 
-    public static final Map[] insolvencyListCA_NL = new Map[] {
+    protected static final Map[] insolvencyListCA_NL = new Map[] {
             ImmutableMap.<String, Object>builder().
                     put("template", "checkTemplate").
                     put("field", "breachingObligationsEnvironmental").
@@ -212,64 +206,6 @@ public final class CriteriaTemplatesNL {
                     put("criterion", ExclusionCriterion.GUILTY_OF_MISINTERPRETATION).build()
     };
 
-    public static final Map[] economicListCA = new Map[] {
-            ImmutableMap.<String, Object>builder().
-                    put("template", "checkTemplate").
-                    put("field", "generalYearlyTurnover").
-                    put("title_code", "crit_selection_economic_general_yearly_turnover_main").
-                    put("description_code", "crit_selection_economic_general_yearly_turnover_description").
-                    put("criterion", SelectionCriterion.GENERAL_YEARLY_TURNOVER).build(),
-
-            ImmutableMap.<String, Object>builder().
-                    put("template", "checkTemplate").
-                    put("field", "averageYearlyTurnover").
-                    put("title_code", "crit_selection_economic_average_yearly_turnover_main").
-                    put("description_code", "crit_selection_economic_average_yearly_turnover_description").
-                    put("criterion", SelectionCriterion.AVERAGE_YEARLY_TURNOVER).build(),
-
-            ImmutableMap.<String, Object>builder().
-                    put("template", "checkTemplate").
-                    put("field", "specificYearlyTurnover").
-                    put("title_code", "crit_selection_economic_specific_yearly_turnover_main").
-                    put("description_code", "crit_selection_economic_specific_yearly_turnover_description").
-                    put("criterion", SelectionCriterion.SPECIFIC_YEARLY_TURNOVER).build(),
-
-            ImmutableMap.<String, Object>builder().
-                    put("template", "checkTemplate").
-                    put("field", "specificAverageTurnover").
-                    put("title_code", "crit_selection_economic_specific_average_turnover_main").
-                    put("description_code", "crit_selection_economic_specific_average_turnover_description").
-                    put("criterion", SelectionCriterion.SPECIFIC_AVERAGE_TURNOVER).build(),
-
-            ImmutableMap.<String, Object>builder().
-                    put("template", "checkTemplate").
-                    put("field", "setupEconomicOperator").
-                    put("title_code", "crit_selection_economic_setup_eo_main").
-                    put("description_code", "crit_selection_economic_setup_eo_description").
-                    put("criterion", SelectionCriterion.SETUP_ECONOMIC_OPERATOR).build(),
-
-            ImmutableMap.<String, Object>builder().
-                    put("template", "checkTemplate").
-                    put("field", "financialRatio").
-                    put("title_code", "crit_selection_economic_financial_ratio_main").
-                    put("description_code", "crit_selection_economic_financial_ratio_description").
-                    put("criterion", SelectionCriterion.FINANCIAL_RATIO).build(),
-
-            ImmutableMap.<String, Object>builder().
-                    put("template", "checkTemplate").
-                    put("field", "professionalRiskInsurance").
-                    put("title_code", "crit_selection_economic_professional_risk_insurance_main").
-                    put("description_code", "crit_selection_economic_professional_risk_insurance_description").
-                    put("criterion", SelectionCriterion.PROFESSIONAL_RISK_INSURANCE).build(),
-
-            ImmutableMap.<String, Object>builder().
-                    put("template", "checkTemplate").
-                    put("field", "otherEconomicFinancialRequirements").
-                    put("title_code", "crit_selection_economic_other_financial_requirements_main").
-                    put("description_code", "crit_selection_economic_other_financial_requirements_description").
-                    put("criterion", SelectionCriterion.OTHER_ECONOMIC_OR_FINANCIAL_REQUIREMENTS).build()
-    };
-
     /**
      * TOP LEVEL EXCLUSION CA for NL procedures
      */
@@ -295,4 +231,9 @@ public final class CriteriaTemplatesNL {
                     put("subtitle_code", "crit_eu_main_breaching_obligations").
                     put("criteriaList", insolvencyListCA_NL).build(),
     };
+
+
+    private CriteriaTemplatesNL() {
+
+    }
 }

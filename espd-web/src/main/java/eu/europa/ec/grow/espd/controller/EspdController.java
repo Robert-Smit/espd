@@ -140,7 +140,7 @@ class EspdController {
             Model model,
             BindingResult result) throws IOException {
         if ("ca_create_espd_request".equals(action)) {
-            return createNewRequestAsCA(country, document, tenderNedData.isInternationalCode());
+            return createNewRequestAsCA(country, document);
         } else if ("ca_reuse_espd_request".equals(action)) {
             return redirectToPage(REQUEST_CA_PROCEDURE_PAGE);
         } else if ("eo_import_espd".equals(action)) {
@@ -223,9 +223,9 @@ class EspdController {
         return redirectToPage("filter");
     }
 
-    private String createNewRequestAsCA(Country country, EspdDocument document, boolean isInternationalCode) {
+    private String createNewRequestAsCA(Country country, EspdDocument document) {
         document.getAuthority().setCountry(country);
-        document.selectCAExclusionCriteria(isInternationalCode);
+        document.selectCAExclusionCriteria();
         return redirectToPage(REQUEST_CA_PROCEDURE_PAGE);
     }
 
@@ -272,6 +272,10 @@ class EspdController {
             espd = wrappedEspd.get();
             if (espd.getEconomicOperator() == null) {
                 espd.setEconomicOperator(new EconomicOperatorImpl());
+            }
+            if (needsToLoadProcurementProcedureInformation(espd)) {
+                // in this case we need to contact TED again to load the procurement information
+                copyTedInformation(espd);
             }
             espd.getEconomicOperator().setCountry(country);
         }

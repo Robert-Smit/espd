@@ -74,12 +74,12 @@ class EspdDocumentTest extends Specification {
         result == crit
     }
 
-    def "should preselect the mandatory exclusion criteria for CA when NL"() {
+    def "should preselect the mandatory exclusion criteria for CA"() {
         given:
         def espd = new EspdDocument()
 
         when:
-        espd.selectCAExclusionCriteria(true)
+        espd.selectCAExclusionCriteria()
 
         then:
         for (eu.europa.ec.grow.espd.domain.enums.criteria.ExclusionCriterion crit : eu.europa.ec.grow.espd.domain.enums.criteria.ExclusionCriterion.values()) {
@@ -88,19 +88,6 @@ class EspdDocumentTest extends Specification {
             } else {
                 espd.purelyNationalGrounds.exists == false
             }
-        }
-    }
-
-    def "should preselect the mandatory exclusion criteria for CA when EU"() {
-        given:
-        def espd = new EspdDocument()
-
-        when:
-        espd.selectCAExclusionCriteria(false)
-
-        then:
-        for (eu.europa.ec.grow.espd.domain.enums.criteria.ExclusionCriterion crit : eu.europa.ec.grow.espd.domain.enums.criteria.ExclusionCriterion.values()) {
-                PropertyUtils.getNestedProperty(espd, "${crit.espdDocumentField}.exists") == false
         }
     }
 }

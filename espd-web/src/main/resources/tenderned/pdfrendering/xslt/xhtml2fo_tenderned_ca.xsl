@@ -23,6 +23,7 @@
 		</xsl:choose>
 	</xsl:template>
 
+	<!-- if the value is not null, the value will be shown, otherwise a '-' will be shown -->
 	<xsl:template name="fill-in-value">
 		<xsl:variable name="value-is-filled">
 			<xsl:call-template name="check-value"/>
@@ -37,6 +38,7 @@
 		</xsl:choose>
 	</xsl:template>
 
+	<!-- for all <input type="text"> in html -->
 	<xsl:template match="input[@type='text']">
 		<xsl:call-template name="fill-in-value"/>
 	</xsl:template>
@@ -54,10 +56,12 @@
 		</xsl:choose>
 	</xsl:template>
 
+	<!-- for all <select ..> the selected option will be shown -->
 	<xsl:template match="select">
 		<xsl:value-of select="./option[@selected='selected']"/>
 	</xsl:template>
 
+	<!-- these templates are used to find the type of input -->
 	<xsl:template name="input-is-text">
 		<xsl:choose>
 			<xsl:when test="@type = 'text'">true</xsl:when>
@@ -79,6 +83,7 @@
 		</xsl:choose>
 	</xsl:template>
 
+	<!-- for each input, there's a check to find out what type of input it has. -->
 	<xsl:template match="input">
 		<xsl:variable name="contains-text">
 			<xsl:call-template name="input-is-text"/>
@@ -106,14 +111,14 @@
 		</xsl:choose>
 	</xsl:template>
 
+	<!-- for each <label><span> in the html, the text will be shown bold -->
 	<xsl:template match="label/span">
 		<fo:block xsl:use-attribute-sets="bold-text">
 			<xsl:value-of select="."/>
 		</fo:block>
 	</xsl:template>
 
-
-	<xsl:template match="div[@class='alert alert-espd-info']">
+		<xsl:template match="div[@class='alert alert-espd-info']">
 		<fo:block xsl:use-attribute-sets="tooltip-table">
 			<xsl:choose>
 				<xsl:when test="ul">
@@ -149,6 +154,7 @@
 		</fo:block>
 	</xsl:template>
 
+	<!-- removes all the white spaces in the output -->
 	<xsl:strip-space elements="*"/>
 
 </xsl:stylesheet>

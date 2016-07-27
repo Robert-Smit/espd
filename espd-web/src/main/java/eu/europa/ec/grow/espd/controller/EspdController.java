@@ -24,23 +24,22 @@
 
 package eu.europa.ec.grow.espd.controller;
 
-import static org.apache.commons.lang3.StringUtils.isBlank;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.google.common.base.Optional;
+import eu.europa.ec.grow.espd.domain.EconomicOperatorImpl;
+import eu.europa.ec.grow.espd.domain.EspdDocument;
+import eu.europa.ec.grow.espd.domain.PartyImpl;
+import eu.europa.ec.grow.espd.domain.enums.other.Country;
+import eu.europa.ec.grow.espd.ted.TedRequest;
+import eu.europa.ec.grow.espd.ted.TedResponse;
+import eu.europa.ec.grow.espd.ted.TedService;
+import eu.europa.ec.grow.espd.tenderned.ClientMultipartFormPost;
+import eu.europa.ec.grow.espd.tenderned.HtmlToPdfTransformer;
+import eu.europa.ec.grow.espd.tenderned.SessionUtils;
+import eu.europa.ec.grow.espd.tenderned.TenderNedData;
+import eu.europa.ec.grow.espd.tenderned.TenderNedUtils;
+import eu.europa.ec.grow.espd.tenderned.exception.PdfRenderingException;
+import eu.europa.ec.grow.espd.xml.EspdExchangeMarshaller;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.output.CountingOutputStream;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,23 +58,21 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.google.common.base.Optional;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 
-import eu.europa.ec.grow.espd.domain.EconomicOperatorImpl;
-import eu.europa.ec.grow.espd.domain.EspdDocument;
-import eu.europa.ec.grow.espd.domain.PartyImpl;
-import eu.europa.ec.grow.espd.domain.enums.other.Country;
-import eu.europa.ec.grow.espd.ted.TedRequest;
-import eu.europa.ec.grow.espd.ted.TedResponse;
-import eu.europa.ec.grow.espd.ted.TedService;
-import eu.europa.ec.grow.espd.tenderned.ClientMultipartFormPost;
-import eu.europa.ec.grow.espd.tenderned.HtmlToPdfTransformer;
-import eu.europa.ec.grow.espd.tenderned.SessionUtils;
-import eu.europa.ec.grow.espd.tenderned.TenderNedData;
-import eu.europa.ec.grow.espd.tenderned.TenderNedUtils;
-import eu.europa.ec.grow.espd.tenderned.exception.PdfRenderingException;
-import eu.europa.ec.grow.espd.xml.EspdExchangeMarshaller;
-import lombok.extern.slf4j.Slf4j;
+import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @Controller
 @SessionAttributes(value = {"espd", "tenderned"})
@@ -149,9 +146,6 @@ class EspdController {
         } else if ("eo_import_espd".equals(action)) {
             return redirectToPage(RESPONSE_EO_PROCEDURE_PAGE);
         }
-        //    else if ("eo_merge_espds".equals(action)) {
-        //            return mergeTwoEspds(attachments, model, result);
-        //        }
         return "filter";
     }
 
@@ -372,12 +366,9 @@ class EspdController {
         }
 
         if ("savePrintHtml".equals(next)) {
-
             espd.setHtml(TenderNedUtils.addHtmlHeader(espd.getHtml()));
-
             sendTenderNedData(espd, tenderNedData);
             String callbackUrl = TenderNedUtils.createGetUrl(tenderNedData);
-
             try {
                 return redirectToTN(callbackUrl);
             } finally {
@@ -409,8 +400,8 @@ class EspdController {
     }
 
     /**
-     * This method creates the xml and pdf files and will be send back to TenderNed.
-     * If something goed wrong while creating these files, the callback URL
+     * This method creates a xml and pdf files and will be send back to TenderNed.
+     * If something goes wrong while creating these files, the callback URL
      * to TenderNed will be called without sending a post.
      *
      * @param espd   is a {@link EspdDocument} object
@@ -464,7 +455,8 @@ class EspdController {
     }
 
     /**
-     * Method specific for return to TenderNed when clicking on the 'cancel' button.
+     * Method created when clicking on the cancel button.
+     * The user will return to TenderNed and the session and cookies will be removed.
      *
      * @param tenderNedData is a {@link TenderNedData} object
      * @param status        is a {@link SessionStatus} object

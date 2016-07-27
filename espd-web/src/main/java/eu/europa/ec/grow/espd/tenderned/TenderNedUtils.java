@@ -3,21 +3,19 @@
  */
 package eu.europa.ec.grow.espd.tenderned;
 
-import java.io.IOException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-
-import javax.annotation.PostConstruct;
-
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import lombok.extern.slf4j.Slf4j;
+import javax.annotation.PostConstruct;
+import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 /**
- * espd - Description.
+ * espd - TenderNed Utils.
  *
  * @author D Hof
  * @since 24-06-2016
@@ -39,7 +37,7 @@ public class TenderNedUtils {
      * This method is used to create the Get Parameters for the redirect to TenderNed
      *
      * @param tenderNedData is a {@link TenderNedData} object
-     * @return a String
+     * @return a String with the callbackURL and get parameters
      */
     public static String createGetUrl(TenderNedData tenderNedData) {
         String time = DateTime.now().toString(TIMESTAMP_FORMAT);

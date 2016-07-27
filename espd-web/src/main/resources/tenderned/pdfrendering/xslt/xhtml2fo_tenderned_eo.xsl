@@ -60,13 +60,12 @@
 		</fo:block>
 	</xsl:template>
 
-	<!-- these templates are used to find the country that is selected, if no country is selected a dash will show -->
-
+	<!-- for all <select ..> the selected option will be shown -->
 	<xsl:template match="select">
 		<xsl:value-of select="./option[@selected='selected']"/>
 	</xsl:template>
 
-
+	<!-- these templates are used to find the type of input -->
 	<xsl:template name="input-is-text">
 		<xsl:choose>
 			<xsl:when test="@type = 'text'">true</xsl:when>
@@ -88,6 +87,9 @@
 		</xsl:choose>
 	</xsl:template>
 
+	<!-- for each input, there's a check to find out what type of input it has.
+	if there's a selected checkbox or checked radiobutton, a selected box or
+	checked radiobutton will be rendered-->
 	<xsl:template match="input">
 		<xsl:variable name="contains-text">
 			<xsl:call-template name="input-is-text"/>
@@ -174,8 +176,10 @@
 		</fo:block>
 	</xsl:template>
 
+	<!-- removes all the white spaces in the output -->
 	<xsl:strip-space elements="*"/>
 
+	<!-- when the html matches one of these templates, they will not be rendered in the pdf -->
 	<xsl:template match="div[@id='separate_espd_div']"/>
 	<xsl:template match="div[@class='collapse']"/>
 	<xsl:template match="div[@class='col-md-12 collapse']"/>

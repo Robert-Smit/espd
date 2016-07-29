@@ -32,11 +32,7 @@ import eu.europa.ec.grow.espd.domain.enums.other.Country;
 import eu.europa.ec.grow.espd.ted.TedRequest;
 import eu.europa.ec.grow.espd.ted.TedResponse;
 import eu.europa.ec.grow.espd.ted.TedService;
-import eu.europa.ec.grow.espd.tenderned.ClientMultipartFormPost;
-import eu.europa.ec.grow.espd.tenderned.HtmlToPdfTransformer;
-import eu.europa.ec.grow.espd.tenderned.SessionUtils;
-import eu.europa.ec.grow.espd.tenderned.TenderNedData;
-import eu.europa.ec.grow.espd.tenderned.TenderNedUtils;
+import eu.europa.ec.grow.espd.tenderned.*;
 import eu.europa.ec.grow.espd.tenderned.exception.PdfRenderingException;
 import eu.europa.ec.grow.espd.xml.EspdExchangeMarshaller;
 import lombok.extern.slf4j.Slf4j;
@@ -88,10 +84,13 @@ class EspdController {
 
     private final TedService tedService;
 
+    private final TenderNedUtils utils;
+
     @Autowired
-    EspdController(EspdExchangeMarshaller exchangeMarshaller, TedService tedService) {
+    EspdController(EspdExchangeMarshaller exchangeMarshaller, TedService tedService, TenderNedUtils utils) {
         this.exchangeMarshaller = exchangeMarshaller;
         this.tedService = tedService;
+        this.utils = utils;
     }
 
     private static String redirectToPage(String pageName) {
@@ -377,9 +376,9 @@ class EspdController {
         }
 
         if ("savePrintHtml".equals(next)) {
-            espd.setHtml(TenderNedUtils.addHtmlHeader(espd.getHtml()));
+            espd.setHtml(utils.addHtmlHeader(espd.getHtml()));
             sendTenderNedData(espd, tenderNedData);
-            String callbackUrl = TenderNedUtils.createGetUrl(tenderNedData);
+            String callbackUrl = utils.createGetUrl(tenderNedData);
 
             try {
                 return redirectToTN(callbackUrl);
@@ -454,7 +453,7 @@ class EspdController {
         } else {
             log.debug("Successfully created XML and PDF");
             ClientMultipartFormPost formPost = new ClientMultipartFormPost();
-            formPost.sendPosttoTN(xml, pdf, tnData);
+            formPost.sendPosttoTN(xml, pdf, tnData, utils.getEncryption());
         }
     }
 

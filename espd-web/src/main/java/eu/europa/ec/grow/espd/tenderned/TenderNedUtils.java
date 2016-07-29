@@ -6,10 +6,9 @@ package eu.europa.ec.grow.espd.tenderned;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.joda.time.DateTime;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -20,17 +19,25 @@ import java.security.NoSuchAlgorithmException;
  * @author D Hof
  * @since 24-06-2016
  */
-@Service
+@Component
 @Slf4j
 public class TenderNedUtils {
 
-    public static final String TIMESTAMP_FORMAT = "yyyyMMddHHmmss";
-    public static String SHARED_ESPD_PASSWORD;
-    @Value("${shared.espd.password}")
-    private String SHARED_ESPD_PASSWORD_NONSTATIC;
+    private final TenderNedEspdEncryption encryption;
 
-    private TenderNedUtils() {
-        //private constructor to hide the public one.
+    public static final String TIMESTAMP_FORMAT = "yyyyMMddHHmmss";
+
+    /**
+     * Constructor for TenderNedUtils
+     * @param encryption is a {@link TenderNedEspdEncryption} object, this object is initialized when starting the application
+     */
+    @Autowired
+    public TenderNedUtils(TenderNedEspdEncryption encryption) {
+        this.encryption = encryption;
+    }
+
+    public TenderNedEspdEncryption getEncryption() {
+        return encryption;
     }
 
     /**
@@ -39,7 +46,7 @@ public class TenderNedUtils {
      * @param tenderNedData is a {@link TenderNedData} object
      * @return a String with the callbackURL and get parameters
      */
-    public static String createGetUrl(TenderNedData tenderNedData) {
+    public String createGetUrl(TenderNedData tenderNedData) {
         String time = DateTime.now().toString(TIMESTAMP_FORMAT);
         String callbackUrl = tenderNedData.getCallbackURL();
 
@@ -59,7 +66,7 @@ public class TenderNedUtils {
      * @return a String
      * @throws IOException
      */
-    public static String addHtmlHeader(String html) throws IOException {
+    public String addHtmlHeader(String html) throws IOException {
         String newHtml = StringEscapeUtils.unescapeHtml4(html);
         return "<html><head/><body>" + newHtml + "</div></body></html>";
     }
@@ -71,15 +78,14 @@ public class TenderNedUtils {
      * @param timestamp   is a String
      * @return the hexString
      */
-    public static String createSecurityHash(String accessToken, String timestamp) {
+    public String createSecurityHash(String accessToken, String timestamp) {
         StringBuffer hexString = new StringBuffer();
 
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-512");
             md.update(accessToken.getBytes());
             md.update(timestamp.getBytes());
-            md.update(SHARED_ESPD_PASSWORD.getBytes());
-
+            md.update(encryption.getSecretSharedPassword());
             byte[] mdbytes = md.digest();
 
             for (int i = 0; i < mdbytes.length; i++) {
@@ -91,12 +97,7 @@ public class TenderNedUtils {
         return hexString.toString();
     }
 
-    @PostConstruct
-    public void init() {
-        SHARED_ESPD_PASSWORD = SHARED_ESPD_PASSWORD_NONSTATIC;
-    }
-
-    private static class UrlBuilder {
+    private class UrlBuilder {
         private final StringBuilder url;
         private String querySeparator;
 

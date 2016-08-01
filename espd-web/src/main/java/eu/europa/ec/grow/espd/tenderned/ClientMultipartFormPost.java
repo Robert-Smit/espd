@@ -3,9 +3,7 @@
  */
 package eu.europa.ec.grow.espd.tenderned;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -18,7 +16,8 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.joda.time.DateTime;
 
-import lombok.extern.slf4j.Slf4j;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 /**
  * espd - Description.
@@ -63,12 +62,12 @@ public class ClientMultipartFormPost {
      * @param tnData is a {@link TenderNedData} object
      * @throws IOException Thrown if an I/O error occurs
      */
-    public void sendPosttoTN(ByteArrayOutputStream xml, ByteArrayOutputStream pdf, TenderNedData tnData) throws IOException {
+    public void sendPosttoTN(ByteArrayOutputStream xml, ByteArrayOutputStream pdf, TenderNedData tnData, TenderNedEspdEncryption encryption) throws IOException {
         log.info("Sending POST data to {}", tnData.getUploadURL());
 
         CloseableHttpClient httpClient = HttpClients.createDefault();
         HttpPost httpPost = new HttpPost(tnData.getUploadURL());
-        httpPost.setEntity(getHttpEntity(xml, pdf, tnData));
+        httpPost.setEntity(getHttpEntity(xml, pdf, tnData, encryption));
 
         HttpResponse response = httpClient.execute(httpPost);
         final StatusLine statusLine = response.getStatusLine();
@@ -83,18 +82,18 @@ public class ClientMultipartFormPost {
         }
     }
 
-    private HttpEntity getHttpEntity(ByteArrayOutputStream xml, ByteArrayOutputStream pdf, TenderNedData tnData) {
+    private HttpEntity getHttpEntity(ByteArrayOutputStream xml, ByteArrayOutputStream pdf, TenderNedData tnData, TenderNedEspdEncryption encryption) {
         ByteArrayBody fileBodyXml = new ByteArrayBody(xml.toByteArray(), ContentType.APPLICATION_XML, FILENAME_XML);
         ByteArrayBody fileBodyPdf = new ByteArrayBody(pdf.toByteArray(), ContentType.create("application/pdf"), FILENAME_PDF);
 
         String time = DateTime.now().toString(TenderNedUtils.TIMESTAMP_FORMAT);
-
+        TenderNedUtils utils = new TenderNedUtils(encryption);
         return MultipartEntityBuilder.create()
                 .addPart("xml", fileBodyXml)
                 .addPart("pdf", fileBodyPdf)
                 .addTextBody("accessToken", tnData.getAccessToken())
                 .addTextBody("time", time)
-                .addTextBody("security", TenderNedUtils.createSecurityHash(tnData.getAccessToken(), time))
+                .addTextBody("security", utils.createSecurityHash(tnData.getAccessToken(), time))
                 .build();
     }
 }

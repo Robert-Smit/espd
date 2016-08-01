@@ -26,6 +26,7 @@ package eu.europa.ec.grow.espd.config;
 
 import ac.simons.spring.boot.wro4j.Wro4jAutoConfiguration;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import eu.europa.ec.grow.espd.tenderned.TenderNedEspdEncryption;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -45,6 +46,10 @@ public class EspdApplication extends SpringBootServletInitializer implements Web
 
     @Value("${http.client.connect.timeout.millis:30000}")
     private int connectTimeout;
+
+    @Value("${shared.espd.password.file}")
+    private String sharedTenderNedPassword;
+
 
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
@@ -69,5 +74,13 @@ public class EspdApplication extends SpringBootServletInitializer implements Web
         rf.setConnectTimeout(connectTimeout);
 
         return restTemplate;
+    }
+
+    @Bean
+    TenderNedEspdEncryption encryption() {
+        TenderNedEspdEncryption encryption = new TenderNedEspdEncryption();
+        encryption.setSharedTenderNedPassword(sharedTenderNedPassword);
+        encryption.init();
+        return encryption;
     }
 }

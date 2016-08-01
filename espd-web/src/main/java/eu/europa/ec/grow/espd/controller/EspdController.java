@@ -32,11 +32,7 @@ import eu.europa.ec.grow.espd.domain.enums.other.Country;
 import eu.europa.ec.grow.espd.ted.TedRequest;
 import eu.europa.ec.grow.espd.ted.TedResponse;
 import eu.europa.ec.grow.espd.ted.TedService;
-import eu.europa.ec.grow.espd.tenderned.ClientMultipartFormPost;
-import eu.europa.ec.grow.espd.tenderned.HtmlToPdfTransformer;
-import eu.europa.ec.grow.espd.tenderned.SessionUtils;
-import eu.europa.ec.grow.espd.tenderned.TenderNedData;
-import eu.europa.ec.grow.espd.tenderned.TenderNedUtils;
+import eu.europa.ec.grow.espd.tenderned.*;
 import eu.europa.ec.grow.espd.tenderned.exception.PdfRenderingException;
 import eu.europa.ec.grow.espd.xml.EspdExchangeMarshaller;
 import lombok.extern.slf4j.Slf4j;
@@ -88,10 +84,13 @@ class EspdController {
 
     private final TedService tedService;
 
+    private final TenderNedUtils utils;
+
     @Autowired
-    EspdController(EspdExchangeMarshaller exchangeMarshaller, TedService tedService) {
+    EspdController(EspdExchangeMarshaller exchangeMarshaller, TedService tedService, TenderNedUtils utils) {
         this.exchangeMarshaller = exchangeMarshaller;
         this.tedService = tedService;
+        this.utils = utils;
     }
 
     private static String redirectToPage(String pageName) {
@@ -139,8 +138,9 @@ class EspdController {
             @ModelAttribute("tenderned") TenderNedData tenderNedData,
             Model model,
             BindingResult result) throws IOException {
+
         if ("ca_create_espd_request".equals(action)) {
-            return createNewRequestAsCA(country, document);
+            return createNewRequestAsCA(country, document, tenderNedData.getNationaalOfEuropeesCode());
         } else if ("ca_reuse_espd_request".equals(action)) {
             return redirectToPage(REQUEST_CA_PROCEDURE_PAGE);
         } else if ("eo_import_espd".equals(action)) {
@@ -171,7 +171,7 @@ class EspdController {
             @RequestParam(value = "telefoonnummer", required = false) String telefoonnummer,
             @RequestParam(value = "btwNummer", required = false) String btwNummer,
             @RequestParam(value = "kvkNummer", required = false) String kvkNummer,
-            @RequestParam(value = "nationaalOfEuropeesCode", required = false) String isInternationalCode,
+            @RequestParam(value = "nationaalOfEuropeesCode", required = false) String nationaalOfEuropeesCode,
             @RequestParam(value = "isNewResponse", required = false) String isNewResponse,
             @RequestParam(value = "bestandsnaam", required = false) String bestandsnaam,
             @RequestParam(value = "xml", required = false) String xml,
@@ -184,7 +184,8 @@ class EspdController {
         boolean reuseRequest = false;
 
         if ("eo".equals(agent)) {
-            espd = importEspdAsEo(country, tenderNedData.getXml(), model, result);
+            espd = importEspdAsEo(country, tenderNedData.getXml());
+
             if ("true".equals(isNewResponse)) {
                 EconomicOperatorImpl economicOperator = new EconomicOperatorImpl();
                 PartyImpl party = new PartyImpl();
@@ -202,7 +203,7 @@ class EspdController {
                 espd.setEconomicOperator(economicOperator);
             }
         } else if (StringUtils.isNotEmpty(tenderNedData.getXml())) {
-            espd = reuseRequestAsCA(tenderNedData.getXml(), model, result);
+            espd = reuseRequestAsCA(tenderNedData.getXml());
             reuseRequest = true;
         } else {
             espd.setTedReceptionId(receptionId);
@@ -223,9 +224,9 @@ class EspdController {
         return redirectToPage("filter");
     }
 
-    private String createNewRequestAsCA(Country country, EspdDocument document) {
+    private String createNewRequestAsCA(Country country, EspdDocument document, String nationaalOfEuropeesCode) {
         document.getAuthority().setCountry(country);
-        document.selectCAExclusionCriteria();
+        document.selectCAExclusionCriteria(nationaalOfEuropeesCode);
         return redirectToPage(REQUEST_CA_PROCEDURE_PAGE);
     }
 
@@ -241,8 +242,7 @@ class EspdController {
         document.setTedUrl(notice.getTedUrl());
     }
 
-    private EspdDocument reuseRequestAsCA(String attachment, Model model,
-            BindingResult result) throws IOException {
+    private EspdDocument reuseRequestAsCA(String attachment) {
         InputStream is = new ByteArrayInputStream(attachment.getBytes(StandardCharsets.UTF_8));
         Optional<EspdDocument> espdDocument = exchangeMarshaller.importEspdRequest(is);
         return espdDocument.get();
@@ -262,17 +262,19 @@ class EspdController {
         return "filter";
     }
 
-    private EspdDocument importEspdAsEo(Country country, String attachment, Model model, BindingResult result)
-            throws IOException {
+    private EspdDocument importEspdAsEo(Country country, String attachment) throws IOException {
+
         EspdDocument espd = new EspdDocument();
         InputStream inputStream = new ByteArrayInputStream(attachment.getBytes(StandardCharsets.UTF_8));
         Optional<EspdDocument> wrappedEspd = exchangeMarshaller.importAmbiguousEspdFile(inputStream);
 
         if (wrappedEspd != null && wrappedEspd.isPresent()) {
             espd = wrappedEspd.get();
+
             if (espd.getEconomicOperator() == null) {
                 espd.setEconomicOperator(new EconomicOperatorImpl());
             }
+
             if (needsToLoadProcurementProcedureInformation(espd)) {
                 // in this case we need to contact TED again to load the procurement information
                 copyTedInformation(espd);
@@ -305,6 +307,7 @@ class EspdController {
     }
 
     private String createNewResponseAsEO(Country country, EspdDocument document) {
+
         if (document.getEconomicOperator() == null) {
             document.setEconomicOperator(new EconomicOperatorImpl());
         }
@@ -320,8 +323,8 @@ class EspdController {
             @PathVariable String agent,
             @PathVariable String step,
             @ModelAttribute("espd") EspdDocument espd,
-            @ModelAttribute("tenderned") TenderNedData tenderNedData
-    ) {
+            @ModelAttribute("tenderned") TenderNedData tenderNedData) {
+
         return flow + "_" + agent + "_" + step;
     }
 
@@ -334,6 +337,7 @@ class EspdController {
             @ModelAttribute("espd") EspdDocument espd,
             @ModelAttribute("tenderned") TenderNedData tenderNedData,
             BindingResult bindingResult) {
+
         return bindingResult.hasErrors() ?
                 flow + "_" + agent + "_" + step : redirectToPage(flow + "/" + agent + "/" + prev);
     }
@@ -347,6 +351,7 @@ class EspdController {
             @ModelAttribute("espd") EspdDocument espd,
             @ModelAttribute("tenderned") TenderNedData tenderNedData,
             BindingResult bindingResult) {
+
         return bindingResult.hasErrors() ?
                 flow + "_" + agent + "_" + step : redirectToPage(flow + "/" + agent + "/print");
     }
@@ -363,16 +368,18 @@ class EspdController {
             HttpServletRequest request,
             HttpServletResponse response,
             BindingResult bindingResult,
-            SessionStatus status) throws PdfRenderingException, IOException {
+            SessionStatus status,
+            Model model) throws PdfRenderingException, IOException {
 
         if (bindingResult.hasErrors()) {
             return flow + "_" + agent + "_" + step;
         }
 
         if ("savePrintHtml".equals(next)) {
-            espd.setHtml(TenderNedUtils.addHtmlHeader(espd.getHtml()));
+            espd.setHtml(utils.addHtmlHeader(espd.getHtml()));
             sendTenderNedData(espd, tenderNedData);
-            String callbackUrl = TenderNedUtils.createGetUrl(tenderNedData);
+            String callbackUrl = utils.createGetUrl(tenderNedData);
+
             try {
                 return redirectToTN(callbackUrl);
             } finally {
@@ -410,11 +417,10 @@ class EspdController {
      *
      * @param espd   is a {@link EspdDocument} object
      * @param tnData is a {@link TenderNedData} object
-     * @throws PdfRenderingException
      * @throws IOException
      */
-    public void sendTenderNedData(EspdDocument espd, TenderNedData tnData)
-            throws PdfRenderingException, IOException {
+    private void sendTenderNedData(EspdDocument espd, TenderNedData tnData)
+            throws IOException {
 
         boolean errorOccured = false;
         ByteArrayOutputStream xml;
@@ -447,7 +453,7 @@ class EspdController {
         } else {
             log.debug("Successfully created XML and PDF");
             ClientMultipartFormPost formPost = new ClientMultipartFormPost();
-            formPost.sendPosttoTN(xml, pdf, tnData);
+            formPost.sendPosttoTN(xml, pdf, tnData, utils.getEncryption());
         }
     }
 
@@ -486,5 +492,3 @@ class EspdController {
         }
     }
 }
-
-

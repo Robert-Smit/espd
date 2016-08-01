@@ -30,13 +30,28 @@ import eu.europa.ec.grow.espd.domain.EconomicOperatorRepresentative;
 import grow.names.specification.ubl.schema.xsd.espd_commonaggregatecomponents_1.EconomicOperatorPartyType;
 import grow.names.specification.ubl.schema.xsd.espd_commonaggregatecomponents_1.NaturalPersonType;
 import grow.names.specification.ubl.schema.xsd.espd_commonbasiccomponents_1.IndicatorType;
-import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_2.*;
-import oasis.names.specification.ubl.schema.xsd.commonbasiccomponents_2.*;
+import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_2.AddressType;
+import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_2.ContactType;
+import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_2.PartyType;
+import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_2.PersonType;
+import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_2.PowerOfAttorneyType;
+import oasis.names.specification.ubl.schema.xsd.commonbasiccomponents_2.BirthDateType;
+import oasis.names.specification.ubl.schema.xsd.commonbasiccomponents_2.BirthplaceNameType;
+import oasis.names.specification.ubl.schema.xsd.commonbasiccomponents_2.CityNameType;
+import oasis.names.specification.ubl.schema.xsd.commonbasiccomponents_2.DescriptionType;
+import oasis.names.specification.ubl.schema.xsd.commonbasiccomponents_2.ElectronicMailType;
+import oasis.names.specification.ubl.schema.xsd.commonbasiccomponents_2.FamilyNameType;
+import oasis.names.specification.ubl.schema.xsd.commonbasiccomponents_2.FirstNameType;
+import oasis.names.specification.ubl.schema.xsd.commonbasiccomponents_2.PostboxType;
+import oasis.names.specification.ubl.schema.xsd.commonbasiccomponents_2.StreetNameType;
+import oasis.names.specification.ubl.schema.xsd.commonbasiccomponents_2.TelephoneType;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.LocalDate;
 import org.springframework.stereotype.Component;
 
-import static org.apache.commons.lang3.StringUtils.*;
+import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.trimToEmpty;
 
 /**
  * Builds an UBL {@link EconomicOperatorPartyType} that contains the information regarding the economic operator,

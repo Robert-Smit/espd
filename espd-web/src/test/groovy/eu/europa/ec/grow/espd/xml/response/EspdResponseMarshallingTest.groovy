@@ -105,12 +105,36 @@ class EspdResponseMarshallingTest extends AbstractEspdXmlMarshalling {
         result.VersionID.@schemeAgencyID.text() == "EU-COM-GROW"
     }
 
-    def "should contain IssueDate element information"() {
+    def "should contain IssueDate element information with default document date"() {
         when:
         def result = parseResponseXml()
 
         then: "issue date must match the date format YYYY-MM-dd"
         result.IssueDate.text() ==~ "\\d{4}-\\d{2}-\\d{2}"
+    }
+
+    def "should contain IssueDate element information with a document date"() {
+        given:
+        def documentDate = new Date().minus(1)
+        def espd = new EspdDocument(documentDate: documentDate)
+
+        when:
+        def result = parseResponseXml(espd)
+
+        then: "issue date must match the date format YYYY-MM-dd"
+        result.IssueDate.text() == LocalDateAdapter.marshal(new LocalDate(documentDate))
+    }
+
+    def "should contain signature location"() {
+        given:
+        def espd = new EspdDocument(location: "Eastwatch by the Sea")
+
+        when:
+        def result = parseResponseXml(espd)
+
+        then: "issue date must match the date format YYYY-MM-dd"
+        result.Signature[0].text().length() == 56
+        result.Signature[0].SignatoryParty.PhysicalLocation.Name.text() == "Eastwatch by the Sea"
     }
 
     def "should contain IssueTime element information"() {
@@ -124,7 +148,7 @@ class EspdResponseMarshallingTest extends AbstractEspdXmlMarshalling {
     def "should contain ContractingParty element information"() {
         given:
         def authority = new PartyImpl(name: "  Hodor authority  ", vatNumber: "  Hodor national reg number  ",
-                street: "  Hodor street  ", postalCode: "  Hodor postcode  ", city: "  Hodor city  ", country: Country.ROMANIA,
+                street: "  Hodor street  ", postalCode: "  Hodor postcode  ", city: "  Hodor city  ", country: Country.RO,
                 contactName: "  Hodor contact person  ", contactEmail: "  hodor@hodor.com  ", contactPhone: "  555-HODOR  ",
                 website: "  www.hodor.com  ")
         def espd = new EspdDocument(authority: authority)
@@ -157,7 +181,7 @@ class EspdResponseMarshallingTest extends AbstractEspdXmlMarshalling {
     def "should contain EconomicOperatorParty element information"() {
         given:
         def economicOperator = new EconomicOperatorImpl(name: "  ACME Corp.  ", vatNumber: "  B207781243  ", anotherNationalId: "B66666",
-                street: "  Vitruvio  ", postalCode: "  28006  ", city: "  Edinborough  ", country: Country.UNITED_KINGDOM_SCOTLAND,
+                street: "  Vitruvio  ", postalCode: "  28006  ", city: "  Edinborough  ", country: Country.GB,
                 contactName: "  Hodor contact person  ", contactEmail: "  hodor@hodor.com  ", contactPhone: "  +34 96 123 456  ",
                 website: "  www.hodor.com  ", isSmallSizedEnterprise: true)
         def espd = new EspdDocument(economicOperator: economicOperator)
@@ -174,9 +198,9 @@ class EspdResponseMarshallingTest extends AbstractEspdXmlMarshalling {
         result.EconomicOperatorParty.Party.PartyIdentification.ID[1].text() == "B66666"
 
         then: "check address information"
-        result.EconomicOperatorParty.Party.PostalAddress.Country.IdentificationCode.text() == "GB-SCT"
+        result.EconomicOperatorParty.Party.PostalAddress.Country.IdentificationCode.text() == "GB"
         result.EconomicOperatorParty.Party.PostalAddress.Country.IdentificationCode.@listAgencyID.text() == "ISO"
-        result.EconomicOperatorParty.Party.PostalAddress.Country.IdentificationCode.@listName.text() == "ISO 3166-2"
+        result.EconomicOperatorParty.Party.PostalAddress.Country.IdentificationCode.@listName.text() == "ISO 3166-1"
         result.EconomicOperatorParty.Party.PostalAddress.Country.IdentificationCode.@listVersionID.text() == "1.0"
         result.EconomicOperatorParty.Party.PostalAddress.CityName.text() == "Edinborough"
         result.EconomicOperatorParty.Party.PostalAddress.StreetName.text() == "Vitruvio"
@@ -197,7 +221,7 @@ class EspdResponseMarshallingTest extends AbstractEspdXmlMarshalling {
         def economicOperator = new EconomicOperatorImpl(representative: new EconomicOperatorRepresentative(
                 firstName: "Emilio", lastName: "García De Tres Torres", dateOfBirth: birthDate,
                 placeOfBirth: "València, Spain", street: "Vitruvio", postalCode: "28006", city: "Madrid",
-                country: Country.SPAIN, email: "emilio.garcia3torres@acme.com", phone: "+34 96 123 456",
+                country: Country.ES, email: "emilio.garcia3torres@acme.com", phone: "+34 96 123 456",
                 position: "Empowered to represent the Consortium",
                 additionalInfo: "Can represent ACME, Corp. and the Consortia to which ACME, Corp"))
         def espd = new EspdDocument(economicOperator: economicOperator)

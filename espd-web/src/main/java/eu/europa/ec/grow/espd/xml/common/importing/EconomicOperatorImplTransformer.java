@@ -24,8 +24,6 @@
 
 package eu.europa.ec.grow.espd.xml.common.importing;
 
-import com.google.common.base.Function;
-import eu.europa.ec.grow.espd.domain.enums.other.Country;
 import eu.europa.ec.grow.espd.domain.EconomicOperatorImpl;
 import eu.europa.ec.grow.espd.domain.EconomicOperatorRepresentative;
 import eu.europa.ec.grow.espd.domain.PartyImpl;
@@ -47,7 +45,7 @@ import static org.apache.commons.lang3.StringUtils.trimToEmpty;
  */
 @Component
 @Slf4j
-public class EconomicOperatorImplTransformer implements Function<EconomicOperatorPartyType, EconomicOperatorImpl> {
+public class EconomicOperatorImplTransformer {
 
     private final PartyImplTransformer partyImplTransformer;
 
@@ -56,8 +54,7 @@ public class EconomicOperatorImplTransformer implements Function<EconomicOperato
         this.partyImplTransformer = partyImplTransformer;
     }
 
-    @Override
-    public EconomicOperatorImpl apply(EconomicOperatorPartyType input) {
+    public EconomicOperatorImpl buildEconomicOperator(EconomicOperatorPartyType input) {
         EconomicOperatorImpl impl = new EconomicOperatorImpl();
 
         if (input.getParty() != null) {
@@ -147,9 +144,7 @@ public class EconomicOperatorImplTransformer implements Function<EconomicOperato
             representative.setCity(trimToEmpty(residenceAddress.getCityName().getValue()));
         }
         if (residenceAddress.getCountry() != null && residenceAddress.getCountry().getIdentificationCode() != null) {
-            Country country = Country
-                    .findByIsoCode(trimToEmpty(residenceAddress.getCountry().getIdentificationCode().getValue()));
-            representative.setCountry(country);
+            representative.setCountry(partyImplTransformer.readCountry(residenceAddress.getCountry()));
         }
     }
 

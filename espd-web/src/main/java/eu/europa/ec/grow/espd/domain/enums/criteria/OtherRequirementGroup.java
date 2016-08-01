@@ -25,8 +25,8 @@
 package eu.europa.ec.grow.espd.domain.enums.criteria;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import eu.europa.ec.grow.espd.domain.ubl.CcvRequirementGroup;
 import eu.europa.ec.grow.espd.domain.ubl.CcvCriterionRequirement;
+import eu.europa.ec.grow.espd.domain.ubl.CcvRequirementGroup;
 import lombok.Getter;
 
 import java.util.Collections;

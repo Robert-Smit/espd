@@ -50,5 +50,4 @@ public class EconomicOperatorImpl extends PartyImpl {
         setContactPhone(fromParty.getContactPhone());
         setContactEmail(fromParty.getContactEmail());
     }
-
 }

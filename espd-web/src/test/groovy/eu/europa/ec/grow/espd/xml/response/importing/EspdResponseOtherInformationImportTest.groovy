@@ -39,26 +39,17 @@ import spock.lang.Shared
 class EspdResponseOtherInformationImportTest extends AbstractXmlFileImport {
 
     @Shared
-    static def espdResponseFullXml
-    @Shared
-    static def espdResponseMinimalXml
-
-    @Shared
     static EspdDocument espdFull
     @Shared
     static EspdDocument espdMinimal
 
     void setupSpec() {
         // init objects run before the first feature method
-        espdResponseFullXml = importXmlResponseFile("response_other_information_full_import.xml")
-        espdResponseMinimalXml = importXmlResponseFile("response_other_information_minimal_import.xml")
-        espdFull = marshaller.importEspdResponse(IOUtils.toInputStream(espdResponseFullXml)).get()
-        espdMinimal = marshaller.importEspdResponse(IOUtils.toInputStream(espdResponseMinimalXml)).get()
+        espdFull = parseXmlResponseFile("response_other_information_full_import.xml")
+        espdMinimal = parseXmlResponseFile("response_other_information_minimal_import.xml")
     }
 
     void cleanupSpec() {
-        espdResponseFullXml = null
-        espdResponseMinimalXml = null
         espdFull = null
         espdMinimal = null
     }
@@ -72,7 +63,7 @@ class EspdResponseOtherInformationImportTest extends AbstractXmlFileImport {
         espdFull.economicOperator.street == "Vitruvio"
         espdFull.economicOperator.postalCode == "28006"
         espdFull.economicOperator.city == "Madrid"
-        espdFull.economicOperator.country == Country.SPAIN
+        espdFull.economicOperator.country == Country.ES
         espdFull.economicOperator.contactName == "hodor"
         espdFull.economicOperator.contactPhone == "+666"
         espdFull.economicOperator.contactEmail == "hodor@hodor.com"
@@ -106,7 +97,7 @@ class EspdResponseOtherInformationImportTest extends AbstractXmlFileImport {
         espdFull.economicOperator.representative.street == "Vitruvio"
         espdFull.economicOperator.representative.postalCode == "28006"
         espdFull.economicOperator.representative.city == "Edinborough"
-        espdFull.economicOperator.representative.country == Country.UNITED_KINGDOM_SCOTLAND
+        espdFull.economicOperator.representative.country == Country.GB
         espdFull.economicOperator.representative.email == "emilio.garcia3torres@acme.com"
         espdFull.economicOperator.representative.phone == "+34 96 123 456"
         espdFull.economicOperator.representative.position == "Empowered to represent the Consortium"
@@ -171,7 +162,16 @@ class EspdResponseOtherInformationImportTest extends AbstractXmlFileImport {
         espd.procedureTitle == "Belgium-Brussels: SMART 2015/0065 — Benchmarking deployment of eHealth among general practitioners 2015"
         espd.procedureShortDesc == "Service category No 11: Management consulting services [6] and related services."
         espd.tedUrl == "http://ted.europa.eu/udl?uri=TED:NOTICE:373035-2015:TEXT:EN:HTML"
+    }
 
+    def "should import issue date"() {
+        expect:
+        LocalDateAdapter.marshal(new LocalDate(espdFull.documentDate)) == "2015-11-25"
+    }
+
+    def "should import signature information"() {
+        expect:
+        espdFull.location == "Eastwatch by the Sea"
     }
 
 }

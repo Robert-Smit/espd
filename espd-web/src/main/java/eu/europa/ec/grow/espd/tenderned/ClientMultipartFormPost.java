@@ -1,0 +1,99 @@
+/*
+ * Copyright 2009-2016 PIANOo; TenderNed programma.
+ */
+package eu.europa.ec.grow.espd.tenderned;
+
+import lombok.extern.slf4j.Slf4j;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.StatusLine;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.entity.mime.content.ByteArrayBody;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.joda.time.DateTime;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
+/**
+ * espd - Description.
+ *
+ * @author D Hof
+ * @since 16-06-2016
+ */
+/*
+ *
+ * Copyright 2016 EUROPEAN COMMISSION
+ *
+ * Licensed under the EUPL, Version 1.1 or – as soon they
+ * will be approved by the European Commission - subsequent
+ * versions of the EUPL (the "Licence");
+ *
+ * You may not use this work except in compliance with the Licence.
+ *
+ * You may obtain a copy of the Licence at:
+ *
+ * https://joinup.ec.europa.eu/community/eupl/og_page/eupl
+ *
+ * Unless required by applicable law or agreed to in
+ * writing, software distributed under the Licence is
+ * distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied.
+ * See the Licence for the specific language governing
+ * permissions and limitations under the Licence.
+ *
+ */
+@Slf4j
+public class ClientMultipartFormPost {
+
+    public static final String FILENAME_XML = "uea_output.xml";
+    public static final String FILENAME_PDF = "uea_output.pdf";
+
+    /**
+     * Used to send a POST request to TenderNed.
+     *
+     * @param xml The XML to send
+     * @param pdf The PDF to send
+     * @param tnData is a {@link TenderNedData} object
+     * @throws IOException Thrown if an I/O error occurs
+     */
+    public void sendPosttoTN(ByteArrayOutputStream xml, ByteArrayOutputStream pdf, TenderNedData tnData, TenderNedEspdEncryption encryption) throws IOException {
+        log.info("Sending POST data to {}", tnData.getUploadURL());
+
+        CloseableHttpClient httpClient = HttpClients.createDefault();
+        HttpPost httpPost = new HttpPost(tnData.getUploadURL());
+        httpPost.setEntity(getHttpEntity(xml, pdf, tnData, encryption));
+
+        HttpResponse response = httpClient.execute(httpPost);
+        final StatusLine statusLine = response.getStatusLine();
+        final int statusCode = statusLine.getStatusCode();
+        httpClient.close();
+
+        if (statusCode == HttpStatus.SC_OK) {
+            log.info("Status {} returned from POST: {}", statusCode, statusLine);
+        } else {
+            tnData.setErrorCode(TenderNedData.ERROR_CODE_NOK);
+            log.error("Status {} returned from POST: {}", statusCode, statusLine);
+        }
+    }
+
+    private HttpEntity getHttpEntity(ByteArrayOutputStream xml, ByteArrayOutputStream pdf, TenderNedData tnData, TenderNedEspdEncryption encryption) {
+        ByteArrayBody fileBodyXml = new ByteArrayBody(xml.toByteArray(), ContentType.APPLICATION_XML, FILENAME_XML);
+        ByteArrayBody fileBodyPdf = new ByteArrayBody(pdf.toByteArray(), ContentType.create("application/pdf"), FILENAME_PDF);
+
+        String time = DateTime.now().toString(TenderNedUtils.TIMESTAMP_FORMAT);
+        TenderNedUtils utils = new TenderNedUtils(encryption);
+        return MultipartEntityBuilder.create()
+                .addPart("xml", fileBodyXml)
+                .addPart("pdf", fileBodyPdf)
+                .addTextBody("accessToken", tnData.getAccessToken())
+                .addTextBody("time", time)
+                .addTextBody("security", utils.createSecurityHash(tnData.getAccessToken(), time))
+                .build();
+    }
+}

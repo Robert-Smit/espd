@@ -26,8 +26,8 @@ package eu.europa.ec.grow.espd.xml.common.exporting;
 
 import eu.europa.ec.grow.espd.domain.EspdCriterion;
 import eu.europa.ec.grow.espd.domain.EspdDocument;
-import eu.europa.ec.grow.espd.domain.enums.criteria.OtherCriterion;
 import eu.europa.ec.grow.espd.domain.enums.criteria.ExclusionCriterion;
+import eu.europa.ec.grow.espd.domain.enums.criteria.OtherCriterion;
 import eu.europa.ec.grow.espd.domain.enums.criteria.SelectionCriterion;
 import eu.europa.ec.grow.espd.domain.ubl.CcvCriterion;
 import isa.names.specification.ubl.schema.xsd.ccv_commonaggregatecomponents_1.CriterionType;

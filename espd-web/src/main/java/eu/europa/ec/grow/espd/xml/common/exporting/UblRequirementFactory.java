@@ -31,7 +31,14 @@ import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_2.Atta
 import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_2.DocumentReferenceType;
 import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_2.ExternalReferenceType;
 import oasis.names.specification.ubl.schema.xsd.commonaggregatecomponents_2.PeriodType;
-import oasis.names.specification.ubl.schema.xsd.commonbasiccomponents_2.*;
+import oasis.names.specification.ubl.schema.xsd.commonbasiccomponents_2.AmountType;
+import oasis.names.specification.ubl.schema.xsd.commonbasiccomponents_2.DateType;
+import oasis.names.specification.ubl.schema.xsd.commonbasiccomponents_2.DescriptionType;
+import oasis.names.specification.ubl.schema.xsd.commonbasiccomponents_2.IDType;
+import oasis.names.specification.ubl.schema.xsd.commonbasiccomponents_2.PercentType;
+import oasis.names.specification.ubl.schema.xsd.commonbasiccomponents_2.QuantityType;
+import oasis.names.specification.ubl.schema.xsd.commonbasiccomponents_2.TypeCodeType;
+import oasis.names.specification.ubl.schema.xsd.commonbasiccomponents_2.URIType;
 import org.joda.time.LocalDate;
 
 import java.math.BigDecimal;
@@ -121,7 +128,7 @@ public final class UblRequirementFactory {
             return null;
         }
         TypeCodeType typeCodeType = new TypeCodeType();
-        typeCodeType.setValue(country.getIsoCode());
+        typeCodeType.setValue(country.getIso2Code());
         typeCodeType.setListAgencyID("ISO");
         typeCodeType.setListID(country.getIsoType());
         typeCodeType.setListVersionID("1.0");

@@ -27,7 +27,7 @@
     <parent>
         <artifactId>espd</artifactId>
         <groupId>eu.europa.ec.grow.espd</groupId>
-        <version>2016.06</version>
+        <version>2016.06.01.01-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>espd-web</artifactId>
@@ -105,7 +105,28 @@
             <version>3.3</version>
             <scope>test</scope>
         </dependency>
-    </dependencies>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpmime</artifactId>
+            <version>4.5.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.xmlgraphics</groupId>
+            <artifactId>fop</artifactId>
+            <version>2.1</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+     </dependencies>
 
     <build>
         <!-- Use the following to develop on your local machine or on the CI server -->
@@ -221,26 +242,26 @@
                 <version>${wro4j.version}</version>
                 <executions>
                     <execution>
-						<id>all</id>
+                        <id>all</id>
                         <phase>compile</phase>
                         <goals>
                             <goal>run</goal>
                         </goals>
-                         <configuration>
-                    		<targetGroups>all</targetGroups>
-                   			<minimize>true</minimize>
-                    	</configuration>
+                        <configuration>
+                            <targetGroups>all</targetGroups>
+                            <minimize>true</minimize>
+                        </configuration>
                     </execution>
                     <execution>
-						<id>debug</id>
+                        <id>debug</id>
                         <phase>compile</phase>
                         <goals>
                             <goal>run</goal>
                         </goals>
-                         <configuration>
-                    		<targetGroups>debug</targetGroups>
-                   			<minimize>false</minimize>
-                    	</configuration>
+                        <configuration>
+                            <targetGroups>debug</targetGroups>
+                            <minimize>false</minimize>
+                        </configuration>
                     </execution>
                 </executions>
                 <configuration>
@@ -252,44 +273,45 @@
                     <wroManagerFactory>ro.isdc.wro.maven.plugin.manager.factory.ConfigurableWroManagerFactory</wroManagerFactory>
                     <ignoreMissingResources>false</ignoreMissingResources>
                     <incrementalBuildEnabled>true</incrementalBuildEnabled>
+                    <contextPath>/espd/</contextPath>
                 </configuration>
             </plugin>
         </plugins>
         <pluginManagement>
-        	<plugins>
-        		<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
-        		<plugin>
-        			<groupId>org.eclipse.m2e</groupId>
-        			<artifactId>lifecycle-mapping</artifactId>
-        			<version>1.0.0</version>
-        			<configuration>
-        				<lifecycleMappingMetadata>
-        					<pluginExecutions>
-        						<pluginExecution>
-        							<pluginExecutionFilter>
-        								<groupId>
-        									org.codehaus.gmavenplus
-        								</groupId>
-        								<artifactId>
-        									gmavenplus-plugin
-        								</artifactId>
-        								<versionRange>
-        									[1.5,)
-        								</versionRange>
-        								<goals>
-        									<goal>compile</goal>
-        									<goal>testCompile</goal>
-        								</goals>
-        							</pluginExecutionFilter>
-        							<action>
-        								<ignore></ignore>
-        							</action>
-        						</pluginExecution>
-        					</pluginExecutions>
-        				</lifecycleMappingMetadata>
-        			</configuration>
-        		</plugin>
-        	</plugins>
+            <plugins>
+                <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+                <plugin>
+                    <groupId>org.eclipse.m2e</groupId>
+                    <artifactId>lifecycle-mapping</artifactId>
+                    <version>1.0.0</version>
+                    <configuration>
+                        <lifecycleMappingMetadata>
+                            <pluginExecutions>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>
+                                            org.codehaus.gmavenplus
+                                        </groupId>
+                                        <artifactId>
+                                            gmavenplus-plugin
+                                        </artifactId>
+                                        <versionRange>
+                                            [1.5,)
+                                        </versionRange>
+                                        <goals>
+                                            <goal>compile</goal>
+                                            <goal>testCompile</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore></ignore>
+                                    </action>
+                                </pluginExecution>
+                            </pluginExecutions>
+                        </lifecycleMappingMetadata>
+                    </configuration>
+                </plugin>
+            </plugins>
         </pluginManagement>
     </build>
     <profiles>

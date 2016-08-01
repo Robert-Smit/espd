@@ -56,6 +56,9 @@ public class EspdConfiguration {
     @Value("${piwik.server:https://webgate.ec.europa.eu/pwar/piwik.php}")
     private String piwikServer;
 
+    @Value("${ecertis.criterion.url:https://www.development.ec.europa.eu/growth/tools-databases/ecertisrest/criteria/espd/[uuid]/?countryFilter=[country]&lang=[lang]}")
+    private String ecertisCriterionURL;
+
     @Autowired
     private Environment environment;
 

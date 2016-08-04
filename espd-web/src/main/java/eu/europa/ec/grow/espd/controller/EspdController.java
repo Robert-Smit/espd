@@ -79,6 +79,7 @@ class EspdController {
     private static final String REQUEST_CA_PROCEDURE_PAGE = "request/ca/procedure";
     private static final String RESPONSE_EO_PROCEDURE_PAGE = "response/eo/procedure";
     private static final String PRINT_PAGE = "response/eo/print";
+    private static final String SESSION_EXPIRED = "sessionexpired";
 
     private final EspdExchangeMarshaller exchangeMarshaller;
 
@@ -317,18 +318,20 @@ class EspdController {
         return redirectToPage(RESPONSE_EO_PROCEDURE_PAGE);
     }
 
-    @RequestMapping("/{flow:request|response}/{agent:ca|eo}/{step:procedure|exclusion|selection|finish|print}")
+    @RequestMapping("/{flow:request|response}/{agent:ca|eo}/{step:procedure|exclusion|selection|finish|print|null}")
     public String view(
             @PathVariable String flow,
             @PathVariable String agent,
             @PathVariable String step,
             @ModelAttribute("espd") EspdDocument espd,
             @ModelAttribute("tenderned") TenderNedData tenderNedData) {
-
+        if(step.equals("null")) {
+            return SESSION_EXPIRED;
+        }
         return flow + "_" + agent + "_" + step;
     }
 
-    @RequestMapping(value = "/{flow:request|response}/{agent:ca|eo}/{step:procedure|exclusion|selection|finish|print}", method = POST, params = "prev")
+    @RequestMapping(value = "/{flow:request|response}/{agent:ca|eo}/{step:procedure|exclusion|selection|finish|print|null}", method = POST, params = "prev")
     public String previous(
             @PathVariable String flow,
             @PathVariable String agent,
@@ -337,12 +340,14 @@ class EspdController {
             @ModelAttribute("espd") EspdDocument espd,
             @ModelAttribute("tenderned") TenderNedData tenderNedData,
             BindingResult bindingResult) {
-
+            if(step.equals("null")) {
+                return SESSION_EXPIRED;
+            }
         return bindingResult.hasErrors() ?
                 flow + "_" + agent + "_" + step : redirectToPage(flow + "/" + agent + "/" + prev);
     }
 
-    @RequestMapping(value = "/{flow:request|response}/{agent:ca|eo}/{step:procedure|exclusion|selection|finish|print}", method = POST, params = "print")
+    @RequestMapping(value = "/{flow:request|response}/{agent:ca|eo}/{step:procedure|exclusion|selection|finish|print|null}", method = POST, params = "print")
     public String print(
             @PathVariable String flow,
             @PathVariable String agent,
@@ -351,12 +356,15 @@ class EspdController {
             @ModelAttribute("espd") EspdDocument espd,
             @ModelAttribute("tenderned") TenderNedData tenderNedData,
             BindingResult bindingResult) {
+        if(step.equals("null")) {
+            return SESSION_EXPIRED;
+        }
 
         return bindingResult.hasErrors() ?
                 flow + "_" + agent + "_" + step : redirectToPage(flow + "/" + agent + "/print");
     }
 
-    @RequestMapping(value = "/{flow:request|response}/{agent:ca|eo}/{step:procedure|exclusion|selection|finish|generate|print|savePrintHtml}",
+    @RequestMapping(value = "/{flow:request|response}/{agent:ca|eo}/{step:procedure|exclusion|selection|finish|generate|print|savePrintHtml|null}",
             method = POST, params = "next")
     public String next(
             @PathVariable String flow,
@@ -370,6 +378,9 @@ class EspdController {
             BindingResult bindingResult,
             SessionStatus status,
             Model model) throws PdfRenderingException, IOException {
+        if(step.equals("null")) {
+            return SESSION_EXPIRED;
+        }
 
         if (bindingResult.hasErrors()) {
             return flow + "_" + agent + "_" + step;
@@ -490,5 +501,13 @@ class EspdController {
             SessionUtils.removeCookies(request, response);
             status.setComplete();
         }
+
     }
+
+    @RequestMapping("/{page:null}")
+    public String getPage() {
+        return SESSION_EXPIRED;
+    }
+
+
 }

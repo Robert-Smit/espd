@@ -40,6 +40,7 @@
 	<definition name="filter" extends="espdTemplate"><put-attribute name="body" value="/WEB-INF/tenderned/views/filter.jsp"/></definition>
     <definition name="about" extends="espdTemplate"><put-attribute name="body" value="/WEB-INF/tenderned/views/about.jsp"/></definition>
     <definition name="error" extends="espdTemplate"><put-attribute name="body" value="/WEB-INF/tenderned/views/error.jsp"/></definition>
+    <definition name="sessionexpired" extends="espdTemplate"><put-attribute name="body" value="/WEB-INF/tenderned/views/errorSessionExpired.jsp"/></definition>
 
     <!-- wizard -->
 

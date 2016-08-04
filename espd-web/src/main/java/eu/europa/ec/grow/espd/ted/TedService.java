@@ -46,13 +46,13 @@ public class TedService {
 
     private final RestTemplate restTemplate;
 
-    @Value("${ted.api.base.url}")
+    @Value("${ted.api.base.url:https://esentool.ted.europa.eu/api/espd/v1.0/notice}")
     private String tedUrl;
 
-    @Value("${ted.api.user}")
+    @Value("${ted.api.user:api}")
     private String tedUser;
 
-    @Value("${ted.api.password}")
+    @Value("${ted.api.password:password}")
     private String tedPassword;
 
     @Autowired

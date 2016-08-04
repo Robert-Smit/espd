@@ -23,13 +23,11 @@
   ~
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>espd</artifactId>
         <groupId>eu.europa.ec.grow.espd</groupId>
-        <version>2016.06.01.01-SNAPSHOT</version>
+        <version>2016.08.27.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -62,7 +60,7 @@
                                 <sectanchors>true</sectanchors>
                                 <sectlinks>true</sectlinks>
                                 <!-- set the idprefix to blank -->
-                                <idprefix/>
+                                <idprefix />
                                 <idseparator>-</idseparator>
                                 <docinfo1>true</docinfo1>
                             </attributes>
@@ -78,9 +76,9 @@
                             <!--<backend>pdfrendering</backend>-->
                             <!--<sourceHighlighter>coderay</sourceHighlighter>-->
                             <!--<attributes>-->
-                                <!--<pagenums/>-->
-                                <!--<toc/>-->
-                                <!--<idprefix/>-->
+                                <!--<pagenums />-->
+                                <!--<toc />-->
+                                <!--<idprefix />-->
                                 <!--<idseparator>-</idseparator>-->
                             <!--</attributes>-->
                         <!--</configuration>-->

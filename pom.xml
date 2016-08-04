@@ -22,14 +22,13 @@
   ~
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>eu.europa.ec.grow.espd</groupId>
     <artifactId>espd</artifactId>
     <packaging>pom</packaging>
-    <version>2016.06.01.01-SNAPSHOT</version>
+    <version>2016.08.27.0</version>
     <modules>
         <module>exchange-model</module>
         <module>espd-web</module>
@@ -45,7 +44,7 @@
 
     <scm>
         <connection>scm:git:ssh://cb94020v.dbr.agro.nl/repos/tenderned-espd.git</connection>
-        <tag>HEAD</tag>
+        <tag>2016.08.27.0</tag>
     </scm>
 
     <properties>
@@ -228,7 +227,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore/>
+                                        <ignore />
                                     </action>
                                 </pluginExecution>
                                 <pluginExecution>
@@ -249,7 +248,7 @@
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore/>
+                                        <ignore />
                                     </action>
                                 </pluginExecution>
                             </pluginExecutions>

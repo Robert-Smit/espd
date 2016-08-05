@@ -20,38 +20,16 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 /**
- * espd - Description.
+ * Contains functionality to post multipart forms.
  *
  * @author D Hof
  * @since 16-06-2016
- */
-/*
- *
- * Copyright 2016 EUROPEAN COMMISSION
- *
- * Licensed under the EUPL, Version 1.1 or – as soon they
- * will be approved by the European Commission - subsequent
- * versions of the EUPL (the "Licence");
- *
- * You may not use this work except in compliance with the Licence.
- *
- * You may obtain a copy of the Licence at:
- *
- * https://joinup.ec.europa.eu/community/eupl/og_page/eupl
- *
- * Unless required by applicable law or agreed to in
- * writing, software distributed under the Licence is
- * distributed on an "AS IS" basis,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- * express or implied.
- * See the Licence for the specific language governing
- * permissions and limitations under the Licence.
- *
  */
 @Slf4j
 public class ClientMultipartFormPost {
 
     public static final String FILENAME_XML = "uea_output.xml";
+
     public static final String FILENAME_PDF = "uea_output.pdf";
 
     /**
@@ -74,8 +52,12 @@ public class ClientMultipartFormPost {
         final int statusCode = statusLine.getStatusCode();
         httpClient.close();
 
-        if (statusCode == HttpStatus.SC_OK) {
+        if (statusCode == HttpStatus.SC_OK || statusCode == HttpStatus.SC_CREATED) {
             log.info("Status {} returned from POST: {}", statusCode, statusLine);
+
+            if (statusCode == HttpStatus.SC_CREATED) {
+                tnData.setErrorCode(TenderNedData.ERROR_CODE_OK);
+            }
         } else {
             tnData.setErrorCode(TenderNedData.ERROR_CODE_NOK);
             log.error("Status {} returned from POST: {}", statusCode, statusLine);

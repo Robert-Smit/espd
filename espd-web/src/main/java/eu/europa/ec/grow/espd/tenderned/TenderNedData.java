@@ -14,8 +14,10 @@ import lombok.Data;
 @Data
 public class TenderNedData {
 
+    /** Error code: operation was successful and the documents sent to TenderNed were saved. */
     public static final String ERROR_CODE_OK = "0";
 
+    /** Error code: an error has occured. */
     public static final String ERROR_CODE_NOK = "1";
 
     private String accessToken;
@@ -33,6 +35,6 @@ public class TenderNedData {
      * Constructor for {@link TenderNedData}
      */
     public TenderNedData() {
-        this.errorCode = ERROR_CODE_OK;
+        super();
     }
 }

@@ -50,12 +50,16 @@ public class TenderNedUtils {
         String time = DateTime.now().toString(TIMESTAMP_FORMAT);
         String callbackUrl = tenderNedData.getCallbackURL();
 
-        return new UrlBuilder(callbackUrl)
+        UrlBuilder urlBuilder = new UrlBuilder(callbackUrl)
                 .addParameter("a", tenderNedData.getAccessToken())
                 .addParameter("t", time)
-                .addParameter("s", createSecurityHash(tenderNedData.getAccessToken(), time))
-                .addParameter("UEA_ERROR_CODE", tenderNedData.getErrorCode())
-                .build();
+                .addParameter("s", createSecurityHash(tenderNedData.getAccessToken(), time));
+
+        if (tenderNedData.getErrorCode() != null) {
+            urlBuilder.addParameter("UEA_ERROR_CODE", tenderNedData.getErrorCode());
+        }
+
+        return urlBuilder.build();
     }
 
     /**

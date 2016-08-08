@@ -79,6 +79,7 @@ class EspdController {
     private static final String REQUEST_CA_PROCEDURE_PAGE = "request/ca/procedure";
     private static final String RESPONSE_EO_PROCEDURE_PAGE = "response/eo/procedure";
     private static final String PRINT_PAGE = "response/eo/print";
+    private static final String STEP_NULL = "null";
     private static final String SESSION_EXPIRED = "sessionexpired";
 
     private final EspdExchangeMarshaller exchangeMarshaller;
@@ -325,7 +326,8 @@ class EspdController {
             @PathVariable String step,
             @ModelAttribute("espd") EspdDocument espd,
             @ModelAttribute("tenderned") TenderNedData tenderNedData) {
-        if(step.equals("null")) {
+
+        if (STEP_NULL.equals(step)) {
             return SESSION_EXPIRED;
         }
         return flow + "_" + agent + "_" + step;
@@ -340,9 +342,10 @@ class EspdController {
             @ModelAttribute("espd") EspdDocument espd,
             @ModelAttribute("tenderned") TenderNedData tenderNedData,
             BindingResult bindingResult) {
-            if(step.equals("null")) {
-                return SESSION_EXPIRED;
-            }
+
+        if (STEP_NULL.equals(step)) {
+            return SESSION_EXPIRED;
+        }
         return bindingResult.hasErrors() ?
                 flow + "_" + agent + "_" + step : redirectToPage(flow + "/" + agent + "/" + prev);
     }
@@ -356,10 +359,10 @@ class EspdController {
             @ModelAttribute("espd") EspdDocument espd,
             @ModelAttribute("tenderned") TenderNedData tenderNedData,
             BindingResult bindingResult) {
-        if(step.equals("null")) {
+
+        if (STEP_NULL.equals(step)) {
             return SESSION_EXPIRED;
         }
-
         return bindingResult.hasErrors() ?
                 flow + "_" + agent + "_" + step : redirectToPage(flow + "/" + agent + "/print");
     }
@@ -378,10 +381,10 @@ class EspdController {
             BindingResult bindingResult,
             SessionStatus status,
             Model model) throws PdfRenderingException, IOException {
-        if(step.equals("null")) {
+
+        if (STEP_NULL.equals(step)) {
             return SESSION_EXPIRED;
         }
-
         if (bindingResult.hasErrors()) {
             return flow + "_" + agent + "_" + step;
         }
@@ -508,6 +511,4 @@ class EspdController {
     public String getPage() {
         return SESSION_EXPIRED;
     }
-
-
 }

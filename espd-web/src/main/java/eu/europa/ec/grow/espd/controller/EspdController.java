@@ -24,18 +24,23 @@
 
 package eu.europa.ec.grow.espd.controller;
 
-import com.google.common.base.Optional;
-import eu.europa.ec.grow.espd.domain.EconomicOperatorImpl;
-import eu.europa.ec.grow.espd.domain.EspdDocument;
-import eu.europa.ec.grow.espd.domain.PartyImpl;
-import eu.europa.ec.grow.espd.domain.enums.other.Country;
-import eu.europa.ec.grow.espd.ted.TedRequest;
-import eu.europa.ec.grow.espd.ted.TedResponse;
-import eu.europa.ec.grow.espd.ted.TedService;
-import eu.europa.ec.grow.espd.tenderned.*;
-import eu.europa.ec.grow.espd.tenderned.exception.PdfRenderingException;
-import eu.europa.ec.grow.espd.xml.EspdExchangeMarshaller;
-import lombok.extern.slf4j.Slf4j;
+import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.io.output.CountingOutputStream;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,32 +59,32 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
+import com.google.common.base.Optional;
 
-import static org.apache.commons.lang3.StringUtils.isBlank;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import eu.europa.ec.grow.espd.domain.EconomicOperatorImpl;
+import eu.europa.ec.grow.espd.domain.EspdDocument;
+import eu.europa.ec.grow.espd.domain.PartyImpl;
+import eu.europa.ec.grow.espd.domain.enums.other.Country;
+import eu.europa.ec.grow.espd.ted.TedRequest;
+import eu.europa.ec.grow.espd.ted.TedResponse;
+import eu.europa.ec.grow.espd.ted.TedService;
+import eu.europa.ec.grow.espd.tenderned.ClientMultipartFormPost;
+import eu.europa.ec.grow.espd.tenderned.HtmlToPdfTransformer;
+import eu.europa.ec.grow.espd.tenderned.SessionUtils;
+import eu.europa.ec.grow.espd.tenderned.TenderNedData;
+import eu.europa.ec.grow.espd.tenderned.TenderNedUtils;
+import eu.europa.ec.grow.espd.tenderned.exception.PdfRenderingException;
+import eu.europa.ec.grow.espd.xml.EspdExchangeMarshaller;
+import lombok.extern.slf4j.Slf4j;
 
 @Controller
 @SessionAttributes(value = {"espd", "tenderned"})
-@Slf4j
-class EspdController {
+@Slf4j class EspdController {
 
     private static final String WELCOME_PAGE = "welcome";
     private static final String REQUEST_CA_PROCEDURE_PAGE = "request/ca/procedure";
     private static final String RESPONSE_EO_PROCEDURE_PAGE = "response/eo/procedure";
     private static final String PRINT_PAGE = "response/eo/print";
-    private static final String STEP_NULL = "null";
     private static final String SESSION_EXPIRED = "sessionexpired";
 
     private final EspdExchangeMarshaller exchangeMarshaller;
@@ -319,7 +324,7 @@ class EspdController {
         return redirectToPage(RESPONSE_EO_PROCEDURE_PAGE);
     }
 
-    @RequestMapping("/{flow:request|response}/{agent:ca|eo}/{step:procedure|exclusion|selection|finish|print|null}")
+    @RequestMapping("/{flow:request|response}/{agent:ca|eo}/{step:procedure|exclusion|selection|finish|print}")
     public String view(
             @PathVariable String flow,
             @PathVariable String agent,
@@ -327,13 +332,10 @@ class EspdController {
             @ModelAttribute("espd") EspdDocument espd,
             @ModelAttribute("tenderned") TenderNedData tenderNedData) {
 
-        if (STEP_NULL.equals(step)) {
-            return SESSION_EXPIRED;
-        }
         return flow + "_" + agent + "_" + step;
     }
 
-    @RequestMapping(value = "/{flow:request|response}/{agent:ca|eo}/{step:procedure|exclusion|selection|finish|print|null}", method = POST, params = "prev")
+    @RequestMapping(value = "/{flow:request|response}/{agent:ca|eo}/{step:procedure|exclusion|selection|finish|print}", method = POST, params = "prev")
     public String previous(
             @PathVariable String flow,
             @PathVariable String agent,
@@ -343,14 +345,11 @@ class EspdController {
             @ModelAttribute("tenderned") TenderNedData tenderNedData,
             BindingResult bindingResult) {
 
-        if (STEP_NULL.equals(step)) {
-            return SESSION_EXPIRED;
-        }
         return bindingResult.hasErrors() ?
                 flow + "_" + agent + "_" + step : redirectToPage(flow + "/" + agent + "/" + prev);
     }
 
-    @RequestMapping(value = "/{flow:request|response}/{agent:ca|eo}/{step:procedure|exclusion|selection|finish|print|null}", method = POST, params = "print")
+    @RequestMapping(value = "/{flow:request|response}/{agent:ca|eo}/{step:procedure|exclusion|selection|finish|print}", method = POST, params = "print")
     public String print(
             @PathVariable String flow,
             @PathVariable String agent,
@@ -360,9 +359,6 @@ class EspdController {
             @ModelAttribute("tenderned") TenderNedData tenderNedData,
             BindingResult bindingResult) {
 
-        if (STEP_NULL.equals(step)) {
-            return SESSION_EXPIRED;
-        }
         return bindingResult.hasErrors() ?
                 flow + "_" + agent + "_" + step : redirectToPage(flow + "/" + agent + "/print");
     }
@@ -382,9 +378,6 @@ class EspdController {
             SessionStatus status,
             Model model) throws PdfRenderingException, IOException {
 
-        if (STEP_NULL.equals(step)) {
-            return SESSION_EXPIRED;
-        }
         if (bindingResult.hasErrors()) {
             return flow + "_" + agent + "_" + step;
         }
@@ -504,10 +497,14 @@ class EspdController {
             SessionUtils.removeCookies(request, response);
             status.setComplete();
         }
-
     }
 
-    @RequestMapping("/{page:null}")
+    /**
+     * If we have a value 'null' as a path variable we can assume the session was expired.
+     *
+     * @return
+     */
+    @RequestMapping("**/null/**")
     public String getPage() {
         return SESSION_EXPIRED;
     }

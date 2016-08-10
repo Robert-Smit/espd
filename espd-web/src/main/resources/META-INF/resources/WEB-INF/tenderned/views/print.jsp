@@ -42,7 +42,7 @@
 
 <script>
     $(function () {
-        $("#ojsNumber").inputmask("9999/S 999-9999999");
+        $("#ojsNumber").inputmask("9999/S 999-999999");
         <c:if test="${agent == 'ca'}">
         // CA only needs to see the labels but not the values
         $(":radio").attr('checked', false);

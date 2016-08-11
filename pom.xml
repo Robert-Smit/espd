@@ -28,7 +28,7 @@
     <groupId>eu.europa.ec.grow.espd</groupId>
     <artifactId>espd</artifactId>
     <packaging>pom</packaging>
-    <version>2016.08.27.3-SNAPSHOT</version>
+    <version>2016.08.27.3</version>
     <modules>
         <module>exchange-model</module>
         <module>espd-web</module>
@@ -44,7 +44,7 @@
 
     <scm>
         <connection>scm:git:ssh://cb94020v.dbr.agro.nl/repos/tenderned-espd.git</connection>
-        <tag>HEAD</tag>
+        <tag>2016.08.27.3</tag>
     </scm>
 
     <properties>

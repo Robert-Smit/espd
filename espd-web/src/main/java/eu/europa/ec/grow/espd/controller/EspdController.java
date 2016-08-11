@@ -163,7 +163,7 @@ import lombok.extern.slf4j.Slf4j;
             @RequestParam(value = "accessToken", required = false) String accessToken,
             @RequestParam(value = "lang") String lang,
             @RequestParam(value = "agent", required = true) String agent,
-            @RequestParam(value = "tedReceptionId", required = false) String receptionId,
+            @RequestParam(value = "tedReceptionId", required = false) String tedReceptionId,
             @RequestParam(value = "ojsNumber", required = false) String ojsNumber,
             @RequestParam(value = "country", required = false) String countryIso,
             @RequestParam(value = "name", required = false) String name,
@@ -210,10 +210,11 @@ import lombok.extern.slf4j.Slf4j;
                 espd.setEconomicOperator(economicOperator);
             }
         } else if (StringUtils.isNotEmpty(tenderNedData.getXml())) {
-            espd = reuseRequestAsCA(tenderNedData.getXml());
+            espd = reuseRequestAsCA(tenderNedData.getXml(), tedReceptionId, ojsNumber, procedureTitle,
+                    procedureShortDescr, fileRefByCa);
             reuseRequest = true;
         } else {
-            espd.setTedReceptionId(receptionId);
+            espd.setTedReceptionId(tedReceptionId);
             espd.setOjsNumber(ojsNumber);
             espd.setProcedureTitle(procedureTitle);
             espd.setProcedureShortDesc(procedureShortDescr);
@@ -231,46 +232,7 @@ import lombok.extern.slf4j.Slf4j;
         return redirectToPage("filter");
     }
 
-    private String createNewRequestAsCA(Country country, EspdDocument document, String nationaalOfEuropeesCode) {
-        document.getAuthority().setCountry(country);
-        document.selectCAExclusionCriteria(nationaalOfEuropeesCode);
-        return redirectToPage(REQUEST_CA_PROCEDURE_PAGE);
-    }
-
-    private void copyTedInformation(EspdDocument document) {
-        TedResponse tedResponse = tedService
-                .getContractNoticeInformation(TedRequest.builder().receptionId(document.getTedReceptionId()).build());
-        document.setOjsNumber(tedResponse.getNoDocOjs());
-        TedResponse.TedNotice notice = tedResponse.getFirstNotice();
-        document.getAuthority().setName(notice.getOfficialName());
-        document.setProcedureTitle(notice.getTitle());
-        document.setProcedureShortDesc(notice.getShortDescription());
-        document.setFileRefByCA(notice.getReferenceNumber());
-        document.setTedUrl(notice.getTedUrl());
-    }
-
-    private EspdDocument reuseRequestAsCA(String attachment) {
-        InputStream is = new ByteArrayInputStream(attachment.getBytes(StandardCharsets.UTF_8));
-        Optional<EspdDocument> espdDocument = exchangeMarshaller.importEspdRequest(is);
-        return espdDocument.get();
-    }
-
-    private String reviewResponseAsCA(MultipartFile attachment, Model model,
-            BindingResult result) throws IOException {
-        try (InputStream is = attachment.getInputStream()) {
-            Optional<EspdDocument> espd = exchangeMarshaller.importEspdResponse(is);
-            if (espd.isPresent()) {
-                model.addAttribute("espd", espd.get());
-                return redirectToPage(PRINT_PAGE);
-            }
-        }
-
-        result.rejectValue("attachments", "espd_upload_response_error");
-        return "filter";
-    }
-
     private EspdDocument importEspdAsEo(Country country, String attachment) throws IOException {
-
         EspdDocument espd = new EspdDocument();
         InputStream inputStream = new ByteArrayInputStream(attachment.getBytes(StandardCharsets.UTF_8));
         Optional<EspdDocument> wrappedEspd = exchangeMarshaller.importAmbiguousEspdFile(inputStream);
@@ -291,6 +253,74 @@ import lombok.extern.slf4j.Slf4j;
         return espd;
     }
 
+    private boolean needsToLoadProcurementProcedureInformation(EspdDocument espdDocument) {
+        return isBlank(espdDocument.getOjsNumber()) && isNotBlank(espdDocument.getTedReceptionId());
+    }
+
+    private void copyTedInformation(EspdDocument document) {
+        TedResponse tedResponse = tedService
+                .getContractNoticeInformation(TedRequest.builder().receptionId(document.getTedReceptionId()).build());
+        document.setOjsNumber(tedResponse.getNoDocOjs());
+        TedResponse.TedNotice notice = tedResponse.getFirstNotice();
+        document.getAuthority().setName(notice.getOfficialName());
+        document.setProcedureTitle(notice.getTitle());
+        document.setProcedureShortDesc(notice.getShortDescription());
+        document.setFileRefByCA(notice.getReferenceNumber());
+        document.setTedUrl(notice.getTedUrl());
+    }
+
+    private EspdDocument reuseRequestAsCA(String attachment, String tedReceptionId, String ojsNumber,
+            String procedureTitle, String procedureShortDescr, String fileRefByCa) {
+
+        InputStream is = new ByteArrayInputStream(attachment.getBytes(StandardCharsets.UTF_8));
+        Optional<EspdDocument> optional = exchangeMarshaller.importEspdRequest(is);
+        EspdDocument espdDocument = optional.get();
+
+        if (StringUtils.isEmpty(espdDocument.getTedReceptionId()) && StringUtils.isNotEmpty(tedReceptionId)) {
+            espdDocument.setTedReceptionId(tedReceptionId);
+        }
+
+        if (StringUtils.isEmpty(espdDocument.getOjsNumber()) && StringUtils.isNotEmpty(ojsNumber)) {
+            espdDocument.setOjsNumber(ojsNumber);
+        }
+
+        if (StringUtils.isEmpty(espdDocument.getProcedureTitle()) && StringUtils.isNotEmpty(procedureTitle)) {
+            espdDocument.setProcedureTitle(procedureTitle);
+        }
+
+        String procedureShortDescrEspd = espdDocument.getProcedureShortDesc();
+        if ((StringUtils.isEmpty(procedureShortDescrEspd) || "-".equals(procedureShortDescrEspd)) && StringUtils.isNotEmpty(procedureShortDescr)) {
+            espdDocument.setProcedureShortDesc(procedureShortDescr);
+        }
+
+        if (StringUtils.isEmpty(espdDocument.getFileRefByCA()) && StringUtils.isNotEmpty(fileRefByCa)) {
+            espdDocument.setFileRefByCA(fileRefByCa);
+        }
+        return espdDocument;
+    }
+
+    private String createNewRequestAsCA(Country country, EspdDocument document, String nationaalOfEuropeesCode) {
+        document.getAuthority().setCountry(country);
+        document.selectCAExclusionCriteria(nationaalOfEuropeesCode);
+        return redirectToPage(REQUEST_CA_PROCEDURE_PAGE);
+    }
+
+    private String reviewResponseAsCA(MultipartFile attachment, Model model,
+            BindingResult result) throws IOException {
+
+        try (InputStream is = attachment.getInputStream()) {
+            Optional<EspdDocument> espd = exchangeMarshaller.importEspdResponse(is);
+
+            if (espd.isPresent()) {
+                model.addAttribute("espd", espd.get());
+                return redirectToPage(PRINT_PAGE);
+            }
+        }
+
+        result.rejectValue("attachments", "espd_upload_response_error");
+        return "filter";
+    }
+
     private String mergeTwoEspds(List<MultipartFile> attachments, Model model, BindingResult result)
             throws IOException {
 
@@ -307,10 +337,6 @@ import lombok.extern.slf4j.Slf4j;
 
         result.rejectValue("attachments", "espd_upload_error");
         return "filter";
-    }
-
-    private boolean needsToLoadProcurementProcedureInformation(EspdDocument espdDocument) {
-        return isBlank(espdDocument.getOjsNumber()) && isNotBlank(espdDocument.getTedReceptionId());
     }
 
     private String createNewResponseAsEO(Country country, EspdDocument document) {

@@ -33,10 +33,10 @@ import org.springframework.context.annotation.Profile;
  * Created by ratoico on 12/10/15 at 10:14 AM.
  */
 
-@Profile("default")
+@Profile("dev")
 @Configuration
 class Wro4jConfig extends Wro4jAutoConfiguration {
 
-    // only used for development ('default' profile) when we need the Wro4J Filter
+    // only used for development ('dev' profile) when we need the Wro4J Filter
 
 }

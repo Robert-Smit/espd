@@ -273,7 +273,7 @@
                     <wroManagerFactory>ro.isdc.wro.maven.plugin.manager.factory.ConfigurableWroManagerFactory</wroManagerFactory>
                     <ignoreMissingResources>false</ignoreMissingResources>
                     <incrementalBuildEnabled>true</incrementalBuildEnabled>
-                    <contextPath>/espd/</contextPath>
+                    <contextPath>/espd-web/</contextPath>
                 </configuration>
             </plugin>
         </plugins>

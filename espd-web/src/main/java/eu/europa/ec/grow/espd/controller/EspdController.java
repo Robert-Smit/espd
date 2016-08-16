@@ -395,8 +395,6 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
             espd.setHtml(utils.addHtmlHeader(espd.getHtml()));
             sendTenderNedData(espd, tenderNedData);
             String callbackUrl = utils.createGetUrl(tenderNedData);
-            //tijdelijk voor het opslaan van html
-            HtmlToPdfTransformer.saveHtml(espd.getHtml());
 
             try {
                 return redirectToTN(callbackUrl);

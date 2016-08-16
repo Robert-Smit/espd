@@ -24,23 +24,18 @@
 
 package eu.europa.ec.grow.espd.controller;
 
-import static org.apache.commons.lang3.StringUtils.isBlank;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.google.common.base.Optional;
+import eu.europa.ec.grow.espd.domain.EconomicOperatorImpl;
+import eu.europa.ec.grow.espd.domain.EspdDocument;
+import eu.europa.ec.grow.espd.domain.PartyImpl;
+import eu.europa.ec.grow.espd.domain.enums.other.Country;
+import eu.europa.ec.grow.espd.ted.TedRequest;
+import eu.europa.ec.grow.espd.ted.TedResponse;
+import eu.europa.ec.grow.espd.ted.TedService;
+import eu.europa.ec.grow.espd.tenderned.*;
+import eu.europa.ec.grow.espd.tenderned.exception.PdfRenderingException;
+import eu.europa.ec.grow.espd.xml.EspdExchangeMarshaller;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.output.CountingOutputStream;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,32 +45,25 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.google.common.base.Optional;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 
-import eu.europa.ec.grow.espd.domain.EconomicOperatorImpl;
-import eu.europa.ec.grow.espd.domain.EspdDocument;
-import eu.europa.ec.grow.espd.domain.PartyImpl;
-import eu.europa.ec.grow.espd.domain.enums.other.Country;
-import eu.europa.ec.grow.espd.ted.TedRequest;
-import eu.europa.ec.grow.espd.ted.TedResponse;
-import eu.europa.ec.grow.espd.ted.TedService;
-import eu.europa.ec.grow.espd.tenderned.ClientMultipartFormPost;
-import eu.europa.ec.grow.espd.tenderned.HtmlToPdfTransformer;
-import eu.europa.ec.grow.espd.tenderned.SessionUtils;
-import eu.europa.ec.grow.espd.tenderned.TenderNedData;
-import eu.europa.ec.grow.espd.tenderned.TenderNedUtils;
-import eu.europa.ec.grow.espd.tenderned.exception.PdfRenderingException;
-import eu.europa.ec.grow.espd.xml.EspdExchangeMarshaller;
-import lombok.extern.slf4j.Slf4j;
+import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @Controller
 @SessionAttributes(value = {"espd", "tenderned"})
@@ -243,11 +231,6 @@ import lombok.extern.slf4j.Slf4j;
             if (espd.getEconomicOperator() == null) {
                 espd.setEconomicOperator(new EconomicOperatorImpl());
             }
-
-            if (needsToLoadProcurementProcedureInformation(espd)) {
-                // in this case we need to contact TED again to load the procurement information
-                copyTedInformation(espd);
-            }
             espd.getEconomicOperator().setCountry(country);
         }
         return espd;
@@ -412,6 +395,8 @@ import lombok.extern.slf4j.Slf4j;
             espd.setHtml(utils.addHtmlHeader(espd.getHtml()));
             sendTenderNedData(espd, tenderNedData);
             String callbackUrl = utils.createGetUrl(tenderNedData);
+            //tijdelijk voor het opslaan van html
+            HtmlToPdfTransformer.saveHtml(espd.getHtml());
 
             try {
                 return redirectToTN(callbackUrl);

@@ -167,9 +167,10 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
             @RequestParam(value = "btwNummer", required = false) String btwNummer,
             @RequestParam(value = "kvkNummer", required = false) String kvkNummer,
             @RequestParam(value = "nationaalOfEuropeesCode", required = false) String nationaalOfEuropeesCode,
-            @RequestParam(value = "isNewResponse", required = false) String isNewResponse,
+            @RequestParam(value = "isNewResponse", required = false) Boolean isNewResponse,
             @RequestParam(value = "bestandsnaam", required = false) String bestandsnaam,
             @RequestParam(value = "xml", required = false) String xml,
+            @RequestParam(value = "isInschrijffase", required = false) String isInschrijffase,
             @ModelAttribute("tenderned") TenderNedData tenderNedData,
             Model model,
             BindingResult result) throws IOException {
@@ -181,7 +182,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
         if ("eo".equals(agent)) {
             espd = importEspdAsEo(country, tenderNedData.getXml());
 
-            if ("true".equals(isNewResponse)) {
+            if (isNewResponse) {
                 EconomicOperatorImpl economicOperator = new EconomicOperatorImpl();
                 PartyImpl party = new PartyImpl();
                 party.setName(name);

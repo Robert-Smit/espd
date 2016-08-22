@@ -28,6 +28,7 @@ public class TenderNedData {
     private String uploadURL;
     private String xml;
     private String nationaalOfEuropeesCode;
+    private Boolean isInschrijffase;
 
     private boolean reuseRequest;
 

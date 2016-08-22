@@ -170,7 +170,8 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
             @RequestParam(value = "isNewResponse", required = false) Boolean isNewResponse,
             @RequestParam(value = "bestandsnaam", required = false) String bestandsnaam,
             @RequestParam(value = "xml", required = false) String xml,
-            @RequestParam(value = "isInschrijffase", required = false) String isInschrijffase,
+            //TODO typeProcedure moet een verplichte parameter zijn (required = true)
+            @RequestParam(value = "typeProcedure", required = false) String typeProcedure,
             @ModelAttribute("tenderned") TenderNedData tenderNedData,
             Model model,
             BindingResult result) throws IOException {
@@ -214,6 +215,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
             espd.setAuthority(party);
         }
         tenderNedData.setReuseRequest(reuseRequest);
+        tenderNedData.setInschrijffase(typeProcedure);
 
         model.addAttribute("tenderned", tenderNedData);
         model.addAttribute("espd", espd);

@@ -3,7 +3,13 @@
  */
 package eu.europa.ec.grow.espd.tenderned;
 
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * espd - Data received from caller.
@@ -20,6 +26,13 @@ public class TenderNedData {
     /** Error code: an error has occured. */
     public static final String ERROR_CODE_NOK = "1";
 
+    private final List<String> inschrijffaseProcedures = new ArrayList<>(Arrays.asList(
+            "OPE", "OHP", "OZB"));
+
+    private final List<String> aanmeldfaseProcedures = new ArrayList<>(Arrays.asList(
+            "NOP", "CCD", "OMB", "INP"));
+
+
     private String accessToken;
     private String agent;
     private String bestandsnaam;
@@ -28,7 +41,9 @@ public class TenderNedData {
     private String uploadURL;
     private String xml;
     private String nationaalOfEuropeesCode;
-    private Boolean isInschrijffase;
+
+    @Setter(AccessLevel.NONE)
+    private boolean isInschrijffase;
 
     private boolean reuseRequest;
 
@@ -37,5 +52,13 @@ public class TenderNedData {
      */
     public TenderNedData() {
         super();
+    }
+
+    public void setInschrijffase(String typeProcedure) {
+        if (inschrijffaseProcedures.contains(typeProcedure)) {
+            this.isInschrijffase = true;
+        } else if (aanmeldfaseProcedures.contains(typeProcedure)) {
+            this.isInschrijffase = false;
+        }
     }
 }

@@ -57,7 +57,7 @@
         </div>
 
 		<tiles:insertDefinition name="topLevelCriteriaTemplate">
-			<tiles:putAttribute name="topLevelCriteriaList" value="${tenderned.nationaalOfEuropeesCode == 'EU' ? exclusionCA_EU : exclusionCA_NL}"/>
+			<tiles:putAttribute name="topLevelCriteriaList" value="${tenderned.nationalOrEuropeanCode == 'EU' ? exclusionCA_EU : exclusionCA_NL}"/>
 		</tiles:insertDefinition>
 
         <div class="panel panel-default espd-panel">

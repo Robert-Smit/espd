@@ -29,10 +29,6 @@ public class TenderNedData {
     private final List<String> inschrijffaseProcedures = new ArrayList<>(Arrays.asList(
             "OPE", "OHP", "OZB"));
 
-    private final List<String> aanmeldfaseProcedures = new ArrayList<>(Arrays.asList(
-            "NOP", "CCD", "OMB", "INP"));
-
-
     private String accessToken;
     private String agent;
     private String bestandsnaam;
@@ -40,7 +36,7 @@ public class TenderNedData {
     private String errorCode;
     private String uploadURL;
     private String xml;
-    private String nationaalOfEuropeesCode;
+    private String nationalOrEuropeanCode;
 
     @Setter(AccessLevel.NONE)
     private boolean isInschrijffase;
@@ -57,7 +53,7 @@ public class TenderNedData {
     public void setInschrijffase(String typeProcedure) {
         if (inschrijffaseProcedures.contains(typeProcedure)) {
             this.isInschrijffase = true;
-        } else if (aanmeldfaseProcedures.contains(typeProcedure)) {
+        } else {
             this.isInschrijffase = false;
         }
     }

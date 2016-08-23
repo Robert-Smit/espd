@@ -135,7 +135,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
             BindingResult result) throws IOException {
 
         if ("ca_create_espd_request".equals(action)) {
-            return createNewRequestAsCA(country, document, tenderNedData.getNationaalOfEuropeesCode());
+            return createNewRequestAsCA(country, document, tenderNedData.getNationalOrEuropeanCode());
         } else if ("ca_reuse_espd_request".equals(action)) {
             return redirectToPage(REQUEST_CA_PROCEDURE_PAGE);
         } else if ("eo_import_espd".equals(action)) {
@@ -151,6 +151,8 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
             @RequestParam(value = "accessToken", required = false) String accessToken,
             @RequestParam(value = "lang") String lang,
             @RequestParam(value = "agent", required = true) String agent,
+            //TODO typeProcedure moet een verplichte parameter zijn (required = true)
+            @RequestParam(value = "procedureType", required = false) String procedureType,
             @RequestParam(value = "tedReceptionId", required = false) String tedReceptionId,
             @RequestParam(value = "ojsNumber", required = false) String ojsNumber,
             @RequestParam(value = "country", required = false) String countryIso,
@@ -158,23 +160,20 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
             @RequestParam(value = "procedureTitle", required = false) String procedureTitle,
             @RequestParam(value = "procedureShortDesc", required = false) String procedureShortDescr,
             @RequestParam(value = "fileRefByCA", required = false) String fileRefByCa,
-            @RequestParam(value = "adres", required = false) String adres,
+            @RequestParam(value = "streetAndNumber", required = false) String streetAndNumber,
             @RequestParam(value = "postcode", required = false) String postcode,
-            @RequestParam(value = "plaats", required = false) String plaats,
-            @RequestParam(value = "internetadres", required = false) String internetadres,
+            @RequestParam(value = "city", required = false) String city,
+            @RequestParam(value = "internetAddress", required = false) String internetAddress,
             @RequestParam(value = "email", required = false) String email,
-            @RequestParam(value = "telefoonnummer", required = false) String telefoonnummer,
-            @RequestParam(value = "btwNummer", required = false) String btwNummer,
-            @RequestParam(value = "kvkNummer", required = false) String kvkNummer,
-            @RequestParam(value = "nationaalOfEuropeesCode", required = false) String nationaalOfEuropeesCode,
+            @RequestParam(value = "telephone", required = false) String telephone,
+            @RequestParam(value = "vatNumber", required = false) String vatNumber,
+            @RequestParam(value = "chamberOfCommerceNumber", required = false) String chamberOfCommerceNumber,
+            @RequestParam(value = "nationalOrEuropeanCode", required = false) String nationalOrEuropeanCode,
             @RequestParam(value = "isNewResponse", required = false) Boolean isNewResponse,
-            @RequestParam(value = "bestandsnaam", required = false) String bestandsnaam,
+            @RequestParam(value = "fileName", required = false) String FileName,
             @RequestParam(value = "xml", required = false) String xml,
-            //TODO typeProcedure moet een verplichte parameter zijn (required = true)
-            @RequestParam(value = "typeProcedure", required = false) String typeProcedure,
             @ModelAttribute("tenderned") TenderNedData tenderNedData,
-            Model model,
-            BindingResult result) throws IOException {
+            Model model) throws IOException {
 
         Country country = Country.findByIso2Code(countryIso);
         EspdDocument espd = new EspdDocument();
@@ -187,15 +186,15 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
                 EconomicOperatorImpl economicOperator = new EconomicOperatorImpl();
                 PartyImpl party = new PartyImpl();
                 party.setName(name);
-                party.setWebsite(internetadres);
-                party.setVatNumber(btwNummer);
-                party.setAnotherNationalId(kvkNummer);
-                party.setStreet(adres);
+                party.setWebsite(internetAddress);
+                party.setVatNumber(vatNumber);
+                party.setAnotherNationalId(chamberOfCommerceNumber);
+                party.setStreet(streetAndNumber);
                 party.setPostalCode(postcode);
-                party.setCity(plaats);
+                party.setCity(city);
                 party.setCountry(country);
                 party.setContactEmail(email);
-                party.setContactPhone(telefoonnummer);
+                party.setContactPhone(telephone);
                 economicOperator.copyProperties(party);
                 espd.setEconomicOperator(economicOperator);
             }
@@ -215,7 +214,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
             espd.setAuthority(party);
         }
         tenderNedData.setReuseRequest(reuseRequest);
-        tenderNedData.setInschrijffase(typeProcedure);
+        tenderNedData.setInschrijffase(procedureType);
 
         model.addAttribute("tenderned", tenderNedData);
         model.addAttribute("espd", espd);

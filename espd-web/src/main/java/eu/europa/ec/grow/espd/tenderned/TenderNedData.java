@@ -31,7 +31,7 @@ public class TenderNedData {
 
     private String accessToken;
     private String agent;
-    private String bestandsnaam;
+    private String fileName;
     private String callbackURL;
     private String errorCode;
     private String uploadURL;

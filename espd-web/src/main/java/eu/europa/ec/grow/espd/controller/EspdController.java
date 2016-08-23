@@ -170,7 +170,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
             @RequestParam(value = "chamberOfCommerceNumber", required = false) String chamberOfCommerceNumber,
             @RequestParam(value = "nationalOrEuropeanCode", required = false) String nationalOrEuropeanCode,
             @RequestParam(value = "isNewResponse", required = false) Boolean isNewResponse,
-            @RequestParam(value = "fileName", required = false) String FileName,
+            @RequestParam(value = "fileName", required = false) String fileName,
             @RequestParam(value = "xml", required = false) String xml,
             @ModelAttribute("tenderned") TenderNedData tenderNedData,
             Model model) throws IOException {

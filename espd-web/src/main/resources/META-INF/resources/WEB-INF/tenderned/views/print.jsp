@@ -790,13 +790,13 @@
             <div class="espd-panel-body panel-body">
                 <c:if test = "${agent == 'ca'}">
                     <span>
-                         <s:message code='createcafinish_export_content_tn'/>
-                        </span>
+                        <s:message code='createcafinish_export_content_tn'/>
+                    </span>
                 </c:if>
                 <c:if test = "${agent == 'eo'}">
                     <span>
-                         <s:message code='createeofinish_export_content_tn'/>
-                        </span>
+                        <s:message code='createeofinish_export_content_tn_inschrijving'/>
+                    </span>
                 </c:if>
             </div>
         </div>

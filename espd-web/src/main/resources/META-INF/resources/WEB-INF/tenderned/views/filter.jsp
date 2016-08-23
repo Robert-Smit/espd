@@ -190,7 +190,7 @@
                 --%>
                 <div class="tab-pane" id="show_xml_file">
                     <h3 data-i18n="filter_upload_document"><s:message code='filter_upload_document'/></h3>
-                    <c:out value="${tenderned.bestandsnaam}"/>
+                    <c:out value="${tenderned.fileName}"/>
                 </div>
                 <%--
                     <div class="tab-pane" id="tab-multiple-upload">

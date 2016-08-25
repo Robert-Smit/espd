@@ -47,13 +47,9 @@ public class TenderNedUtils {
      * @return a String with the callbackURL and get parameters
      */
     public String createGetUrl(TenderNedData tenderNedData) {
-        String time = DateTime.now().toString(TIMESTAMP_FORMAT);
         String callbackUrl = tenderNedData.getCallbackURL();
 
-        UrlBuilder urlBuilder = new UrlBuilder(callbackUrl)
-                .addParameter("a", tenderNedData.getAccessToken())
-                .addParameter("t", time)
-                .addParameter("s", createSecurityHash(tenderNedData.getAccessToken(), time));
+        UrlBuilder urlBuilder = new UrlBuilder(callbackUrl);
 
         if (tenderNedData.getErrorCode() != null) {
             urlBuilder.addParameter("UEA_ERROR_CODE", tenderNedData.getErrorCode());

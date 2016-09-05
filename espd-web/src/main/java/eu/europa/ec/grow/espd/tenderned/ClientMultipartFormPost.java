@@ -3,11 +3,15 @@
  */
 package eu.europa.ec.grow.espd.tenderned;
 
-import lombok.extern.slf4j.Slf4j;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpHost;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.StatusLine;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
@@ -16,8 +20,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.joda.time.DateTime;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Contains functionality to post multipart forms.
@@ -35,18 +38,29 @@ public class ClientMultipartFormPost {
     /**
      * Used to send a POST request to TenderNed.
      *
-     * @param xml The XML to send
-     * @param pdf The PDF to send
+     * @param xml    The XML to send
+     * @param pdf    The PDF to send
      * @param tnData is a {@link TenderNedData} object
      * @throws IOException Thrown if an I/O error occurs
      */
-    public void sendPosttoTN(ByteArrayOutputStream xml, ByteArrayOutputStream pdf, TenderNedData tnData, TenderNedEspdEncryption encryption) throws IOException {
+    public void sendPosttoTN(ByteArrayOutputStream xml, ByteArrayOutputStream pdf, TenderNedData tnData, TenderNedEspdEncryption encryption)
+            throws IOException {
         log.info("Sending POST data to {}", tnData.getUploadURL());
+
+        // Proxy settings
+        // TODO: 5-09-2016 TNR-9465 Make proxy server configurable
+        HttpHost proxy = new HttpHost("localhost", 8085, HttpHost.DEFAULT_SCHEME_NAME);
+        RequestConfig config = RequestConfig.custom().setProxy(proxy).build();
 
         CloseableHttpClient httpClient = HttpClients.createDefault();
         HttpPost httpPost = new HttpPost(tnData.getUploadURL());
         httpPost.setEntity(getHttpEntity(xml, pdf, tnData, encryption));
 
+        // TODO: 5-09-2016  TNR-9466 onderscheid TSender/TenderNed voor uitgaande proxy
+        boolean useProxy = false;
+        if (useProxy) {
+            httpPost.setConfig(config);
+        }
         HttpResponse response = httpClient.execute(httpPost);
         final StatusLine statusLine = response.getStatusLine();
         final int statusCode = statusLine.getStatusCode();

@@ -40,10 +40,10 @@ import java.util.List;
 @Data
 public class EspdDocument {
 
-    private String html;
+	private String html;
 
-    private PartyImpl authority;
-    private EconomicOperatorImpl economicOperator;
+	private PartyImpl authority;
+	private EconomicOperatorImpl economicOperator;
 
 	private String ojsNumber;
 	private String procedureTitle;
@@ -51,6 +51,7 @@ public class EspdDocument {
 	private String lotConcerned;
 	private String fileRefByCA;
 	private String tedUrl; // aka ojsUrl
+	private String consortiumName;
 
 	private EspdRequestMetadata requestMetadata;
 
@@ -68,6 +69,7 @@ public class EspdDocument {
 	private OtherCriterion subcontractingThirdParties;
 
 	// Exclusion criteria
+
 	private CriminalConvictionsCriterion criminalConvictions;
 	private CriminalConvictionsCriterion corruption;
 	private CriminalConvictionsCriterion fraud;

@@ -249,9 +249,8 @@ public final class CommonUblFactory {
     }
 
     private static IDType buildDocumentIdType(String id, String schemeId) {
-        IDType idType = new IDType();
+        IDType idType = buildIdType();
         idType.setSchemeID(schemeId);
-        idType.setSchemeAgencyID(Agency.EU_COM_GROW.getIdentifier());
         idType.setSchemeAgencyName(Agency.EU_COM_GROW.getLongName());
         idType.setSchemeVersionID("1.1");
         idType.setValue(id);
@@ -313,7 +312,7 @@ public final class CommonUblFactory {
 
     public static ProcurementProjectLotType buildProcurementProjectLot(String lotConcerned) {
         ProcurementProjectLotType lotType = new ProcurementProjectLotType();
-        IDType idType = new IDType();
+        IDType idType = buildIdType();
         if (StringUtils.isNotBlank(lotConcerned)) {
             idType.setValue(lotConcerned);
         } else {
@@ -327,10 +326,22 @@ public final class CommonUblFactory {
         CountryType countryType = new CountryType();
         IdentificationCodeType identificationCodeType = new IdentificationCodeType();
         identificationCodeType.setValue(country.getIso2Code());
-        identificationCodeType.setListAgencyID("ISO");
-        identificationCodeType.setListName(country.getIsoType());
-        identificationCodeType.setListVersionID("1.0");
+	    identificationCodeType.setListID("CountryCodeIdentifier");
+        identificationCodeType.setListAgencyID("EU-COM-GROW");
+        identificationCodeType.setListName("CountryCodeIdentifier");
+        identificationCodeType.setListVersionID("1.0.2");
         countryType.setIdentificationCode(identificationCodeType);
         return countryType;
     }
+
+	/**
+	 * Build an {@link IDType} with the mandatory SchemeAgencyID attribute.
+	 *
+	 * @return A new instance of this element
+	 */
+	public static IDType buildIdType() {
+		IDType idType = new IDType();
+		idType.setSchemeAgencyID(Agency.EU_COM_GROW.getIdentifier());
+		return idType;
+	}
 }

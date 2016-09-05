@@ -18,25 +18,28 @@ services to their users.
 
 * Java Development Kit 7
 * Maven 3
-* Tomcat or other Servlet 3 container
+* (Optional) Tomcat or other Servlet 3 container
 
 ## Documentation
 
-* [Requirements](http://espd.github.io/espd/docs/html/requirements.html)
-* [Installation](http://espd.github.io/espd/docs/html/installation.html)
-* [Overview](http://espd.github.io/espd/docs/html/overview.html)
-* [Configuration](http://espd.github.io/espd/docs/html/configuration.html)
-* [View](http://espd.github.io/espd/docs/html/view.html)
-* [Testing](http://espd.github.io/espd/docs/html/testing.html)
-* [Data model](http://espd.github.io/espd/docs/html/dataModel.html)
-* [Release notes](http://espd.github.io/espd/docs/html/releaseNotes.html)
-* [Full documentation](http://espd.github.io/espd/docs/html/espd.html)
+* [Requirements](http://espd.github.io/ESPD-Service/docs/html/requirements.html)
+* [Installation](http://espd.github.io/ESPD-Service/docs/html/installation.html)
+* [Overview](http://espd.github.io/ESPD-Service/docs/html/overview.html)
+* [Configuration](http://espd.github.io/ESPD-Service/docs/html/configuration.html)
+* [View](http://espd.github.io/ESPD-Service/docs/html/view.html)
+* [Testing](http://espd.github.io/ESPD-Service/docs/html/testing.html)
+* [Data model quick overview](http://espd.github.io/ESPD-Service/docs/html/dataModel.html)
+* [Data model full documentation](https://espd.github.io/ESPD-EDM/)
+* [Release notes](http://espd.github.io/ESPD-Service/docs/html/releaseNotes.html)
+* [Full documentation](http://espd.github.io/ESPD-Service/docs/html/espd.html)
 
 ### Older versions
 
-* [2016.05](https://github.com/ESPD/espd/blob/2016.05/espd-docs/src/main/asciidoc/espd.adoc)
+* [2016.07](https://github.com/espd/ESPD-Service/blob/2016.07/espd-docs/src/main/asciidoc/espd.adoc)
+* [2016.06](https://github.com/espd/ESPD-Service/blob/2016.06/espd-docs/src/main/asciidoc/espd.adoc)
+* [2016.05](https://github.com/espd/ESPD-Service/blob/2016.05/espd-docs/src/main/asciidoc/espd.adoc)
 
 ## License
 
-[License](http://espd.github.io/espd/docs/html/license.html)
+[License](http://espd.github.io/ESPD-Service/docs/html/license.html)
 

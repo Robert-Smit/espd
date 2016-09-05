@@ -165,9 +165,9 @@ class EspdResponseMarshallingTest extends AbstractEspdXmlMarshalling {
 
         then: "check address information"
         result.ContractingParty.Party.PostalAddress.Country.IdentificationCode.text() == "RO"
-        result.ContractingParty.Party.PostalAddress.Country.IdentificationCode.@listAgencyID.text() == "ISO"
-        result.ContractingParty.Party.PostalAddress.Country.IdentificationCode.@listName.text() == "ISO 3166-1"
-        result.ContractingParty.Party.PostalAddress.Country.IdentificationCode.@listVersionID.text() == "1.0"
+        result.ContractingParty.Party.PostalAddress.Country.IdentificationCode.@listAgencyID.text() == "EU-COM-GROW"
+        result.ContractingParty.Party.PostalAddress.Country.IdentificationCode.@listName.text() == "CountryCodeIdentifier"
+        result.ContractingParty.Party.PostalAddress.Country.IdentificationCode.@listVersionID.text() == "1.0.2"
         result.ContractingParty.Party.PostalAddress.CityName.text() == "Hodor city"
         result.ContractingParty.Party.PostalAddress.StreetName.text() == "Hodor street"
         result.ContractingParty.Party.PostalAddress.Postbox.text() == "Hodor postcode"
@@ -199,9 +199,9 @@ class EspdResponseMarshallingTest extends AbstractEspdXmlMarshalling {
 
         then: "check address information"
         result.EconomicOperatorParty.Party.PostalAddress.Country.IdentificationCode.text() == "GB"
-        result.EconomicOperatorParty.Party.PostalAddress.Country.IdentificationCode.@listAgencyID.text() == "ISO"
-        result.EconomicOperatorParty.Party.PostalAddress.Country.IdentificationCode.@listName.text() == "ISO 3166-1"
-        result.EconomicOperatorParty.Party.PostalAddress.Country.IdentificationCode.@listVersionID.text() == "1.0"
+        result.EconomicOperatorParty.Party.PostalAddress.Country.IdentificationCode.@listAgencyID.text() == "EU-COM-GROW"
+        result.EconomicOperatorParty.Party.PostalAddress.Country.IdentificationCode.@listName.text() == "CountryCodeIdentifier"
+        result.EconomicOperatorParty.Party.PostalAddress.Country.IdentificationCode.@listVersionID.text() == "1.0.2"
         result.EconomicOperatorParty.Party.PostalAddress.CityName.text() == "Edinborough"
         result.EconomicOperatorParty.Party.PostalAddress.StreetName.text() == "Vitruvio"
         result.EconomicOperatorParty.Party.PostalAddress.Postbox.text() == "28006"
@@ -215,39 +215,56 @@ class EspdResponseMarshallingTest extends AbstractEspdXmlMarshalling {
         result.EconomicOperatorParty.SMEIndicator.text() == "true"
     }
 
-    def "should contain RepresentativeNaturalPerson element information"() {
+    def "should contain multiple RepresentativeNaturalPerson element information"() {
         given:
-        def birthDate = new Date()
-        def economicOperator = new EconomicOperatorImpl(representative: new EconomicOperatorRepresentative(
-                firstName: "Emilio", lastName: "García De Tres Torres", dateOfBirth: birthDate,
+        def birthDate1 = new Date()
+        def representative1 = new EconomicOperatorRepresentative(
+                firstName: "Emilio", lastName: "García De Tres Torres", dateOfBirth: birthDate1,
                 placeOfBirth: "València, Spain", street: "Vitruvio", postalCode: "28006", city: "Madrid",
                 country: Country.ES, email: "emilio.garcia3torres@acme.com", phone: "+34 96 123 456",
                 position: "Empowered to represent the Consortium",
-                additionalInfo: "Can represent ACME, Corp. and the Consortia to which ACME, Corp"))
+                additionalInfo: "Can represent ACME, Corp. and the Consortia to which ACME, Corp")
+        def birthDate2 = new Date().plus(2)
+        def representative2 = new EconomicOperatorRepresentative(
+                firstName: "Uffo", lastName: "Goldworthy", dateOfBirth: birthDate2,
+                placeOfBirth: "Lisbon, Portugal", street: "R Cruzes 27", postalCode: "4755-160", city: "CRISTELO",
+                country: Country.PT, email: "UffoGoldworthy@rhyta.com", phone: "351 21 253 526 3533",
+                position: "Team assembler",
+                additionalInfo: "1993 TVR Griffith")
+        def economicOperator = new EconomicOperatorImpl(representatives: [representative1, representative2])
         def espd = new EspdDocument(economicOperator: economicOperator)
 
         when:
         def result = parseResponseXml(espd)
 
+        then:
+        result.EconomicOperatorParty.RepresentativeNaturalPerson.size() == 2
+
         then: "person details"
-        result.EconomicOperatorParty.RepresentativeNaturalPerson.PowerOfAttorney.AgentParty.Person.FirstName.text() == "Emilio"
-        result.EconomicOperatorParty.RepresentativeNaturalPerson.PowerOfAttorney.AgentParty.Person.FamilyName.text() == "García De Tres Torres"
-        result.EconomicOperatorParty.RepresentativeNaturalPerson.PowerOfAttorney.AgentParty.Person.BirthDate.text() == LocalDateAdapter.marshal(new LocalDate(birthDate))
-        result.EconomicOperatorParty.RepresentativeNaturalPerson.PowerOfAttorney.AgentParty.Person.BirthplaceName.text() == "València, Spain"
+        result.EconomicOperatorParty.RepresentativeNaturalPerson[0].PowerOfAttorney.AgentParty.Person.FirstName.text() == "Emilio"
+        result.EconomicOperatorParty.RepresentativeNaturalPerson[0].PowerOfAttorney.AgentParty.Person.FamilyName.text() == "García De Tres Torres"
+        result.EconomicOperatorParty.RepresentativeNaturalPerson[0].PowerOfAttorney.AgentParty.Person.BirthDate.text() == LocalDateAdapter.marshal(new LocalDate(birthDate1))
+        result.EconomicOperatorParty.RepresentativeNaturalPerson[0].PowerOfAttorney.AgentParty.Person.BirthplaceName.text() == "València, Spain"
 
         then: "check address information"
-        result.EconomicOperatorParty.RepresentativeNaturalPerson.PowerOfAttorney.AgentParty.Person.ResidenceAddress.Country.IdentificationCode.text() == "ES"
-        result.EconomicOperatorParty.RepresentativeNaturalPerson.PowerOfAttorney.AgentParty.Person.ResidenceAddress.CityName.text() == "Madrid"
-        result.EconomicOperatorParty.RepresentativeNaturalPerson.PowerOfAttorney.AgentParty.Person.ResidenceAddress.StreetName.text() == "Vitruvio"
-        result.EconomicOperatorParty.RepresentativeNaturalPerson.PowerOfAttorney.AgentParty.Person.ResidenceAddress.Postbox.text() == "28006"
+        result.EconomicOperatorParty.RepresentativeNaturalPerson[0].PowerOfAttorney.AgentParty.Person.ResidenceAddress.Country.IdentificationCode.text() == "ES"
+        result.EconomicOperatorParty.RepresentativeNaturalPerson[0].PowerOfAttorney.AgentParty.Person.ResidenceAddress.CityName.text() == "Madrid"
+        result.EconomicOperatorParty.RepresentativeNaturalPerson[0].PowerOfAttorney.AgentParty.Person.ResidenceAddress.StreetName.text() == "Vitruvio"
+        result.EconomicOperatorParty.RepresentativeNaturalPerson[0].PowerOfAttorney.AgentParty.Person.ResidenceAddress.Postbox.text() == "28006"
 
         then: "check contact information"
-        result.EconomicOperatorParty.RepresentativeNaturalPerson.PowerOfAttorney.AgentParty.Person.Contact.ElectronicMail.text() == "emilio.garcia3torres@acme.com"
-        result.EconomicOperatorParty.RepresentativeNaturalPerson.PowerOfAttorney.AgentParty.Person.Contact.Telephone.text() == "+34 96 123 456"
+        result.EconomicOperatorParty.RepresentativeNaturalPerson[0].PowerOfAttorney.AgentParty.Person.Contact.ElectronicMail.text() == "emilio.garcia3torres@acme.com"
+        result.EconomicOperatorParty.RepresentativeNaturalPerson[0].PowerOfAttorney.AgentParty.Person.Contact.Telephone.text() == "+34 96 123 456"
 
         then: "other"
-        result.EconomicOperatorParty.RepresentativeNaturalPerson.NaturalPersonRoleDescription.text() == "Empowered to represent the Consortium"
-        result.EconomicOperatorParty.RepresentativeNaturalPerson.PowerOfAttorney.Description.text() == "Can represent ACME, Corp. and the Consortia to which ACME, Corp"
+        result.EconomicOperatorParty.RepresentativeNaturalPerson[0].NaturalPersonRoleDescription.text() == "Empowered to represent the Consortium"
+        result.EconomicOperatorParty.RepresentativeNaturalPerson[0].PowerOfAttorney.Description.text() == "Can represent ACME, Corp. and the Consortia to which ACME, Corp"
+
+        then: "second representative"
+        result.EconomicOperatorParty.RepresentativeNaturalPerson[1].PowerOfAttorney.AgentParty.Person.FirstName.text() == "Uffo"
+        result.EconomicOperatorParty.RepresentativeNaturalPerson[1].PowerOfAttorney.AgentParty.Person.FamilyName.text() == "Goldworthy"
+        result.EconomicOperatorParty.RepresentativeNaturalPerson[1].PowerOfAttorney.AgentParty.Person.BirthDate.text() == LocalDateAdapter.marshal(new LocalDate(birthDate2))
+        result.EconomicOperatorParty.RepresentativeNaturalPerson[1].PowerOfAttorney.AgentParty.Person.BirthplaceName.text() == "Lisbon, Portugal"
     }
 
     def "should contain ProcurementProjectLot element information when there are no lots"() {
@@ -409,6 +426,17 @@ class EspdResponseMarshallingTest extends AbstractEspdXmlMarshalling {
         then:
         result.AdditionalDocumentReference[0].IssueDate.size() == 0
         result.AdditionalDocumentReference[0].IssueTime.size() == 0
+    }
+
+    def "should contain the consortium name"() {
+        given:
+        def espd = new EspdDocument(consortiumName: "Lannister Inc.")
+
+        when:
+        def result = parseResponseXml(espd)
+
+        then:
+        result.EconomicOperatorGroupName.text() == "Lannister Inc."
     }
 
 }

@@ -54,7 +54,7 @@
                 </div>
             </c:if></c:if>
             <div class="btn-group" role="group">
-                <a class="btn btn-default btn-lg" href="${pageContext.request.contextPath}/welcome" role="button">
+                <a id="cancelBtn" class="btn btn-default btn-lg" href="${pageContext.request.contextPath}/welcome" role="button">
                     <i class="fa fa-times-circle"></i>
                     <span data-i18n="cancel"><s:message code="cancel"/></span>
                 </a>

@@ -24,6 +24,8 @@
 
 package eu.europa.ec.grow.espd.domain;
 
+import java.util.List;
+
 import eu.europa.ec.grow.espd.domain.enums.other.Country;
 import eu.europa.ec.grow.espd.domain.ubl.CacParty;
 import lombok.Data;
@@ -35,7 +37,7 @@ public class EconomicOperatorImpl extends PartyImpl {
 	
 	private Boolean isSmallSizedEnterprise; //Is the economic operator a Micro, a Small or a Medium-Sized Enterprise ?
 
-    private EconomicOperatorRepresentative representative;
+    private List<EconomicOperatorRepresentative> representatives;
 
     public void copyProperties(CacParty fromParty) {
         setName(fromParty.getName());
@@ -50,4 +52,5 @@ public class EconomicOperatorImpl extends PartyImpl {
         setContactPhone(fromParty.getContactPhone());
         setContactEmail(fromParty.getContactEmail());
     }
+
 }

@@ -29,7 +29,7 @@
     <parent>
         <artifactId>espd</artifactId>
         <groupId>eu.europa.ec.grow.espd</groupId>
-        <version>2016.06.01.01-SNAPSHOT</version>
+        <version>2016.08.01.01-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -69,13 +69,13 @@
                         </configuration>
                     </execution>
                     <!--<execution>-->
-                        <!--<id>asciidoc-usermanual-to-pdfrendering</id>-->
+                        <!--<id>asciidoc-usermanual-to-pdf</id>-->
                         <!--<phase>generate-resources</phase>-->
                         <!--<goals>-->
                             <!--<goal>process-asciidoc</goal>-->
                         <!--</goals>-->
                         <!--<configuration>-->
-                            <!--<backend>pdfrendering</backend>-->
+                            <!--<backend>pdf</backend>-->
                             <!--<sourceHighlighter>coderay</sourceHighlighter>-->
                             <!--<attributes>-->
                                 <!--<pagenums/>-->
@@ -94,8 +94,8 @@
                     </dependency>
                     <!--<dependency>-->
                         <!--<groupId>org.asciidoctor</groupId>-->
-                        <!--<artifactId>asciidoctorj-pdfrendering</artifactId>-->
-                        <!--<version>${asciidoctorj.pdfrendering.version}</version>-->
+                        <!--<artifactId>asciidoctorj-pdf</artifactId>-->
+                        <!--<version>${asciidoctorj.pdf.version}</version>-->
                     <!--</dependency>-->
                     <dependency>
                         <groupId>org.asciidoctor</groupId>

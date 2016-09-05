@@ -27,7 +27,6 @@ package eu.europa.ec.grow.espd.controller;
 import com.google.common.base.Optional;
 import eu.europa.ec.grow.espd.domain.EconomicOperatorImpl;
 import eu.europa.ec.grow.espd.domain.EspdDocument;
-import eu.europa.ec.grow.espd.domain.PartyImpl;
 import eu.europa.ec.grow.espd.domain.enums.other.Country;
 import eu.europa.ec.grow.espd.ted.TedRequest;
 import eu.europa.ec.grow.espd.ted.TedResponse;
@@ -36,8 +35,8 @@ import eu.europa.ec.grow.espd.tenderned.*;
 import eu.europa.ec.grow.espd.tenderned.exception.PdfRenderingException;
 import eu.europa.ec.grow.espd.xml.EspdExchangeMarshaller;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.io.output.CountingOutputStream;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.http.HttpHeaders;
@@ -51,11 +50,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -64,10 +60,12 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import com.google.common.base.Optional;
 
 @Controller
 @SessionAttributes(value = {"espd", "tenderned"})
-@Slf4j class EspdController {
+@Slf4j
+class EspdController {
 
     private static final String WELCOME_PAGE = "welcome";
     private static final String REQUEST_CA_PROCEDURE_PAGE = "request/ca/procedure";
@@ -88,17 +86,13 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
         this.utils = utils;
     }
 
-    private static String redirectToPage(String pageName) {
-        return "redirect:/" + pageName;
-    }
-
     private static String redirectToTN(String callbackUrl) {
         return "redirect:" + callbackUrl;
     }
 
     @ModelAttribute("espd")
     public EspdDocument newDocument() {
-        return new EspdDocument();
+    	return new EspdDocument();
     }
 
     @ModelAttribute("tenderned")
@@ -292,10 +286,8 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
     private String reviewResponseAsCA(MultipartFile attachment, Model model,
             BindingResult result) throws IOException {
-
         try (InputStream is = attachment.getInputStream()) {
             Optional<EspdDocument> espd = exchangeMarshaller.importEspdResponse(is);
-
             if (espd.isPresent()) {
                 model.addAttribute("espd", espd.get());
                 return redirectToPage(PRINT_PAGE);
@@ -306,14 +298,40 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
         return "filter";
     }
 
+    private String importEspdAsEo(Country country, MultipartFile attachment, Model model, BindingResult result)
+            throws IOException {
+        try (InputStream is = attachment.getInputStream()) {
+            Optional<EspdDocument> wrappedEspd = exchangeMarshaller.importAmbiguousEspdFile(is);
+
+            // how can wrappedEspd be null???
+            if (wrappedEspd != null && wrappedEspd.isPresent()) {
+                EspdDocument espd = wrappedEspd.get();
+                if (espd.getEconomicOperator() == null) {
+                    espd.setEconomicOperator(new EconomicOperatorImpl());
+                }
+                if (needsToLoadProcurementProcedureInformation(espd)) {
+                    // in this case we need to contact TED again to load the procurement information
+                    copyTedInformation(espd);
+                }
+                espd.getEconomicOperator().setCountry(country);
+                model.addAttribute("espd", espd);
+                return redirectToPage(RESPONSE_EO_PROCEDURE_PAGE);
+            }
+        }
+
+        result.rejectValue("attachments", "espd_upload_error");
+        return "filter";
+    }
+
+    private boolean needsToLoadProcurementProcedureInformation(EspdDocument espdDocument) {
+        return isBlank(espdDocument.getOjsNumber()) && isNotBlank(espdDocument.getTedReceptionId());
+    }
+
     private String mergeTwoEspds(List<MultipartFile> attachments, Model model, BindingResult result)
             throws IOException {
-
         try (InputStream reqIs = attachments.get(1).getInputStream();
                 InputStream respIs = attachments.get(2).getInputStream()) {
-
             Optional<EspdDocument> wrappedEspd = exchangeMarshaller.mergeEspdRequestAndResponse(reqIs, respIs);
-
             if (wrappedEspd.isPresent()) {
                 model.addAttribute("espd", wrappedEspd.get());
                 return redirectToPage(RESPONSE_EO_PROCEDURE_PAGE);
@@ -324,16 +342,16 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
         return "filter";
     }
 
-    private String createNewResponseAsEO(Country country, EspdDocument document) {
 
-        if (document.getEconomicOperator() == null) {
-            document.setEconomicOperator(new EconomicOperatorImpl());
-        }
-        document.getEconomicOperator().setCountry(country);
-        document.giveLifeToAllExclusionCriteria();
-        document.giveLifeToAllSelectionCriteria();
-        return redirectToPage(RESPONSE_EO_PROCEDURE_PAGE);
-    }
+	private String createNewResponseAsEO(Country country, EspdDocument document) {
+		if (document.getEconomicOperator() == null) {
+			document.setEconomicOperator(new EconomicOperatorImpl());
+		}
+		document.getEconomicOperator().setCountry(country);
+		document.giveLifeToAllExclusionCriteria();
+		document.giveLifeToAllSelectionCriteria();
+		return redirectToPage(RESPONSE_EO_PROCEDURE_PAGE);
+	}
 
     @RequestMapping("/{flow:request|response}/{agent:ca|eo}/{step:procedure|exclusion|selection|finish|print}")
     public String view(
@@ -355,12 +373,12 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
             @ModelAttribute("espd") EspdDocument espd,
             @ModelAttribute("tenderned") TenderNedData tenderNedData,
             BindingResult bindingResult) {
-
         return bindingResult.hasErrors() ?
                 flow + "_" + agent + "_" + step : redirectToPage(flow + "/" + agent + "/" + prev);
     }
 
-    @RequestMapping(value = "/{flow:request|response}/{agent:ca|eo}/{step:procedure|exclusion|selection|finish|print}", method = POST, params = "print")
+
+    @RequestMapping(value = "/{flow:request|response}/{agent:ca|eo}/{step:procedure|exclusion|selection|finish}", method = POST, params = "print")
     public String print(
             @PathVariable String flow,
             @PathVariable String agent,
@@ -369,12 +387,39 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
             @ModelAttribute("espd") EspdDocument espd,
             @ModelAttribute("tenderned") TenderNedData tenderNedData,
             BindingResult bindingResult) {
-
         return bindingResult.hasErrors() ?
                 flow + "_" + agent + "_" + step : redirectToPage(flow + "/" + agent + "/print");
     }
 
-    @RequestMapping(value = "/{flow:request|response}/{agent:ca|eo}/{step:procedure|exclusion|selection|finish|generate|print|savePrintHtml|null}",
+    @RequestMapping(value = "/{flow:request|response}/{agent:ca|eo}/{step:procedure}", method = POST, params = "add")
+    public String addRepresentative(
+            @PathVariable String flow,
+            @PathVariable String agent,
+            @PathVariable String step,
+            @RequestParam Integer add,
+            @ModelAttribute("espd") EspdDocument espd,
+            BindingResult bindingResult) {
+        espd.getEconomicOperator().getRepresentatives().add(add, new EconomicOperatorRepresentative());
+        return redirectToPage(flow + "/" + agent + "/" + step + "#representative" + add);
+    }
+
+    @RequestMapping(value = "/{flow:request|response}/{agent:ca|eo}/{step:procedure}", method = POST, params = "remove")
+    public String removeRepresentative(
+            @PathVariable String flow,
+            @PathVariable String agent,
+            @PathVariable String step,
+            @RequestParam Integer remove,
+            @ModelAttribute("espd") EspdDocument espd,
+            BindingResult bindingResult) {
+        espd.getEconomicOperator().getRepresentatives().remove(remove.intValue());
+        if(espd.getEconomicOperator().getRepresentatives().size() == 0) {
+            espd.getEconomicOperator().getRepresentatives().add(new EconomicOperatorRepresentative());
+        }
+        remove = Math.min(espd.getEconomicOperator().getRepresentatives().size() - 1, remove);
+        return redirectToPage(flow + "/" + agent + "/" + step + "#representative" + remove);
+    }
+
+    @RequestMapping(value = "/{flow:request|response}/{agent:ca|eo}/{step:procedure|exclusion|selection|finish|generate|print|savePrintHtml}",
             method = POST, params = "next")
     public String next(
             @PathVariable String flow,
@@ -408,11 +453,12 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
         return redirectToPage(flow + "/" + agent + "/" + next);
     }
 
-    private void downloadEspdFile(
-            @PathVariable String agent,
-            @ModelAttribute("espd") EspdDocument espd,
-            HttpServletResponse response) throws IOException {
+    private static String redirectToPage(String pageName) {
+        return "redirect:/" + pageName;
+    }
 
+    private void downloadEspdFile(@PathVariable String agent, @ModelAttribute("espd") EspdDocument espd,
+            HttpServletResponse response) throws IOException {
         try (CountingOutputStream out = new CountingOutputStream(response.getOutputStream())) {
             response.setContentType(APPLICATION_XML_VALUE);
 

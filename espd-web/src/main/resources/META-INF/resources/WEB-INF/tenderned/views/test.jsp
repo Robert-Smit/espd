@@ -160,7 +160,7 @@
                     </ul>
                 </div>
                 <form:errors path="*" cssClass="errorContainer alert alert-danger"></form:errors>
-                <div class="paragraph"><h2>${span18n['createcasel_header']}</h2></div>
+                <div><h2>${span18n['createcasel_header']}</h2></div>
                 <div class="alert alert-espd-info">
                     <ul class="fa-ul">
                         <li>
@@ -169,9 +169,9 @@
                     </ul>
                 </div>
 
-                <div class="panel panel-default espd-panel">
-                    <div class="espd-panel-heading" data-toggle="collapse" data-target="#eo-satisfies-all-section">
-                            ${span18n["all_selection_switch"]}
+                <div class="panel panel-espd">
+                    <div class="panel-heading" data-toggle="collapse" data-target="#eo-satisfies-all-section">
+                    	<h4 class="panel-title">${span18n['all_selection_switch']}</h4>
                     </div>
                     <div id="eo-satisfies-all-section" class="collapse in">
                         <div class="espd-panel-body panel-body">
@@ -179,15 +179,15 @@
                             <span data-i18n="crit_selection_eo_declares_that_tooltip" data-toggle="tooltip"
                                   title="${i18n['crit_selection_eo_satisfies_all_criteria']}"></span>
                         </div>
-                        <div class="row criteria-row">
-                            <div class="col-md-5 criteria-cell-left">
+                        <div class="row criteria-row-form">
+                            <div class="col-md-5 criteria-row-check-left">
                                 <div class="form-group">
                                     <div class="col-md-12">
                                         <strong>${span18n['crit_selection_eo_satisfies_all_criteria']}</strong>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-7 criteria-cell-right">
+                            <div class="col-md-7 criteria-row-check-right">
                                 <div class="col-md-12">
                                     <div class="form-group">
                                             ${span18n["crit_your_answer"]}
@@ -203,9 +203,9 @@
                 </div>
 
                 <div id="eo-satisfies-all-form" class="${espd['selectionSatisfiesAll'].answer ? 'collapse' : ''}">
-                    <div class="panel panel-default espd-panel">
-                        <div class="espd-panel-heading" data-toggle="collapse" data-target="${'#'}${id}">
-                                ${span18n[title_code]}
+                    <div class="panel panel-espd">
+                        <div class="panel-heading" data-toggle="collapse" data-target="${'#'}${id}">
+                        	<h4 class="panel-title">${span18n['title_code']}</h4>
                         </div>
                         <div id="${id}" class="collapse in">
                             <div class="espd-panel-body panel-body">
@@ -269,7 +269,7 @@
                                                             <c:when test="${req.responseDataType == 'AMOUNT'}">
                                                                 <div class="col-md-8">
                                                                     <form:textarea rows="1" path="${req.response[0].amount.value}"
-                                                                                   number="true" cssClass="form-control"/>
+                                                                                number="true" cssClass="form-control"/>
                                                                     <form:select
                                                                             path="${req.response[0].amount.currencyID}"
                                                                             cssClass="form-control" cssStyle="${style}">
@@ -332,15 +332,15 @@
                                                             <c:when test="${req.responseDataType == 'CODE'}">
                                                                 <div class="col-md-8">
                                                                     <form:textarea rows="1"
-                                                                                   path="${req.response[0].code.value}"
-                                                                                   class="form-control"/>
+                                                                            path="${req.response[0].code.value}"
+                                                                            class="form-control"/>
                                                                 </div>
                                                             </c:when>
                                                             <c:when test="${req.responseDataType == 'EVIDENCE_URL'}">
                                                                 <div class="col-md-8">
-                                                                    <form:textarea rows="1"
-                                                                                   path="${req.response[0].evidence[0].evidenceDocumentReference[0].attachment.uri.value}"
-                                                                                   class="form-control input-sm"/>
+                                                                   <form:textarea rows="1"
+                                                                                path="${req.response[0].evidence[0].evidenceDocumentReference[0].attachment.uri.value}"
+                                                                                class="form-control input-sm"/>
                                                                 </div>
                                                             </c:when>
                                                         </c:choose>

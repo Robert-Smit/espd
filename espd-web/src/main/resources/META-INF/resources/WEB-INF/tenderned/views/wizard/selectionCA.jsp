@@ -45,7 +45,7 @@
         	<tiles:putAttribute name="flow" value="${flow}"/>
 			<tiles:putAttribute name="selection" value="true"/>
         </tiles:insertDefinition>
-        <div class="paragraph">
+        <div>
             <h2>
                 <span data-i18n="createcasel_header"><s:message code="createcasel_header"/></span>
             </h2>
@@ -58,9 +58,9 @@
                 </li>
             </ul>
         </div>
-        <div class="panel panel-default espd-panel">
-            <div class="espd-panel-heading" data-toggle="collapse" data-target="#ca-satisfies-all-section">
-				${span18n["all_selection_switch"]}
+        <div class="panel panel-espd">
+            <div class="panel-heading" data-toggle="collapse" data-target="#ca-satisfies-all-section">
+				<h4 class="panel-title">${span18n['all_selection_switch']}</h4>
             </div>
             <div id="ca-satisfies-all-section" class="collapse in">
                 <div class="espd-panel-body panel-body">

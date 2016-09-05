@@ -50,7 +50,7 @@
         	<tiles:putAttribute name="flow" value="${flow}"/>
             <tiles:putAttribute name="exclusion" value="true"/>
         </tiles:insertDefinition>
-        <div class="paragraph">
+        <div>
             <h2>
                 <span data-i18n="createcaexcl_header"><s:message code="createcaexcl_header"/></span>
             </h2>
@@ -60,10 +60,11 @@
 			<tiles:putAttribute name="topLevelCriteriaList" value="${tenderned.nationalOrEuropeanCode == 'EU' ? exclusionCA_EU : exclusionCA_NL}"/>
 		</tiles:insertDefinition>
 
-        <div class="panel panel-default espd-panel">
-            <div data-i18n="crit_top_title_purely_national" class="espd-panel-heading" data-toggle="collapse"
-                 data-target="#ca-national-section">
-                <s:message code='crit_top_title_purely_national'/>
+        <div class="panel panel-espd">
+            <div class="panel-heading" data-toggle="collapse" data-target="#ca-national-section">
+				<h4 class="panel-title">
+					${span18n['crit_top_title_purely_national']}
+				</h4>
             </div>
             <div id="ca-national-section" class="espd-panel-body panel-body collapse in">
                     <span data-i18n="crit_eu_main_purely_national" style="font-weight: bold;">
@@ -76,6 +77,7 @@
 	                    <tiles:putAttribute name="description_code" value="crit_eu_text_purely_national"/>
 	                    <tiles:putAttribute name="hasCriterion" value="false"/>
 	                </tiles:insertDefinition>
+	                 
             </div>
         </div>
         <tiles:insertDefinition name="footerButtons">

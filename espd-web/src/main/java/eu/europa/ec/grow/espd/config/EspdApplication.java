@@ -37,10 +37,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.client.RestTemplate;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import ac.simons.spring.boot.wro4j.Wro4jAutoConfiguration;
 /**
  * Created by vigi on 10/20/15:5:17 PM.
  */

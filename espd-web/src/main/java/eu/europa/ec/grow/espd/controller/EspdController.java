@@ -26,7 +26,9 @@ package eu.europa.ec.grow.espd.controller;
 
 import com.google.common.base.Optional;
 import eu.europa.ec.grow.espd.domain.EconomicOperatorImpl;
+import eu.europa.ec.grow.espd.domain.EconomicOperatorRepresentative;
 import eu.europa.ec.grow.espd.domain.EspdDocument;
+import eu.europa.ec.grow.espd.domain.PartyImpl;
 import eu.europa.ec.grow.espd.domain.enums.other.Country;
 import eu.europa.ec.grow.espd.ted.TedRequest;
 import eu.europa.ec.grow.espd.ted.TedResponse;
@@ -35,8 +37,8 @@ import eu.europa.ec.grow.espd.tenderned.*;
 import eu.europa.ec.grow.espd.tenderned.exception.PdfRenderingException;
 import eu.europa.ec.grow.espd.xml.EspdExchangeMarshaller;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.io.output.CountingOutputStream;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.http.HttpHeaders;
@@ -50,8 +52,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -60,7 +65,6 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
-import com.google.common.base.Optional;
 
 @Controller
 @SessionAttributes(value = {"espd", "tenderned"})
@@ -140,13 +144,12 @@ class EspdController {
 
     @RequestMapping(value = "/rest", method = POST)
     public String tenderNedData(
-            @RequestParam(value = "uploadURL", required = false) String uploadURL,
-            @RequestParam(value = "callbackURL", required = false) String callbackURL,
+            @RequestParam(value = "uploadURL", required = true) String uploadURL,
+            @RequestParam(value = "callbackURL", required = true) String callbackURL,
             @RequestParam(value = "accessToken", required = false) String accessToken,
             @RequestParam(value = "lang") String lang,
             @RequestParam(value = "agent", required = true) String agent,
-            //TODO typeProcedure moet een verplichte parameter zijn (required = true)
-            @RequestParam(value = "procedureType", required = false) String procedureType,
+            @RequestParam(value = "procedureType", required = true) String procedureType,
             @RequestParam(value = "tedReceptionId", required = false) String tedReceptionId,
             @RequestParam(value = "ojsNumber", required = false) String ojsNumber,
             @RequestParam(value = "country", required = false) String countryIso,
@@ -230,10 +233,6 @@ class EspdController {
             espd.getEconomicOperator().setCountry(country);
         }
         return espd;
-    }
-
-    private boolean needsToLoadProcurementProcedureInformation(EspdDocument espdDocument) {
-        return isBlank(espdDocument.getOjsNumber()) && isNotBlank(espdDocument.getTedReceptionId());
     }
 
     private void copyTedInformation(EspdDocument document) {
@@ -440,6 +439,7 @@ class EspdController {
 
         if ("savePrintHtml".equals(next)) {
             espd.setHtml(utils.addHtmlHeader(espd.getHtml()));
+            System.out.println(espd.getHtml());
             sendTenderNedData(espd, tenderNedData);
             String callbackUrl = utils.createGetUrl(tenderNedData);
 

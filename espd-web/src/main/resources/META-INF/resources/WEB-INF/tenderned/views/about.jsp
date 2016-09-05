@@ -1,5 +1,4 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
 <%--
   ~
   ~ Copyright 2016 EUROPEAN COMMISSION
@@ -23,21 +22,17 @@
   ~ permissions and limitations under the Licence.
   ~
   --%>
-
-<c:set var="breadCrumb" scope="request" value="<li>Version</li>"/>
-
 <div class="row-fluid">
-    <div class="span9">
+    <div class="col-lg-12">
         <div class="panel alert-info">
             <h3 class="panel-title text-center">Version information</h3>
             <div class="panel-content">
                 <ul class="unstyled">
-                    <li>Version: <c:out value="${lastBuildDate}"/></li>
-                    <li>Last built on: <c:out value="${buildVersion}"/></li>
+                    <li>Version: <c:out value="${buildVersion}"/></li>
+                    <li>Last built on: <c:out value="${lastBuildDate}"/></li>
                     <li>Environment: <c:out value="${environment}"/></li>
                 </ul>
             </div>
         </div>
     </div>
 </div>
- 

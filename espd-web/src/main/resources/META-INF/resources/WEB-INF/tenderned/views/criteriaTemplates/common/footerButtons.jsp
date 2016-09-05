@@ -62,7 +62,7 @@
             <%--<c:if test="${print}">--%>
                 <%--<div class="btn-group" role="group">--%>
                     <%--<button id="printBtn" type="submit" class="btn btn-default btn-lg" name="print" value="true">--%>
-                        <%--<i class="fa fa-arrow-circle-o-right"></i> <span data-i18n="print"><s:message code="next"/></span>--%>
+                        <%--<i class="fa fa-print"></i><span data-i18n="print"><s:message code="print"/></span>--%>
                     <%--</button>--%>
                 <%--</div>--%>
             <%--</c:if>--%>

@@ -620,6 +620,7 @@ e.g., style="text-align: center; color: red"
         </xsl:when>
         <xsl:when test="$name = 'display'"/>
         <xsl:when test="$name = 'border-left'"/>
+        <xsl:when test="$name = 'cursor'"/>
         <xsl:otherwise>
           <xsl:attribute name="{$name}">
             <xsl:value-of select="$value"/>
@@ -1508,4 +1509,5 @@ e.g., style="text-align: center; color: red"
     </xsl:if>
     <xsl:apply-templates/>
   </xsl:template>
+
 </xsl:stylesheet>

@@ -271,9 +271,10 @@
                     <cssDestinationFolder>${basedir}/src/main/webapp/static/bundle/</cssDestinationFolder>
                     <jsDestinationFolder>${basedir}/src/main/webapp/static/bundle/</jsDestinationFolder>
                     <wroManagerFactory>ro.isdc.wro.maven.plugin.manager.factory.ConfigurableWroManagerFactory</wroManagerFactory>
-                    <ignoreMissingResources>false</ignoreMissingResources>
+                    <ignoreMissingResources>true</ignoreMissingResources>
                     <incrementalBuildEnabled>true</incrementalBuildEnabled>
-                    <contextPath>/espd/</contextPath>
+                    <contextPath>/espd-web/</contextPath>
+
                 </configuration>
             </plugin>
         </plugins>

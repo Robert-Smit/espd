@@ -118,20 +118,6 @@
 		</fo:block>
 	</xsl:template>
 
-		<xsl:template match="div[@class='alert alert-espd-info']">
-		<fo:block xsl:use-attribute-sets="tooltip-table">
-			<xsl:choose>
-				<xsl:when test="ul">
-					<xsl:value-of select="ul/li//span"/>
-				</xsl:when>
-				<xsl:otherwise>
-					<xsl:call-template name="process-common-attributes-and-children"/>
-				</xsl:otherwise>
-			</xsl:choose>
-		</fo:block>
-		<xsl:call-template name="append-new-line"/>
-	</xsl:template>
-
 	<xsl:template match="div[@class='col-md-12 alert alert-espd-info']">
 		<fo:block xsl:use-attribute-sets="tooltip-table">
 			<xsl:value-of select="div"/>
@@ -140,7 +126,7 @@
 		<xsl:call-template name="append-new-line"/>
 	</xsl:template>
 
-	<xsl:template match="*[@class='espd-panel-heading']">
+	<xsl:template match="*[@class='panel-title']">
 		<xsl:call-template name="append-new-line"/>
 		<fo:block xsl:use-attribute-sets="espd-panel-heading">
 			<xsl:choose>
@@ -156,5 +142,9 @@
 
 	<!-- removes all the white spaces in the output -->
 	<xsl:strip-space elements="*"/>
+	<xsl:template match="div[@class='errorContainer alert alert-danger']"/>
+	<xsl:template match="div[@class='alert alert-espd-info']"/>
+	<xsl:template match="div[@id='meetsObjective-ecertis']"/>
+	<xsl:template match="div[@class='alert alert-espd-info  collapse']"/>
 
 </xsl:stylesheet>

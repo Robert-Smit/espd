@@ -172,7 +172,8 @@ class EspdController {
             @ModelAttribute("tenderned") TenderNedData tenderNedData,
             Model model, HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        if (!utils.tenderIsOnWhiteList(uploadURL, callbackURL)) {
+        tenderNedData.setRequestURL(request.getHeader("referer"));
+        if (!utils.tenderIsOnWhiteList(uploadURL, callbackURL, tenderNedData.getRequestURL())) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return null;
         }

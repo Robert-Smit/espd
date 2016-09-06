@@ -37,6 +37,7 @@ public class TenderNedData {
     private String uploadURL;
     private String xml;
     private String nationalOrEuropeanCode;
+    private String requestURL;
 
     @Setter(AccessLevel.NONE)
     private boolean isInschrijffase;

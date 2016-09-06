@@ -131,10 +131,12 @@ public class TenderNedUtils {
      * @param callbackURL is a String, a parameter send by tender
      * @return a boolean if tender is on the white list or not
      */
-    public boolean tenderIsOnWhiteList(String uploadURL, String callbackURL) {
+    public boolean tenderIsOnWhiteList(String uploadURL, String callbackURL, String requestURL) {
         List<String> whiteListURLS = whiteList.getWhiteList();
         for(String whiteListURL : whiteListURLS) {
-            if(uploadURL.contains(whiteListURL) && callbackURL.contains(whiteListURL)) {
+            if(uploadURL.contains(whiteListURL)
+                    && callbackURL.contains(whiteListURL)
+                    && requestURL.contains(whiteListURL)) {
                 return true;
             }
         }

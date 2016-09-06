@@ -50,8 +50,12 @@ public class ClientMultipartFormPost {
         HttpPost httpPost = new HttpPost(tnData.getUploadURL());
         httpPost.setEntity(getHttpEntity(xml, pdf, tnData, utils));
 
-        // TODO: 5-09-2016  TNR-9466 onderscheid TSender/TenderNed voor uitgaande proxy
-        boolean useProxy = false;
+        // use proxy for TSenders
+        String requestURL = tnData.getRequestURL();
+        boolean useProxy = true;
+        if (requestURL.contains("http://localhost:8084/tenderned-web/")) {
+            useProxy = false;
+        }
         if (useProxy) {
             httpPost.setConfig(config);
         }

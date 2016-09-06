@@ -170,7 +170,12 @@ class EspdController {
             @RequestParam(value = "fileName", required = false) String fileName,
             @RequestParam(value = "xml", required = false) String xml,
             @ModelAttribute("tenderned") TenderNedData tenderNedData,
-            Model model) throws IOException {
+            Model model, HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        if (!utils.tenderIsOnWhiteList(uploadURL, callbackURL)) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            return null;
+        }
 
         Country country = Country.findByIso2Code(countryIso);
         EspdDocument espd = new EspdDocument();
@@ -517,7 +522,7 @@ class EspdController {
         } else {
             log.debug("Successfully created XML and PDF");
             ClientMultipartFormPost formPost = new ClientMultipartFormPost();
-            formPost.sendPosttoTN(xml, pdf, tnData, utils.getEncryption());
+            formPost.sendPosttoTN(xml, pdf, tnData, utils);
         }
     }
 

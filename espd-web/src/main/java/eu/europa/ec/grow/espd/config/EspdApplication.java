@@ -27,6 +27,7 @@ package eu.europa.ec.grow.espd.config;
 import ac.simons.spring.boot.wro4j.Wro4jAutoConfiguration;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.europa.ec.grow.espd.tenderned.TenderNedEspdEncryption;
+import eu.europa.ec.grow.espd.tenderned.WhiteListUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

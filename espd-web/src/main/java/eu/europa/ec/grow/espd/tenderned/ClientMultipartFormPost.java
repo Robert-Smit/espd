@@ -3,14 +3,8 @@
  */
 package eu.europa.ec.grow.espd.tenderned;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpHost;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.StatusLine;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.http.*;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
@@ -20,7 +14,8 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.joda.time.DateTime;
 
-import lombok.extern.slf4j.Slf4j;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 /**
  * Contains functionality to post multipart forms.
@@ -43,8 +38,7 @@ public class ClientMultipartFormPost {
      * @param tnData is a {@link TenderNedData} object
      * @throws IOException Thrown if an I/O error occurs
      */
-    public void sendPosttoTN(ByteArrayOutputStream xml, ByteArrayOutputStream pdf, TenderNedData tnData, TenderNedEspdEncryption encryption)
-            throws IOException {
+    public void sendPosttoTN(ByteArrayOutputStream xml, ByteArrayOutputStream pdf, TenderNedData tnData, TenderNedUtils utils) throws IOException {
         log.info("Sending POST data to {}", tnData.getUploadURL());
 
         // Proxy settings
@@ -54,7 +48,7 @@ public class ClientMultipartFormPost {
 
         CloseableHttpClient httpClient = HttpClients.createDefault();
         HttpPost httpPost = new HttpPost(tnData.getUploadURL());
-        httpPost.setEntity(getHttpEntity(xml, pdf, tnData, encryption));
+        httpPost.setEntity(getHttpEntity(xml, pdf, tnData, utils));
 
         // TODO: 5-09-2016  TNR-9466 onderscheid TSender/TenderNed voor uitgaande proxy
         boolean useProxy = false;
@@ -78,12 +72,11 @@ public class ClientMultipartFormPost {
         }
     }
 
-    private HttpEntity getHttpEntity(ByteArrayOutputStream xml, ByteArrayOutputStream pdf, TenderNedData tnData, TenderNedEspdEncryption encryption) {
+    private HttpEntity getHttpEntity(ByteArrayOutputStream xml, ByteArrayOutputStream pdf, TenderNedData tnData, TenderNedUtils utils) {
         ByteArrayBody fileBodyXml = new ByteArrayBody(xml.toByteArray(), ContentType.APPLICATION_XML, FILENAME_XML);
         ByteArrayBody fileBodyPdf = new ByteArrayBody(pdf.toByteArray(), ContentType.create("application/pdf"), FILENAME_PDF);
 
         String time = DateTime.now().toString(TenderNedUtils.TIMESTAMP_FORMAT);
-        TenderNedUtils utils = new TenderNedUtils(encryption);
         return MultipartEntityBuilder.create()
                 .addPart("xml", fileBodyXml)
                 .addPart("pdf", fileBodyPdf)

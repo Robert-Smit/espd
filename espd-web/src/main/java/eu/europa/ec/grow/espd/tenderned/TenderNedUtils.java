@@ -5,13 +5,13 @@ package eu.europa.ec.grow.espd.tenderned;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringEscapeUtils;
-import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 /**
  * espd - TenderNed Utils.
@@ -25,15 +25,19 @@ public class TenderNedUtils {
 
     private final TenderNedEspdEncryption encryption;
 
+    private final WhiteListUtils whiteList;
+
     public static final String TIMESTAMP_FORMAT = "yyyyMMddHHmmss";
 
     /**
      * Constructor for TenderNedUtils
      * @param encryption is a {@link TenderNedEspdEncryption} object, this object is initialized when starting the application
+     * @param whiteList is a {@link WhiteListUtils} object
      */
     @Autowired
-    public TenderNedUtils(TenderNedEspdEncryption encryption) {
+    public TenderNedUtils(TenderNedEspdEncryption encryption, WhiteListUtils whiteList) {
         this.encryption = encryption;
+        this.whiteList = whiteList;
     }
 
     public TenderNedEspdEncryption getEncryption() {
@@ -118,5 +122,22 @@ public class TenderNedUtils {
         public String build() {
             return url.toString();
         }
+    }
+
+    /**
+     * Boolean to check if the tender who send params to rest is on the whitelist.
+     * Both the uploadURL and callbackURL need to contain the same whiteListURL
+     * @param uploadURL is a String, a parameter send by tender
+     * @param callbackURL is a String, a parameter send by tender
+     * @return a boolean if tender is on the white list or not
+     */
+    public boolean tenderIsOnWhiteList(String uploadURL, String callbackURL) {
+        List<String> whiteListURLS = whiteList.getWhiteList();
+        for(String whiteListURL : whiteListURLS) {
+            if(uploadURL.contains(whiteListURL) && callbackURL.contains(whiteListURL)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

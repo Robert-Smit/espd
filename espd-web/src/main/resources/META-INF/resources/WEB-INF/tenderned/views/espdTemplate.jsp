@@ -50,6 +50,16 @@
 				var ecertisHandler = EcertisHandler("${ecertisCriterionURL}", "${espd.authority.country.iso2Code}")
 				$('.ecertis-link-header').click(ecertisHandler);
 			});
+
+			var currency = "${espd.economicOperator.country.currency}";
+			$(function() {
+				var defaultCurrency = document.getElementsByClassName(currency)
+				var i;
+				for (i = 0; i < defaultCurrency.length; i++) {
+					defaultCurrency[i].setAttribute('selected', 'selected');
+				}
+			});
+
 		</script>
     </head>
     <body>

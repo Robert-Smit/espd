@@ -33,7 +33,11 @@ import eu.europa.ec.grow.espd.domain.enums.other.Country;
 import eu.europa.ec.grow.espd.ted.TedRequest;
 import eu.europa.ec.grow.espd.ted.TedResponse;
 import eu.europa.ec.grow.espd.ted.TedService;
-import eu.europa.ec.grow.espd.tenderned.*;
+import eu.europa.ec.grow.espd.tenderned.ClientMultipartFormPost;
+import eu.europa.ec.grow.espd.tenderned.HtmlToPdfTransformer;
+import eu.europa.ec.grow.espd.tenderned.SessionUtils;
+import eu.europa.ec.grow.espd.tenderned.TenderNedData;
+import eu.europa.ec.grow.espd.tenderned.TenderNedUtils;
 import eu.europa.ec.grow.espd.tenderned.exception.PdfRenderingException;
 import eu.europa.ec.grow.espd.xml.EspdExchangeMarshaller;
 import lombok.extern.slf4j.Slf4j;
@@ -46,7 +50,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -166,6 +175,7 @@ class EspdController {
             @RequestParam(value = "vatNumber", required = false) String vatNumber,
             @RequestParam(value = "chamberOfCommerceNumber", required = false) String chamberOfCommerceNumber,
             @RequestParam(value = "nationalOrEuropeanCode", required = false) String nationalOrEuropeanCode,
+            @RequestParam(value = "contractingAuthorityType", required = false) String contrAuthType,
             @RequestParam(value = "isNewResponse", required = false) Boolean isNewResponse,
             @RequestParam(value = "fileName", required = false) String fileName,
             @RequestParam(value = "xml", required = false) String xml,
@@ -216,6 +226,11 @@ class EspdController {
             party.setCountry(country);
             espd.setAuthority(party);
         }
+
+        if("SS1".equalsIgnoreCase(contrAuthType)) {
+            tenderNedData.setNationalOrEuropeanCode("NL");
+        }
+
         tenderNedData.setReuseRequest(reuseRequest);
         tenderNedData.setInschrijffase(procedureType);
 
@@ -445,7 +460,6 @@ class EspdController {
 
         if ("savePrintHtml".equals(next)) {
             espd.setHtml(utils.addHtmlHeader(espd.getHtml()));
-            System.out.println(espd.getHtml());
             sendTenderNedData(espd, tenderNedData);
             String callbackUrl = utils.createGetUrl(tenderNedData);
 

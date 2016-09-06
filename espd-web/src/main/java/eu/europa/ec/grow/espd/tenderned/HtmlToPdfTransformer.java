@@ -1,16 +1,24 @@
 package eu.europa.ec.grow.espd.tenderned;
 
 import eu.europa.ec.grow.espd.tenderned.exception.PdfRenderingException;
-import org.apache.commons.io.FileUtils;
 import org.apache.fop.apps.FOPException;
 import org.apache.fop.apps.Fop;
 import org.apache.fop.apps.FopFactory;
 import org.apache.fop.apps.MimeConstants;
 
-import javax.xml.transform.*;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.URIResolver;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamSource;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -43,7 +51,6 @@ public class HtmlToPdfTransformer {
 
         try {
             InputStream htmlInputStream = new ByteArrayInputStream(html.getBytes(UTF_8));
-            HtmlToPdfTransformer.saveHtml(html);
 
             InputStreamReader htmlInputStreamReader = new InputStreamReader(htmlInputStream, UTF_8);
             StreamSource xhtmlSource = new StreamSource(htmlInputStreamReader);
@@ -74,11 +81,4 @@ public class HtmlToPdfTransformer {
             return new StreamSource(inputStream);
         }
     }
-
-    //Tijdelijke code om html op te slaan
-    public static void saveHtml(String html) throws IOException {
-        File htmlFile = new File("/htmlprintpage.xhtml");
-        FileUtils.writeByteArrayToFile(htmlFile, html.getBytes(UTF_8));
-    }
-
 }

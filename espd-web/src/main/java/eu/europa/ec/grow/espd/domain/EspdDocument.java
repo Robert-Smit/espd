@@ -24,18 +24,19 @@
 
 package eu.europa.ec.grow.espd.domain;
 
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Date;
+import java.util.List;
+
+import org.apache.commons.beanutils.PropertyUtils;
+import org.springframework.web.multipart.MultipartFile;
+
 import eu.europa.ec.grow.espd.domain.enums.criteria.ExclusionCriterion;
 import eu.europa.ec.grow.espd.domain.enums.criteria.SelectionCriterion;
 import eu.europa.ec.grow.espd.domain.ubl.CcvCriterion;
 import isa.names.specification.ubl.schema.xsd.ccv_commonaggregatecomponents_1.CriterionType;
 import lombok.Data;
-import org.apache.commons.beanutils.PropertyUtils;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Date;
-import java.util.List;
 
 @Data
 public class EspdDocument {

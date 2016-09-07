@@ -53,10 +53,13 @@
 
 			var currency = "${espd.economicOperator.country.currency}";
 			$(function() {
-				var defaultCurrency = document.getElementsByClassName(currency)
-				var i;
-				for (i = 0; i < defaultCurrency.length; i++) {
-					defaultCurrency[i].setAttribute('selected', 'selected');
+				if(${tenderned.newResponse == 'true'}) {
+
+					var defaultCurrency = document.getElementsByClassName(currency)
+					var i;
+					for (i = 0; i < defaultCurrency.length; i++) {
+						defaultCurrency[i].setAttribute('selected', 'selected');
+					}
 				}
 			});
 

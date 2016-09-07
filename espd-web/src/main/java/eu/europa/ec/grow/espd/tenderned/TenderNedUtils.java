@@ -3,15 +3,18 @@
  */
 package eu.europa.ec.grow.espd.tenderned;
 
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringEscapeUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import eu.europa.ec.grow.espd.util.EspdConfiguration;
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * espd - TenderNed Utils.
@@ -20,6 +23,7 @@ import java.util.List;
  * @since 24-06-2016
  */
 @Component
+@Data
 @Slf4j
 public class TenderNedUtils {
 
@@ -29,15 +33,21 @@ public class TenderNedUtils {
 
     public static final String TIMESTAMP_FORMAT = "yyyyMMddHHmmss";
 
+    private final EspdConfiguration espdConfiguration;
+
     /**
      * Constructor for TenderNedUtils
      * @param encryption is a {@link TenderNedEspdEncryption} object, this object is initialized when starting the application
      * @param whiteList is a {@link WhiteListUtils} object
+     * @param espdConfiguration is a {@link EspdConfiguration} object
      */
     @Autowired
-    public TenderNedUtils(TenderNedEspdEncryption encryption, WhiteListUtils whiteList) {
+    public TenderNedUtils(TenderNedEspdEncryption encryption,
+                          WhiteListUtils whiteList,
+                          EspdConfiguration espdConfiguration) {
         this.encryption = encryption;
         this.whiteList = whiteList;
+        this.espdConfiguration = espdConfiguration;
     }
 
     public TenderNedEspdEncryption getEncryption() {

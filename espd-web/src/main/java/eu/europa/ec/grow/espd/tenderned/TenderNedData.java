@@ -3,13 +3,13 @@
  */
 package eu.europa.ec.grow.espd.tenderned;
 
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.Setter;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.Setter;
 
 /**
  * espd - Data received from caller.
@@ -37,7 +37,7 @@ public class TenderNedData {
     private String uploadURL;
     private String xml;
     private String nationalOrEuropeanCode;
-    private String requestURL;
+    private String refererURL;
 
     @Setter(AccessLevel.NONE)
     private boolean isInschrijffase;

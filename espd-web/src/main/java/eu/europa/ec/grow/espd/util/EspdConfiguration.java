@@ -24,14 +24,15 @@
 
 package eu.europa.ec.grow.espd.util;
 
-import lombok.Data;
+import java.util.Arrays;
+
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
+import lombok.Data;
 
 /**
  * Created by vigi on 10/21/15:2:28 PM.
@@ -61,7 +62,10 @@ public class EspdConfiguration {
 
     @Value("${espd.environment:false}")
     private boolean espdEnvironment;
-    
+
+    @Value("${tenderned.url}")
+    private String tendernedURL;
+
     @Autowired
     private Environment environment;
 

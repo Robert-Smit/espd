@@ -3,8 +3,14 @@
  */
 package eu.europa.ec.grow.espd.tenderned;
 
-import lombok.extern.slf4j.Slf4j;
-import org.apache.http.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpHost;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.StatusLine;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
@@ -14,8 +20,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.joda.time.DateTime;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Contains functionality to post multipart forms.
@@ -38,7 +43,8 @@ public class ClientMultipartFormPost {
      * @param tnData is a {@link TenderNedData} object
      * @throws IOException Thrown if an I/O error occurs
      */
-    public void sendPosttoTN(ByteArrayOutputStream xml, ByteArrayOutputStream pdf, TenderNedData tnData, TenderNedUtils utils) throws IOException {
+    public void sendPosttoTN(ByteArrayOutputStream xml, ByteArrayOutputStream pdf,
+                             TenderNedData tnData, TenderNedUtils utils) throws IOException {
         log.info("Sending POST data to {}", tnData.getUploadURL());
 
         // Proxy settings
@@ -50,15 +56,13 @@ public class ClientMultipartFormPost {
         HttpPost httpPost = new HttpPost(tnData.getUploadURL());
         httpPost.setEntity(getHttpEntity(xml, pdf, tnData, utils));
 
+        String tenderNedURL = utils.getEspdConfiguration().getTendernedURL();
+
         // use proxy for TSenders
-        String requestURL = tnData.getRequestURL();
-        boolean useProxy = true;
-        if (requestURL.contains("http://localhost:8084/tenderned-web/")) {
-            useProxy = false;
-        }
-        if (useProxy) {
+        if (!tnData.getRefererURL().contains(tenderNedURL)) {
             httpPost.setConfig(config);
         }
+
         HttpResponse response = httpClient.execute(httpPost);
         final StatusLine statusLine = response.getStatusLine();
         final int statusCode = statusLine.getStatusCode();

@@ -47,6 +47,8 @@ public class TenderNedData {
 
     private boolean reuseRequest;
 
+    private String contrAuthType;
+
     /**
      * Constructor for {@link TenderNedData}
      */

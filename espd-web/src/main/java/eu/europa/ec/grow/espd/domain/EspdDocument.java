@@ -214,8 +214,8 @@ public class EspdDocument {
 		}
 	}
 
-	public final void selectCAExclusionCriteria(String nationaalOfEuropeesCode) {
-		if ("eu".equalsIgnoreCase(nationaalOfEuropeesCode)) {
+	public final void selectCAExclusionCriteria(String nationaalOfEuropeesCode, String contrAuthType) {
+		if ("eu".equalsIgnoreCase(nationaalOfEuropeesCode) && !"SS1".equalsIgnoreCase(contrAuthType)) {
 			selectCAExclusionCriteriaEU();
 		} else {
 			selectCAExclusionCriteriaNL();

@@ -147,7 +147,9 @@ class EspdController {
             BindingResult result) throws IOException {
 
         if ("ca_create_espd_request".equals(action)) {
-            return createNewRequestAsCA(country, document, tenderNedData.getNationalOrEuropeanCode());
+            return createNewRequestAsCA(country, document,
+                    tenderNedData.getNationalOrEuropeanCode(),
+                    tenderNedData.getContrAuthType());
         } else if ("ca_reuse_espd_request".equals(action)) {
             return redirectToPage(REQUEST_CA_PROCEDURE_PAGE);
         } else if ("eo_import_espd".equals(action)) {
@@ -303,9 +305,11 @@ class EspdController {
         return espdDocument;
     }
 
-    private String createNewRequestAsCA(Country country, EspdDocument document, String nationaalOfEuropeesCode) {
+    private String createNewRequestAsCA(Country country, EspdDocument document,
+                                        String nationaalOfEuropeesCode,
+                                        String contrAuthType) {
         document.getAuthority().setCountry(country);
-        document.selectCAExclusionCriteria(nationaalOfEuropeesCode);
+        document.selectCAExclusionCriteria(nationaalOfEuropeesCode, contrAuthType);
         return redirectToPage(REQUEST_CA_PROCEDURE_PAGE);
     }
 

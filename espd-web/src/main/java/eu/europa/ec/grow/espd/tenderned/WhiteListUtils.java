@@ -45,11 +45,11 @@ public class WhiteListUtils {
     }
 
     public List<String> getWhiteList() {
-        ArrayList<String> wordArrayList = new ArrayList<>();
-        for(String word : whiteList.split(",")) {
-            wordArrayList.add(word);
+        ArrayList<String> urlArrayList = new ArrayList<>();
+        for(String url : whiteList.split(",")) {
+            urlArrayList.add(url);
         }
-        return wordArrayList;
+        return urlArrayList;
     }
 
 }

@@ -126,9 +126,10 @@ public class TenderNedUtils {
 
     /**
      * Boolean to check if the tender who send params to rest is on the whitelist.
-     * Both the uploadURL and callbackURL need to contain the same whiteListURL
+     * The uploadURL, the callbackURL and the requestURL, all need to contain the same whiteListURL
      * @param uploadURL is a String, a parameter send by tender
      * @param callbackURL is a String, a parameter send by tender
+     * @param requestURL
      * @return a boolean if tender is on the white list or not
      */
     public boolean tenderIsOnWhiteList(String uploadURL, String callbackURL, String requestURL) {

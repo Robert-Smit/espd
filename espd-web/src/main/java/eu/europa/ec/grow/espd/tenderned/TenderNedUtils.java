@@ -3,15 +3,22 @@
  */
 package eu.europa.ec.grow.espd.tenderned;
 
+import java.io.File;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.List;
+import java.util.Arrays;
+import java.util.Map;
 
+import org.apache.commons.codec.DecoderException;
+import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eu.europa.ec.grow.espd.tenderned.exception.EncryptionException;
 import eu.europa.ec.grow.espd.util.EspdConfiguration;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -27,8 +34,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class TenderNedUtils {
 
-    private final TenderNedEspdEncryption encryption;
-
     private final WhiteListUtils whiteList;
 
     public static final String TIMESTAMP_FORMAT = "yyyyMMddHHmmss";
@@ -37,21 +42,14 @@ public class TenderNedUtils {
 
     /**
      * Constructor for TenderNedUtils
-     * @param encryption is a {@link TenderNedEspdEncryption} object, this object is initialized when starting the application
      * @param whiteList is a {@link WhiteListUtils} object
      * @param espdConfiguration is a {@link EspdConfiguration} object
      */
     @Autowired
-    public TenderNedUtils(TenderNedEspdEncryption encryption,
-                          WhiteListUtils whiteList,
+    public TenderNedUtils(WhiteListUtils whiteList,
                           EspdConfiguration espdConfiguration) {
-        this.encryption = encryption;
         this.whiteList = whiteList;
         this.espdConfiguration = espdConfiguration;
-    }
-
-    public TenderNedEspdEncryption getEncryption() {
-        return encryption;
     }
 
     /**
@@ -92,14 +90,18 @@ public class TenderNedUtils {
      * @param timestamp   is a String
      * @return the hexString
      */
-    public String createSecurityHash(String accessToken, String timestamp) {
+    public String createSecurityHash(String accessToken, String timestamp, String passphrase) {
         StringBuffer hexString = new StringBuffer();
 
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-512");
             md.update(accessToken.getBytes());
             md.update(timestamp.getBytes());
-            md.update(encryption.getSecretSharedPassword());
+            byte[] input = readPasswordFromFile(passphrase);
+            md.update(input);
+
+            Arrays.fill(input, (byte) 0);
+
             byte[] mdbytes = md.digest();
 
             for (int i = 0; i < mdbytes.length; i++) {
@@ -109,6 +111,24 @@ public class TenderNedUtils {
             log.error(e.getMessage(), e);
         }
         return hexString.toString();
+    }
+
+    private byte[] readPasswordFromFile(String passwdFileProperty) {
+        String passwordFileName = whiteList.getPassphraseMap().get(passwdFileProperty);
+        try {
+            // Password for private encryption.
+            final File passwordFile = new File(passwordFileName);
+
+            // Chomp to remove line ending characters introduced by the editors.
+            final String passwordHex = StringUtils.chomp(FileUtils.readFileToString(passwordFile));
+
+            // Passwords are hex encoded, perform decoding.
+            return Hex.decodeHex(passwordHex.toCharArray());
+        } catch (final IOException ioException) {
+            throw new EncryptionException("Error in reading password file.", ioException);
+        } catch (DecoderException decoderException) {
+            throw new EncryptionException("Password was not hex encoded.", decoderException);
+        }
     }
 
     private class UrlBuilder {
@@ -142,15 +162,15 @@ public class TenderNedUtils {
      * @param requestURL
      * @return a boolean if tender is on the white list or not
      */
-    public boolean tenderIsOnWhiteList(String uploadURL, String callbackURL, String requestURL) {
-        List<String> whiteListURLS = whiteList.getWhiteList();
-        for(String whiteListURL : whiteListURLS) {
-            if(uploadURL.contains(whiteListURL)
-                    && callbackURL.contains(whiteListURL)
-                    && requestURL.contains(whiteListURL)) {
-                return true;
+    public WhiteListedTsender tenderIsOnWhiteList(String uploadURL, String callbackURL, String requestURL) {
+        for(Map.Entry entry : whiteList.getWhiteListMap().entrySet()) {
+            String key = entry.getKey().toString();
+            if(uploadURL.contains(key)
+                    && callbackURL.contains(key)
+                    && requestURL.contains(key)) {
+                return (WhiteListedTsender) entry.getValue();
             }
         }
-        return false;
+        return null;
     }
 }

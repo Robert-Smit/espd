@@ -3,17 +3,18 @@
  */
 package eu.europa.ec.grow.espd.tenderned;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+
+import javax.validation.constraints.NotNull;
+
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
+import lombok.Data;
 
 /**
  * espd - Description.
@@ -22,34 +23,48 @@ import java.util.List;
  * @since 05-09-2016
  */
 
-@Configuration
 @Component
-@PropertySource("classpath:whitelist.properties")
+@Data
 public class WhiteListUtils {
 
-    @Value("${whitelist.url}")
-    private String whiteList;
+    private Map<String, WhiteListedTsender> whiteListMap = new HashMap<>();
+    private Map<String, String> passphraseMap = new HashMap<>();
 
-    @Bean
-    public static PropertyPlaceholderConfigurer properties(){
-        PropertyPlaceholderConfigurer ppc = new PropertyPlaceholderConfigurer();
-        Resource[] resources = new ClassPathResource[ ]
-                { new ClassPathResource( "whitelist.properties" ) };
-        ppc.setLocations( resources );
-        ppc.setIgnoreUnresolvablePlaceholders( true );
-        return ppc;
-    }
+    /**
+     * This method is called during startup. It sets the tsenders.properties in
+     * a {@link WhiteListedTsender} object and puts these in the whitelist Map.
+     *
+     * @throws IOException
+     */
+    public void loadTsenderProperties() throws IOException {
+        Properties pro = new Properties();
+        String fileName = "tsenders.properties";
+        InputStream in = this.getClass().getClassLoader().getResourceAsStream(fileName);
+        pro.load(in);
+        Set<String> propertyNames = pro.stringPropertyNames();
 
-    public void setWhiteList(String whiteList) {
-        this.whiteList = whiteList;
-    }
-
-    public List<String> getWhiteList() {
-        ArrayList<String> urlArrayList = new ArrayList<>();
-        for(String url : whiteList.split(",")) {
-            urlArrayList.add(url);
+        for (String propertyName : propertyNames) {
+            WhiteListedTsender whiteListedTsender = new WhiteListedTsender(pro.getProperty(propertyName).split(","));
+            whiteListMap.put(whiteListedTsender.getWhiteListURL(), whiteListedTsender);
         }
-        return urlArrayList;
     }
 
+    /**
+     * This method is called during startup. It will retrieve the properties in sharedpassword.properties
+     * and puts these in {@link #passphraseMap}
+     *
+     * @throws IOException
+     */
+    @NotNull
+    public void loadSharedPasswordProperties() throws IOException {
+        Properties pro = new Properties();
+        String fileName = "sharedpassword.properties";
+        InputStream in = this.getClass().getClassLoader().getResourceAsStream(fileName);
+        pro.load(in);
+        Set<String> propertyNames = pro.stringPropertyNames();
+
+        for(String propertyName : propertyNames) {
+            passphraseMap.put(propertyName, pro.getProperty(propertyName));
+        }
+    }
 }

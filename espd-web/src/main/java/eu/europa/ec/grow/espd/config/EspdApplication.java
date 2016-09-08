@@ -24,10 +24,8 @@
 
 package eu.europa.ec.grow.espd.config;
 
-import ac.simons.spring.boot.wro4j.Wro4jAutoConfiguration;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import eu.europa.ec.grow.espd.tenderned.TenderNedEspdEncryption;
-import eu.europa.ec.grow.espd.tenderned.WhiteListUtils;
+import java.io.IOException;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -38,6 +36,11 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.client.RestTemplate;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import ac.simons.spring.boot.wro4j.Wro4jAutoConfiguration;
+import eu.europa.ec.grow.espd.tenderned.WhiteListUtils;
 /**
  * Created by vigi on 10/20/15:5:17 PM.
  */
@@ -78,10 +81,10 @@ public class EspdApplication extends SpringBootServletInitializer implements Web
     }
 
     @Bean
-    TenderNedEspdEncryption encryption() {
-        TenderNedEspdEncryption encryption = new TenderNedEspdEncryption();
-        encryption.setSharedTenderNedPassword(sharedTenderNedPassword);
-        encryption.init();
-        return encryption;
+    WhiteListUtils whiteListUtils() throws IOException {
+        WhiteListUtils whiteListUtils = new WhiteListUtils();
+        whiteListUtils.loadSharedPasswordProperties();
+        whiteListUtils.loadTsenderProperties();
+        return whiteListUtils;
     }
 }

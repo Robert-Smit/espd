@@ -49,6 +49,8 @@ public class TenderNedData {
 
     private String contrAuthType;
 
+    private WhiteListedTsender WhiteListedTsender;
+
     /**
      * Constructor for {@link TenderNedData}
      */

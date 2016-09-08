@@ -90,7 +90,8 @@ public class ClientMultipartFormPost {
                 .addPart("pdf", fileBodyPdf)
                 .addTextBody("accessToken", tnData.getAccessToken())
                 .addTextBody("time", time)
-                .addTextBody("security", utils.createSecurityHash(tnData.getAccessToken(), time))
+                .addTextBody("security", utils.createSecurityHash(tnData.getAccessToken(), time,
+                        tnData.getWhiteListedTsender().getPassphrase()))
                 .build();
     }
 }

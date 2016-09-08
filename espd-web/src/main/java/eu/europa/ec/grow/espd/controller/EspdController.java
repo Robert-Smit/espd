@@ -234,10 +234,6 @@ class EspdController {
             espd.setAuthority(party);
         }
 
-        if("SS1".equalsIgnoreCase(contrAuthType)) {
-            tenderNedData.setNationalOrEuropeanCode("NL");
-        }
-
         tenderNedData.setReuseRequest(reuseRequest);
         tenderNedData.setInschrijffase(procedureType);
 

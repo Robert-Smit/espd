@@ -42,12 +42,9 @@ public class TenderNedData {
     @Setter(AccessLevel.NONE)
     private boolean isInschrijffase;
 
-    @Setter(AccessLevel.NONE)
-    private boolean isNewResponse;
-
     private boolean reuseRequest;
 
-    private String contrAuthType;
+    private String contractingAuthorityType;
 
     private WhiteListedTsender WhiteListedTsender;
 
@@ -64,9 +61,5 @@ public class TenderNedData {
         } else {
             this.isInschrijffase = false;
         }
-    }
-
-    public void setIsNewResponse(Boolean isNewResponse) {
-        this.isNewResponse = isNewResponse;
     }
 }

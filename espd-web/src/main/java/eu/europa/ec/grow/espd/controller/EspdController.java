@@ -150,7 +150,7 @@ class EspdController {
         if ("ca_create_espd_request".equals(action)) {
             return createNewRequestAsCA(country, document,
                     tenderNedData.getNationalOrEuropeanCode(),
-                    tenderNedData.getContrAuthType());
+                    tenderNedData.getContractingAuthorityType());
         } else if ("ca_reuse_espd_request".equals(action)) {
             return redirectToPage(REQUEST_CA_PROCEDURE_PAGE);
         } else if ("eo_import_espd".equals(action)) {
@@ -183,7 +183,7 @@ class EspdController {
             @RequestParam(value = "vatNumber", required = false) String vatNumber,
             @RequestParam(value = "chamberOfCommerceNumber", required = false) String chamberOfCommerceNumber,
             @RequestParam(value = "nationalOrEuropeanCode", required = false) String nationalOrEuropeanCode,
-            @RequestParam(value = "contractingAuthorityType", required = false) String contrAuthType,
+            @RequestParam(value = "contractingAuthorityType", required = false) String contractingAuthorityType,
             @RequestParam(value = "isNewResponse", required = false) Boolean isNewResponse,
             @RequestParam(value = "fileName", required = false) String fileName,
             @RequestParam(value = "xml", required = false) String xml,

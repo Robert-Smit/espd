@@ -21,7 +21,8 @@ public class WhiteListedTsender {
 
     /**
      *
-     * @param tenderProperty
+     * @param tenderProperty is an array of Strings, retrieved from {@link} WhiteListUtils
+     *
      */
     public WhiteListedTsender(String[] tenderProperty) {
         this.whiteListURL = tenderProperty[0];

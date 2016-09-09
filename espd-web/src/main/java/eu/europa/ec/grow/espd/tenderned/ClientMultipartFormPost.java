@@ -20,6 +20,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.joda.time.DateTime;
 
+import eu.europa.ec.grow.espd.util.EspdConfiguration;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -44,23 +45,23 @@ public class ClientMultipartFormPost {
      * @throws IOException Thrown if an I/O error occurs
      */
     public void sendPosttoTN(ByteArrayOutputStream xml, ByteArrayOutputStream pdf,
-                             TenderNedData tnData, TenderNedUtils utils) throws IOException {
+            TenderNedData tnData, TenderNedUtils utils) throws IOException {
         log.info("Sending POST data to {}", tnData.getUploadURL());
+        EspdConfiguration espdConfig = utils.getEspdConfiguration();
 
         // Proxy settings
-        // TODO: 5-09-2016 TNR-9465 Make proxy server configurable
-        HttpHost proxy = new HttpHost("localhost", 8085, HttpHost.DEFAULT_SCHEME_NAME);
-        RequestConfig config = RequestConfig.custom().setProxy(proxy).build();
+        HttpHost proxy = new HttpHost(espdConfig.getProxyHostname(), espdConfig.getProxyPort(), HttpHost.DEFAULT_SCHEME_NAME);
+        RequestConfig proxyConfig = RequestConfig.custom().setProxy(proxy).build();
 
         CloseableHttpClient httpClient = HttpClients.createDefault();
         HttpPost httpPost = new HttpPost(tnData.getUploadURL());
         httpPost.setEntity(getHttpEntity(xml, pdf, tnData, utils));
 
-        String tenderNedURL = utils.getEspdConfiguration().getTendernedURL();
+        String tenderNedURL = espdConfig.getTendernedURL();
 
         // use proxy for TSenders
         if (!tnData.getRefererURL().contains(tenderNedURL)) {
-            httpPost.setConfig(config);
+            httpPost.setConfig(proxyConfig);
         }
 
         HttpResponse response = httpClient.execute(httpPost);

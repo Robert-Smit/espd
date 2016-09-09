@@ -66,6 +66,12 @@ public class EspdConfiguration {
     @Value("${tenderned.url}")
     private String tendernedURL;
 
+    @Value("${espd.proxy.hostname:127.0.0.1}")
+    private String proxyHostname;
+
+    @Value("${espd.proxy.port:8080}")
+    private int proxyPort;
+
     @Autowired
     private Environment environment;
 

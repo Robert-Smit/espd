@@ -156,18 +156,19 @@ public class TenderNedUtils {
 
     /**
      * Boolean to check if the tender who send params to rest is on the whitelist.
-     * The uploadURL, the callbackURL and the requestURL, all need to contain the same whiteListURL
+     * The uploadURL, the callbackURL and the refererURL, all need to contain the same whiteListURL
      * @param uploadURL is a String, a parameter send by tender
      * @param callbackURL is a String, a parameter send by tender
-     * @param requestURL
-     * @return a boolean if tender is on the white list or not
+     * @param refererURL is a String, the URL where the request comes from.
+     * @return a {@link WhiteListedTsender} object. When no WhitelistedTsender is found on the whitelist,
+     *         the return will be null.
      */
-    public WhiteListedTsender tenderIsOnWhiteList(String uploadURL, String callbackURL, String requestURL) {
+    public WhiteListedTsender tenderIsOnWhiteList(String uploadURL, String callbackURL, String refererURL) {
         for(Map.Entry entry : whiteList.getWhiteListMap().entrySet()) {
             String key = entry.getKey().toString();
             if(uploadURL.contains(key)
                     && callbackURL.contains(key)
-                    && requestURL.contains(key)) {
+                    && refererURL.contains(key)) {
                 return (WhiteListedTsender) entry.getValue();
             }
         }

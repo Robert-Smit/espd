@@ -57,8 +57,15 @@
         </div>
 
 		<tiles:insertDefinition name="topLevelCriteriaTemplate">
-			<tiles:putAttribute name="topLevelCriteriaList" value="${tenderned.nationalOrEuropeanCode == 'EU'
-			&& !tenderned.contractingAuthorityType == 'SS1' ? exclusionCA_EU : exclusionCA_NL}"/>
+            <c:choose>
+                <c:when test="${tenderned.contractingAuthorityType == 'SS1'}">
+                    <tiles:putAttribute name="topLevelCriteriaList" value="${exclusionCA_NL}"/>
+                </c:when>
+                <c:otherwise>
+                    <tiles:putAttribute name="topLevelCriteriaList" value="${tenderned.nationalOrEuropeanCode == 'EU'
+			            ? exclusionCA_EU : exclusionCA_NL}"/>
+                </c:otherwise>
+            </c:choose>
 		</tiles:insertDefinition>
 
         <div class="panel panel-espd">

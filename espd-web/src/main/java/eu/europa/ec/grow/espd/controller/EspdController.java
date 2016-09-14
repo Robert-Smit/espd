@@ -163,8 +163,8 @@ class EspdController {
     public String tenderNedData(
             @RequestParam(value = "uploadURL", required = true) String uploadURL,
             @RequestParam(value = "callbackURL", required = true) String callbackURL,
-            @RequestParam(value = "accessToken", required = false) String accessToken,
-            @RequestParam(value = "lang") String lang,
+            @RequestParam(value = "accessToken", required = true) String accessToken,
+            @RequestParam(value = "lang", required = true) String lang,
             @RequestParam(value = "agent", required = true) String agent,
             @RequestParam(value = "procedureType", required = true) String procedureType,
             @RequestParam(value = "tedReceptionId", required = false) String tedReceptionId,

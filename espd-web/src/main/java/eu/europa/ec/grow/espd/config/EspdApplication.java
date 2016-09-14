@@ -81,9 +81,9 @@ public class EspdApplication extends SpringBootServletInitializer implements Web
     }
 
     @Bean
-    WhiteListData whiteListUtils() throws IOException {
-        WhiteListData whiteListUtils = new WhiteListData();
-        whiteListUtils.init();
-        return whiteListUtils;
+    WhiteListData whiteListData() throws IOException {
+        WhiteListData whiteListData = new WhiteListData();
+        whiteListData.init();
+        return whiteListData;
     }
 }

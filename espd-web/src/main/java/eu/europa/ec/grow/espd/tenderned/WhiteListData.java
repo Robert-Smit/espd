@@ -15,6 +15,7 @@ import javax.validation.constraints.NotNull;
 import org.springframework.stereotype.Component;
 
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Holds whitelist data.
@@ -24,6 +25,7 @@ import lombok.Data;
  */
 @Component
 @Data
+@Slf4j
 public class WhiteListData {
 
     private Map<String, TsenderData> tsenderDataMap = new HashMap<>();
@@ -34,6 +36,7 @@ public class WhiteListData {
      * @throws IOException Thrown if an I/O error occurs
      */
     public void init() throws IOException {
+        log.info("init called");
         loadSharedPasswordProperties();
         loadTsenderProperties();
     }

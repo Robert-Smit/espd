@@ -141,18 +141,28 @@ public class TenderNedUtils {
      *         the return will be null.
      */
     public TsenderData getTsenderDataFromWhiteList(String uploadURL, String callbackURL, String refererURL) {
+        TsenderData tsenderData = null;
+
+        log.info("getTsenderDataFromWhiteList called with: {} {} {}", uploadURL, callbackURL, refererURL);
 
         for (Map.Entry entry : whiteListData.getTsenderDataMap().entrySet()) {
             String key = entry.getKey().toString();
+            log.debug("Checking against: {}", key);
 
             if (uploadURL.contains(key)
                     && callbackURL.contains(key)
                     && refererURL.contains(key)) {
 
-                return (TsenderData) entry.getValue();
+                tsenderData = (TsenderData) entry.getValue();
+                log.info("Found tsender in white list");
+                break;
             }
         }
-        return null;
+
+        if (tsenderData == null) {
+            log.error("Tsender not found in white list");
+        }
+        return tsenderData;
     }
 
     private class UrlBuilder {

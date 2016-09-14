@@ -42,10 +42,12 @@ public class ClientMultipartFormPost {
      * @param xml    The XML to send
      * @param pdf    The PDF to send
      * @param tnData is a {@link TenderNedData} object
+     * @param utils  The TenderNed Utils instance to use
      * @throws IOException Thrown if an I/O error occurs
      */
     public void sendPosttoTN(ByteArrayOutputStream xml, ByteArrayOutputStream pdf,
             TenderNedData tnData, TenderNedUtils utils) throws IOException {
+
         log.info("Sending POST data to {}", tnData.getUploadURL());
         EspdConfiguration espdConfig = utils.getEspdConfiguration();
 

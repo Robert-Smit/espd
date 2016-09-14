@@ -74,7 +74,7 @@ import eu.europa.ec.grow.espd.tenderned.HtmlToPdfTransformer;
 import eu.europa.ec.grow.espd.tenderned.SessionUtils;
 import eu.europa.ec.grow.espd.tenderned.TenderNedData;
 import eu.europa.ec.grow.espd.tenderned.TenderNedUtils;
-import eu.europa.ec.grow.espd.tenderned.WhiteListedTsender;
+import eu.europa.ec.grow.espd.tenderned.TsenderData;
 import eu.europa.ec.grow.espd.tenderned.exception.PdfRenderingException;
 import eu.europa.ec.grow.espd.xml.EspdExchangeMarshaller;
 import lombok.extern.slf4j.Slf4j;
@@ -191,13 +191,13 @@ class EspdController {
             Model model, HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         tenderNedData.setRefererURL(request.getHeader("referer"));
-        WhiteListedTsender whiteListedTsender = utils.tenderIsOnWhiteList(uploadURL, callbackURL, tenderNedData.getRefererURL());
+        TsenderData tsenderData = utils.getTsenderDataFromWhiteList(uploadURL, callbackURL, tenderNedData.getRefererURL());
 
-        if (whiteListedTsender == null || !whiteListedTsender.isActive()) {
+        if (tsenderData != null && tsenderData.isActive()) {
+            tenderNedData.setTsenderData(tsenderData);
+        } else {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             return null;
-        } else {
-            tenderNedData.setWhiteListedTsender(whiteListedTsender);
         }
 
         Country country = Country.findByIso2Code(countryIso);

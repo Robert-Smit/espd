@@ -92,7 +92,7 @@ public class ClientMultipartFormPost {
                 .addTextBody("accessToken", tnData.getAccessToken())
                 .addTextBody("time", time)
                 .addTextBody("security", utils.createSecurityHash(tnData.getAccessToken(), time,
-                        tnData.getWhiteListedTsender().getPassphrase()))
+                        tnData.getTsenderData().getPassphraseFilePropertyName()))
                 .build();
     }
 }

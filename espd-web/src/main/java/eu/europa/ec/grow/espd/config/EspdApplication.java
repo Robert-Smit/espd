@@ -40,7 +40,7 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ac.simons.spring.boot.wro4j.Wro4jAutoConfiguration;
-import eu.europa.ec.grow.espd.tenderned.WhiteListUtils;
+import eu.europa.ec.grow.espd.tenderned.WhiteListData;
 /**
  * Created by vigi on 10/20/15:5:17 PM.
  */
@@ -81,10 +81,9 @@ public class EspdApplication extends SpringBootServletInitializer implements Web
     }
 
     @Bean
-    WhiteListUtils whiteListUtils() throws IOException {
-        WhiteListUtils whiteListUtils = new WhiteListUtils();
-        whiteListUtils.loadSharedPasswordProperties();
-        whiteListUtils.loadTsenderProperties();
+    WhiteListData whiteListUtils() throws IOException {
+        WhiteListData whiteListUtils = new WhiteListData();
+        whiteListUtils.init();
         return whiteListUtils;
     }
 }

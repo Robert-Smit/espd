@@ -46,7 +46,7 @@ public class TenderNedData {
 
     private String contractingAuthorityType;
 
-    private WhiteListedTsender WhiteListedTsender;
+    private TsenderData tsenderData;
 
     /**
      * Constructor for {@link TenderNedData}
@@ -56,6 +56,7 @@ public class TenderNedData {
     }
 
     public void setInschrijffase(String typeProcedure) {
+
         if (inschrijffaseProcedures.contains(typeProcedure)) {
             this.isInschrijffase = true;
         } else {

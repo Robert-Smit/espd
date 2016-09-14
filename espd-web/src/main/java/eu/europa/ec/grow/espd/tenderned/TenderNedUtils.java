@@ -34,21 +34,20 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class TenderNedUtils {
 
-    private final WhiteListUtils whiteList;
-
     public static final String TIMESTAMP_FORMAT = "yyyyMMddHHmmss";
 
     private final EspdConfiguration espdConfiguration;
 
+    private final WhiteListData whiteListData;
+
     /**
      * Constructor for TenderNedUtils
-     * @param whiteList is a {@link WhiteListUtils} object
+     * @param whiteListData is a {@link WhiteListData} object
      * @param espdConfiguration is a {@link EspdConfiguration} object
      */
     @Autowired
-    public TenderNedUtils(WhiteListUtils whiteList,
-                          EspdConfiguration espdConfiguration) {
-        this.whiteList = whiteList;
+    public TenderNedUtils(WhiteListData whiteListData, EspdConfiguration espdConfiguration) {
+        this.whiteListData = whiteListData;
         this.espdConfiguration = espdConfiguration;
     }
 
@@ -90,14 +89,14 @@ public class TenderNedUtils {
      * @param timestamp   is a String
      * @return the hexString
      */
-    public String createSecurityHash(String accessToken, String timestamp, String passphrase) {
+    public String createSecurityHash(String accessToken, String timestamp, String passphraseFilePropertyName) {
         StringBuffer hexString = new StringBuffer();
 
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-512");
             md.update(accessToken.getBytes());
             md.update(timestamp.getBytes());
-            byte[] input = readPasswordFromFile(passphrase);
+            byte[] input = readPasswordFromFile(passphraseFilePropertyName);
             md.update(input);
 
             Arrays.fill(input, (byte) 0);
@@ -113,11 +112,12 @@ public class TenderNedUtils {
         return hexString.toString();
     }
 
-    private byte[] readPasswordFromFile(String passwdFileProperty) {
-        String passwordFileName = whiteList.getPassphraseMap().get(passwdFileProperty);
+    private byte[] readPasswordFromFile(String passphraseFilePropertyName) {
+        String passwordFilePathname = whiteListData.getPassphraseFilePathnameMap().get(passphraseFilePropertyName);
+
         try {
             // Password for private encryption.
-            final File passwordFile = new File(passwordFileName);
+            final File passwordFile = new File(passwordFilePathname);
 
             // Chomp to remove line ending characters introduced by the editors.
             final String passwordHex = StringUtils.chomp(FileUtils.readFileToString(passwordFile));
@@ -129,6 +129,30 @@ public class TenderNedUtils {
         } catch (DecoderException decoderException) {
             throw new EncryptionException("Password was not hex encoded.", decoderException);
         }
+    }
+
+    /**
+     * Boolean to check if the tender who send params to rest is on the whitelist.
+     * The uploadURL, the callbackURL and the refererURL, all need to contain the same whiteListURL
+     * @param uploadURL is a String, a parameter send by tender
+     * @param callbackURL is a String, a parameter send by tender
+     * @param refererURL is a String, the URL where the request comes from.
+     * @return a {@link TsenderData} object. When no WhitelistedTsender is found on the whitelist,
+     *         the return will be null.
+     */
+    public TsenderData getTsenderDataFromWhiteList(String uploadURL, String callbackURL, String refererURL) {
+
+        for (Map.Entry entry : whiteListData.getTsenderDataMap().entrySet()) {
+            String key = entry.getKey().toString();
+
+            if (uploadURL.contains(key)
+                    && callbackURL.contains(key)
+                    && refererURL.contains(key)) {
+
+                return (TsenderData) entry.getValue();
+            }
+        }
+        return null;
     }
 
     private class UrlBuilder {
@@ -152,26 +176,5 @@ public class TenderNedUtils {
         public String build() {
             return url.toString();
         }
-    }
-
-    /**
-     * Boolean to check if the tender who send params to rest is on the whitelist.
-     * The uploadURL, the callbackURL and the refererURL, all need to contain the same whiteListURL
-     * @param uploadURL is a String, a parameter send by tender
-     * @param callbackURL is a String, a parameter send by tender
-     * @param refererURL is a String, the URL where the request comes from.
-     * @return a {@link WhiteListedTsender} object. When no WhitelistedTsender is found on the whitelist,
-     *         the return will be null.
-     */
-    public WhiteListedTsender tenderIsOnWhiteList(String uploadURL, String callbackURL, String refererURL) {
-        for(Map.Entry entry : whiteList.getWhiteListMap().entrySet()) {
-            String key = entry.getKey().toString();
-            if(uploadURL.contains(key)
-                    && callbackURL.contains(key)
-                    && refererURL.contains(key)) {
-                return (WhiteListedTsender) entry.getValue();
-            }
-        }
-        return null;
     }
 }

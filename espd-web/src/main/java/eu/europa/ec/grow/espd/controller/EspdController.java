@@ -525,7 +525,6 @@ class EspdController {
             xml = (ByteArrayOutputStream) exchangeMarshaller.generateEspdResponse(espd);
         }
 
-        log.debug("Created XML: {}", xml);
         ByteArrayOutputStream pdf = null;
 
         try {
@@ -543,9 +542,11 @@ class EspdController {
         }
 
         if (errorOccured) {
+            log.info("Created XML: {}", xml);
             tnData.setErrorCode(TenderNedData.ERROR_CODE_NOK);
         } else {
-            log.debug("Successfully created XML and PDF");
+            log.debug("Created XML: {}", xml);
+            log.info("Successfully created XML and PDF");
             ClientMultipartFormPost formPost = new ClientMultipartFormPost();
             formPost.sendPosttoTN(xml, pdf, tnData, utils);
         }

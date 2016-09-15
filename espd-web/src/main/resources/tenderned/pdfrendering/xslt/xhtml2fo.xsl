@@ -1399,12 +1399,6 @@ e.g., style="text-align: center; color: red"
         </xsl:otherwise>
       </xsl:choose>
     </xsl:if>
-    <!--<xsl:if test="@border">-->
-      <!--<xsl:attribute name="border">-->
-        <!--<xsl:value-of select="@border"/>-->
-        <!--px solid-->
-      <!--</xsl:attribute>-->
-    <!--</xsl:if>-->
     <xsl:call-template name="process-common-attributes"/>
   </xsl:template>
   <xsl:template match="object">

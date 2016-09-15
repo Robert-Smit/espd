@@ -154,7 +154,7 @@ public class TenderNedUtils {
                     && refererURL.contains(key)) {
 
                 tsenderData = (TsenderData) entry.getValue();
-                log.info("Found tsender in white list");
+                log.info("Found tsender in white list {}", !tsenderData.isActive() ? "(inactive)" : StringUtils.EMPTY);
                 break;
             }
         }

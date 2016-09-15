@@ -194,9 +194,8 @@
 	<xsl:strip-space elements="*"/>
 
 	<!-- when the html matches one of these templates, they will not be rendered in the pdf -->
-	<xsl:template match="div[@id='separate_espd_div']"/>
 	<xsl:template match="div[@class='collapse']"/>
-	<xsl:template match="div[@class='col-md-12 collapse']"/>
+	<xsl:template match="div[@class='col-md-12 alert  collapse']"/>
 	<xsl:template match="div[@class='form-group collapse']"/>
 	<xsl:template match="div[@class='errorContainer alert alert-danger']"/>
 	<xsl:template match="div[@class='alert alert-espd-info']"/>

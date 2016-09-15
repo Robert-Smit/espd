@@ -79,6 +79,7 @@ public class TenderNedUtils {
      */
     public String addHtmlHeader(String html) throws IOException {
         String newHtml = StringEscapeUtils.unescapeHtml4(html);
+        newHtml = newHtml.replace("&", "&amp;");
         return "<html><head/><body>" + newHtml + "</div></body></html>";
     }
 

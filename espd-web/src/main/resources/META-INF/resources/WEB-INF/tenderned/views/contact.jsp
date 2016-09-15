@@ -48,8 +48,8 @@
 			</a>
 		</div>
 
-		<h4 style="padding-top: 30px">
-			<a href="welcome">${span18n["back_to_main"]}</a>
-		</h4>
+		<%--<h4 style="padding-top: 30px">--%>
+			<%--<a href="welcome">${span18n["back_to_main"]}</a>--%>
+		<%--</h4>--%>
 	</div>
 </div>

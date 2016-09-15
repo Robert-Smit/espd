@@ -270,7 +270,7 @@ horizontal alignment of table itself
   <xsl:attribute-set name="table">
     <xsl:attribute name="border-collapse">separate</xsl:attribute>
     <xsl:attribute name="border-spacing">2px</xsl:attribute>
-    <xsl:attribute name="border">1px</xsl:attribute>
+    <xsl:attribute name="border">0px</xsl:attribute>
     <!--
 
 <xsl:attribute name="border-style">outset</xsl:attribute>
@@ -288,22 +288,22 @@ horizontal alignment of table itself
   <xsl:attribute-set name="th">
     <xsl:attribute name="font-weight">bold</xsl:attribute>
     <xsl:attribute name="text-align">center</xsl:attribute>
-    <xsl:attribute name="border">1px</xsl:attribute>
+    <xsl:attribute name="border">0px</xsl:attribute>
     <!--
 
 <xsl:attribute name="border-style">inset</xsl:attribute>
 
 -->
-    <xsl:attribute name="padding">1px</xsl:attribute>
+    <xsl:attribute name="padding">0px</xsl:attribute>
   </xsl:attribute-set>
   <xsl:attribute-set name="td">
-    <xsl:attribute name="border">1px</xsl:attribute>
+    <xsl:attribute name="border">0px</xsl:attribute>
     <!--
 
 <xsl:attribute name="border-style">inset</xsl:attribute>
 
 -->
-    <xsl:attribute name="padding">1px</xsl:attribute>
+    <xsl:attribute name="padding">0px</xsl:attribute>
   </xsl:attribute-set>
 
   <!--
@@ -621,6 +621,7 @@ e.g., style="text-align: center; color: red"
         <xsl:when test="$name = 'display'"/>
         <xsl:when test="$name = 'border-left'"/>
         <xsl:when test="$name = 'cursor'"/>
+        <xsl:when test="$name = 'border'"/>
         <xsl:otherwise>
           <xsl:attribute name="{$name}">
             <xsl:value-of select="$value"/>
@@ -921,14 +922,15 @@ e.g., style="text-align: center; color: red"
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 -->
   <xsl:template match="table">
-    <fo:table-and-caption xsl:use-attribute-sets="table-and-caption">
+    <fo:block xsl:use-attribute-sets="table-and-caption">
       <xsl:call-template name="make-table-caption"/>
-      <fo:table xsl:use-attribute-sets="table">
+      <fo:block xsl:use-attribute-sets="table">
         <xsl:call-template name="process-table"/>
-      </fo:table>
-    </fo:table-and-caption>
+      </fo:block>
+    </fo:block>
   </xsl:template>
   <xsl:template name="make-table-caption">
+    <xsl:call-template name="append-new-line"/>
     <xsl:if test="caption/@align">
       <xsl:attribute name="caption-side">
         <xsl:value-of select="caption/@align"/>
@@ -950,42 +952,6 @@ e.g., style="text-align: center; color: red"
         </xsl:choose>
       </xsl:attribute>
     </xsl:if>
-    <xsl:if test="@border or @frame">
-      <xsl:choose>
-        <xsl:when test="@border > 0">
-          <xsl:attribute name="border">
-            <xsl:value-of select="@border"/>
-            px
-          </xsl:attribute>
-        </xsl:when>
-      </xsl:choose>
-      <xsl:choose>
-        <xsl:when test="@border = '0' or @frame = 'void'">
-          <xsl:attribute name="border-style">hidden</xsl:attribute>
-        </xsl:when>
-        <xsl:when test="@frame = 'above'">
-          <xsl:attribute name="border-style">outset hidden hidden hidden</xsl:attribute>
-        </xsl:when>
-        <xsl:when test="@frame = 'below'">
-          <xsl:attribute name="border-style">hidden hidden outset hidden</xsl:attribute>
-        </xsl:when>
-        <xsl:when test="@frame = 'hsides'">
-          <xsl:attribute name="border-style">outset hidden</xsl:attribute>
-        </xsl:when>
-        <xsl:when test="@frame = 'vsides'">
-          <xsl:attribute name="border-style">hidden outset</xsl:attribute>
-        </xsl:when>
-        <xsl:when test="@frame = 'lhs'">
-          <xsl:attribute name="border-style">hidden hidden hidden outset</xsl:attribute>
-        </xsl:when>
-        <xsl:when test="@frame = 'rhs'">
-          <xsl:attribute name="border-style">hidden outset hidden hidden</xsl:attribute>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:attribute name="border-style">outset</xsl:attribute>
-        </xsl:otherwise>
-      </xsl:choose>
-    </xsl:if>
     <xsl:if test="@cellspacing">
       <xsl:attribute name="border-spacing">
         <xsl:value-of select="@cellspacing"/>
@@ -993,12 +959,7 @@ e.g., style="text-align: center; color: red"
       </xsl:attribute>
       <xsl:attribute name="border-collapse">separate</xsl:attribute>
     </xsl:if>
-    <xsl:if test="@rules and (@rules = 'groups' or @rules = 'rows' or @rules = 'cols' or @rules = 'all' and (not(@border or @frame) or @border = '0' or @frame and not(@frame = 'box' or @frame = 'border')))">
-      <xsl:attribute name="border-collapse">collapse</xsl:attribute>
-      <xsl:if test="not(@border or @frame)">
-        <xsl:attribute name="border-style">hidden</xsl:attribute>
-      </xsl:if>
-    </xsl:if>
+    <xsl:attribute name="border-style">hidden</xsl:attribute>
     <xsl:call-template name="process-common-attributes"/>
     <xsl:apply-templates select="col | colgroup"/>
     <xsl:apply-templates select="thead"/>
@@ -1008,53 +969,50 @@ e.g., style="text-align: center; color: red"
         <xsl:apply-templates select="tbody"/>
       </xsl:when>
       <xsl:otherwise>
-        <fo:table-body xsl:use-attribute-sets="tbody">
+        <fo:block xsl:use-attribute-sets="tbody">
           <xsl:apply-templates select="tr"/>
-        </fo:table-body>
+        </fo:block>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
   <xsl:template match="caption">
-    <fo:table-caption xsl:use-attribute-sets="table-caption">
+    <fo:block xsl:use-attribute-sets="table-caption">
       <xsl:call-template name="process-common-attributes"/>
       <fo:block>
         <xsl:apply-templates/>
       </fo:block>
-    </fo:table-caption>
+    </fo:block>
   </xsl:template>
   <xsl:template match="thead">
-    <fo:table-header xsl:use-attribute-sets="thead">
+    <fo:block xsl:use-attribute-sets="thead">
       <xsl:call-template name="process-table-rowgroup"/>
-    </fo:table-header>
+    </fo:block>
   </xsl:template>
   <xsl:template match="tfoot">
-    <fo:table-footer xsl:use-attribute-sets="tfoot">
+    <fo:block xsl:use-attribute-sets="tfoot">
       <xsl:call-template name="process-table-rowgroup"/>
-    </fo:table-footer>
+    </fo:block>
   </xsl:template>
   <xsl:template match="tbody">
-    <fo:table-body xsl:use-attribute-sets="tbody">
+    <fo:block xsl:use-attribute-sets="tbody">
       <xsl:call-template name="process-table-rowgroup"/>
-    </fo:table-body>
+    </fo:block>
   </xsl:template>
   <xsl:template name="process-table-rowgroup">
-    <xsl:if test="ancestor::table[1]/@rules = 'groups'">
-      <xsl:attribute name="border">1px solid</xsl:attribute>
-    </xsl:if>
     <xsl:call-template name="process-common-attributes-and-children"/>
   </xsl:template>
   <xsl:template match="colgroup">
-    <fo:table-column xsl:use-attribute-sets="table-column">
+    <fo:block xsl:use-attribute-sets="table-column">
       <xsl:call-template name="process-table-column"/>
-    </fo:table-column>
+    </fo:block>
   </xsl:template>
   <xsl:template match="colgroup[col]">
     <xsl:apply-templates/>
   </xsl:template>
   <xsl:template match="col">
-    <fo:table-column xsl:use-attribute-sets="table-column">
+    <fo:block xsl:use-attribute-sets="table-column">
       <xsl:call-template name="process-table-column"/>
-    </fo:table-column>
+    </fo:block>
   </xsl:template>
   <xsl:template name="process-table-column">
     <xsl:if test="parent::colgroup">
@@ -1077,37 +1035,31 @@ e.g., style="text-align: center; color: red"
       <xsl:with-param name="width" select="@width"/>
       <!--  it may override parent colgroup's width  -->
     </xsl:call-template>
-    <xsl:if test="ancestor::table[1]/@rules = 'cols'">
-      <xsl:attribute name="border">1px solid</xsl:attribute>
-    </xsl:if>
     <xsl:call-template name="process-common-attributes"/>
     <!--  this processes also align and valign  -->
   </xsl:template>
   <xsl:template match="tr">
-    <fo:table-row xsl:use-attribute-sets="tr">
+    <fo:block xsl:use-attribute-sets="tr">
       <xsl:call-template name="process-table-row"/>
-    </fo:table-row>
+    </fo:block>
   </xsl:template>
   <xsl:template match="tr[parent::table and th and not(td)]">
-    <fo:table-row xsl:use-attribute-sets="tr" keep-with-next="always">
+    <fo:block xsl:use-attribute-sets="tr" keep-with-next="always">
       <xsl:call-template name="process-table-row"/>
-    </fo:table-row>
+    </fo:block>
   </xsl:template>
   <xsl:template name="process-table-row">
-    <xsl:if test="ancestor::table[1]/@rules = 'rows'">
-      <xsl:attribute name="border">1px solid</xsl:attribute>
-    </xsl:if>
     <xsl:call-template name="process-common-attributes-and-children"/>
   </xsl:template>
   <xsl:template match="th">
-    <fo:table-cell xsl:use-attribute-sets="th">
+    <fo:block xsl:use-attribute-sets="th">
       <xsl:call-template name="process-table-cell"/>
-    </fo:table-cell>
+    </fo:block>
   </xsl:template>
   <xsl:template match="td">
-    <fo:table-cell xsl:use-attribute-sets="td">
+    <fo:block xsl:use-attribute-sets="td">
       <xsl:call-template name="process-table-cell"/>
-    </fo:table-cell>
+    </fo:block>
   </xsl:template>
   <xsl:template name="process-table-cell">
     <xsl:if test="@colspan">
@@ -1121,9 +1073,6 @@ e.g., style="text-align: center; color: red"
       </xsl:attribute>
     </xsl:if>
     <xsl:for-each select="ancestor::table[1]">
-      <xsl:if test="(@border or @rules) and (@rules = 'all' or not(@rules) and not(@border = '0'))">
-        <xsl:attribute name="border-style">inset</xsl:attribute>
-      </xsl:if>
       <xsl:if test="@cellpadding">
         <xsl:attribute name="padding">
           <xsl:choose>
@@ -1450,12 +1399,12 @@ e.g., style="text-align: center; color: red"
         </xsl:otherwise>
       </xsl:choose>
     </xsl:if>
-    <xsl:if test="@border">
-      <xsl:attribute name="border">
-        <xsl:value-of select="@border"/>
-        px solid
-      </xsl:attribute>
-    </xsl:if>
+    <!--<xsl:if test="@border">-->
+      <!--<xsl:attribute name="border">-->
+        <!--<xsl:value-of select="@border"/>-->
+        <!--px solid-->
+      <!--</xsl:attribute>-->
+    <!--</xsl:if>-->
     <xsl:call-template name="process-common-attributes"/>
   </xsl:template>
   <xsl:template match="object">

@@ -176,6 +176,20 @@
 		</fo:block>
 	</xsl:template>
 
+	<xsl:template match="*[@class='panel-title pull-left']">
+		<xsl:call-template name="append-new-line"/>
+		<fo:block xsl:use-attribute-sets="espd-panel-heading">
+			<xsl:choose>
+				<xsl:when test="text()">
+					<xsl:value-of select="."/>
+				</xsl:when>
+				<xsl:otherwise>
+					<xsl:value-of select="span"/>
+				</xsl:otherwise>
+			</xsl:choose>
+		</fo:block>
+	</xsl:template>
+
 	<!-- removes all the white spaces in the output -->
 	<xsl:strip-space elements="*"/>
 

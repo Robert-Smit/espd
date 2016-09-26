@@ -10,11 +10,19 @@ import org.apache.commons.lang3.text.translate.LookupTranslator;
 import org.apache.commons.lang3.text.translate.NumericEntityUnescaper;
 
 /**
+ * Utility class to UnescapeHtml4
  *
  * @author D Hof
  * @since 26-09-2016
  */
 public class UnescapeHtml4 {
+
+    private static final CharSequenceTranslator UNESCAPE_HTML4 =
+            new AggregateTranslator(
+                    new LookupTranslator(EntityArrays.ISO8859_1_UNESCAPE()),
+                    new LookupTranslator(EntityArrays.HTML40_EXTENDED_UNESCAPE()),
+                    new NumericEntityUnescaper()
+            );
 
     /**
      * private constructor because this class is a utility class
@@ -28,15 +36,8 @@ public class UnescapeHtml4 {
      * @param input is a String
      * @return a String
      */
-    public static final String unescapeHtml4(final String input) {
+    public static String unescapeHtml4(final String input) {
         return UNESCAPE_HTML4.translate(input);
     }
-
-    private static final CharSequenceTranslator UNESCAPE_HTML4 =
-            new AggregateTranslator(
-                    new LookupTranslator(EntityArrays.ISO8859_1_UNESCAPE()),
-                    new LookupTranslator(EntityArrays.HTML40_EXTENDED_UNESCAPE()),
-                    new NumericEntityUnescaper()
-            );
 
 }

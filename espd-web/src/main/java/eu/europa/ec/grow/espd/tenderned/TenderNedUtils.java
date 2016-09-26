@@ -13,7 +13,6 @@ import java.util.Map;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -78,8 +77,7 @@ public class TenderNedUtils {
      * @throws IOException
      */
     public String addHtmlHeader(String html) throws IOException {
-        String newHtml = StringEscapeUtils.unescapeHtml4(html);
-        newHtml = newHtml.replace("&", "&amp;");
+        String newHtml = UnescapeHtml4.unescapeHtml4(html);
         return "<html><head/><body>" + newHtml + "</div></body></html>";
     }
 
